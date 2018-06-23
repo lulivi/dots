@@ -1,0 +1,102 @@
+# 1 "/home/luvo/.Xresources.src"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "/usr/include/stdc-predef.h" 1 3 4
+# 1 "<command-line>" 2
+# 1 "/home/luvo/.Xresources.src"
+! *************************************************
+! Do not edit ~/.Xresources, but ~/.Xresources.src
+! Use $HOME/.Xresources.edit to edit this file
+! *************************************************
+! vim:set ft=xdefaults:
+
+# 1 "/home/luvo/.Xresources.theme" 1
+# 8 "/home/luvo/.Xresources.src" 2
+
+
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! URxvt
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+URxvt.font: xft:Fira Code-11
+URxvt.termName: rxvt-unicode
+*imLocale: en_US.UTF8
+*saveLines: 5000
+*.letterSpace: 1
+
+! Scrollbar
+URxvt.scrollBar: false
+
+! Border
+URxvt.borderLess: false
+URxvt.internalBorder: 15
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! Emacs
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+emacs.font: Fira Code-11
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! Rofi
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+rofi.font: Fira Code 12
+rofi.modi: combi
+rofi.combi-modi: window,drun,run
+
+! "Padding" Set from: Default
+rofi.padding: 15
+
+! "Number of lines" Set from: Default
+rofi.lines: 10
+
+! Set the desired separator style
+rofi.separator-style: solid
+
+! Enable the extended coloring options
+rofi.color-enabled: true
+! Property Name bg border sep
+rofi.color-window: #3a3c4e, #3a3c4e, #282936
+! Property Name bg fg bgalt hibg hifg
+rofi.color-normal: #3a3c4e, #e9e9f4, #3a3c4e, #3a3c4e, #f7f7fb
+rofi.color-active: #3a3c4e, #62d6e8, #3a3c4e, #3a3c4e, #62d6e8
+rofi.color-urgent: #3a3c4e, #ea51b2, #3a3c4e, #3a3c4e, #ea51b2
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! Colors
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+*foreground: #e9e9f4
+
+
+
+*background: #282936
+
+*cursorColor: #e9e9f4
+
+*color0: #282936
+*color1: #ea51b2
+*color2: #ebff87
+*color3: #00f769
+*color4: #62d6e8
+*color5: #b45bcf
+*color6: #a1efe4
+*color7: #e9e9f4
+
+*color8: #626483
+*color9: #ea51b2
+*color10: #ebff87
+*color11: #00f769
+*color12: #62d6e8
+*color13: #b45bcf
+*color14: #a1efe4
+*color15: #f7f7fb
+
+! Note: colors beyond 15 might not be loaded (e.g., xterm, urxvt),
+! use 'shell' template to set these if necessary
+*color16: #b45bcf
+*color17: #00f769
+*color18: #3a3c4e
+*color19: #4d4f68
+*color20: #62d6e8
+*color21: #f1f2f8

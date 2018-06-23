@@ -1,0 +1,95 @@
+! *************************************************
+! Do not edit ~/.Xresources, but ~/.Xresources.src
+! Use $HOME/.Xresources.edit to edit this file
+! *************************************************
+! vim:set ft=xdefaults:
+
+#include ".Xresources.theme"
+
+#define GENERAL_FONT     Fira Code-11
+#define INTERNAL_PADDING 15
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! URxvt
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+URxvt.font:             xft:GENERAL_FONT
+URxvt.termName:         rxvt-unicode
+*imLocale:              en_US.UTF8
+*saveLines:             5000
+*.letterSpace:          1
+
+! Scrollbar
+URxvt.scrollBar:        false
+
+! Border
+URxvt.borderLess:       false
+URxvt.internalBorder:   INTERNAL_PADDING
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! Emacs
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+emacs.font:             GENERAL_FONT
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! Rofi
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+rofi.font:              Fira Code 12
+rofi.modi:              combi
+rofi.combi-modi:        window,drun,run
+
+! "Padding" Set from: Default
+rofi.padding:           INTERNAL_PADDING
+
+! "Number of lines" Set from: Default
+rofi.lines:             10
+
+! Set the desired separator style
+rofi.separator-style:   solid
+
+! Enable the extended coloring options
+rofi.color-enabled:     true
+! Property Name    bg      border  sep
+rofi.color-window: base01, base01, base00
+! Property Name    bg      fg      bgalt   hibg    hifg
+rofi.color-normal: base01, base05, base01, base01, base07
+rofi.color-active: base01, base0D, base01, base01, base0D
+rofi.color-urgent: base01, base08, base01, base01, base08
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! Colors
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+*foreground:   base05
+#ifdef background_opacity
+*background:   [background_opacity]base00
+#else
+*background:   base00
+#endif
+*cursorColor:  base05
+
+*color0:       base00
+*color1:       base08
+*color2:       base0B
+*color3:       base0A
+*color4:       base0D
+*color5:       base0E
+*color6:       base0C
+*color7:       base05
+
+*color8:       base03
+*color9:       base08
+*color10:      base0B
+*color11:      base0A
+*color12:      base0D
+*color13:      base0E
+*color14:      base0C
+*color15:      base07
+
+! Note: colors beyond 15 might not be loaded (e.g., xterm, urxvt),
+! use 'shell' template to set these if necessary
+*color16:      base09
+*color17:      base0F
+*color18:      base01
+*color19:      base02
+*color20:      base04
+*color21:      base06
