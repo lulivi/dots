@@ -56,15 +56,24 @@ Emacs will need a complete restart to clean them.
 (defun conf/fish ()
   (interactive)
   (find-file (format "%s/%s" config "fish/config.fish")))
+(defun conf/bspwm ()
+  (interactive)
+  (find-file (format "%s/%s" config "bspwm/bspwmrc")))
+(defun conf/sxhkd ()
+  (interactive)
+  (find-file (format "%s/%s" config "sxhkd/sxhkdrc")))
+(defun conf/compton ()
+  (interactive)
+  (find-file (format "%s/%s" config "compton/compton.conf")))
+(defun conf/dunst ()
+  (interactive)
+  (find-file (format "%s/%s" config "dunst/dunstrc")))
 (defun git/ ()
   (interactive)
   (find-file git))
 (defun etsiit/ ()
   (interactive)
   (find-file etsiit))
-(defun scripts/ ()
-  (interactive)
-  (find-file scripts))
 #+End_SRC
 
 
@@ -78,6 +87,8 @@ Emacs will need a complete restart to clean them.
 (set-face-attribute 'default t
   :font "Fira Code")
 (setq visual-line-mode t)
+(set-frame-parameter (selected-frame) 'alpha '(95))
+(add-to-list 'default-frame-alist '(alpha 95))
 #+END_SRC
 
 

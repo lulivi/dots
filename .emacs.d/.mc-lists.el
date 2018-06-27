@@ -10,10 +10,11 @@
         markdown-backward-paragraph
         markdown-forward-paragraph
         markdown-outdent-or-delete
+        mouse-set-region
         org-cycle
         org-self-insert-command
         overwrite-mode
-        mouse-set-region
+        sh-assignment
         ))
 
 (setq mc/cmds-to-run-once
@@ -22,4 +23,5 @@
         find-file
         ignore
         save-buffers-kill-terminal
+        toggle-frame-fullscreen
         ))

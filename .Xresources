@@ -16,10 +16,55 @@
 
 
 
+
+
+
+*.font: Fira Code 11
+*.border_width: 10
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! Colors
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+*foreground: #c0c5ce
+
+*background: [95]#2b303b
+
+
+
+*cursorColor: #c0c5ce
+
+*color0: #2b303b
+*color1: #bf616a
+*color2: #a3be8c
+*color3: #ebcb8b
+*color4: #8fa1b3
+*color5: #b48ead
+*color6: #96b5b4
+*color7: #c0c5ce
+
+*color8: #65737e
+*color9: #bf616a
+*color10: #a3be8c
+*color11: #ebcb8b
+*color12: #8fa1b3
+*color13: #b48ead
+*color14: #96b5b4
+*color15: #eff1f5
+
+! Note: colors beyond 15 might not be loaded (e.g., xterm, urxvt),
+! use 'shell' template to set these if necessary
+*color16: #d08770
+*color17: #ab7967
+*color18: #343d46
+*color19: #4f5b66
+*color20: #a7adba
+*color21: #dfe1e8
+
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! URxvt
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-URxvt.font: xft:Fira Code-11
+URxvt.font: xft:Fira Code:size=11
 URxvt.termName: rxvt-unicode
 *imLocale: en_US.UTF8
 *saveLines: 5000
@@ -32,20 +77,25 @@ URxvt.scrollBar: false
 URxvt.borderLess: false
 URxvt.internalBorder: 15
 
+urxvt*depth: 32
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Emacs
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 emacs.font: Fira Code-11
+emacs.background: #2b303b
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Rofi
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-rofi.font: Fira Code 12
+rofi.font: Fira Code 11
 rofi.modi: combi
 rofi.combi-modi: window,drun,run
 
+! "Border width"
+rofi.bw: 10
+
 ! "Padding" Set from: Default
-rofi.padding: 15
+rofi.padding: INTERNAL_PADDING
 
 ! "Number of lines" Set from: Default
 rofi.lines: 10
@@ -56,47 +106,8 @@ rofi.separator-style: solid
 ! Enable the extended coloring options
 rofi.color-enabled: true
 ! Property Name bg border sep
-rofi.color-window: #3a3c4e, #3a3c4e, #282936
+rofi.color-window: #2b303b, #65737e, #2b303b
 ! Property Name bg fg bgalt hibg hifg
-rofi.color-normal: #3a3c4e, #e9e9f4, #3a3c4e, #3a3c4e, #f7f7fb
-rofi.color-active: #3a3c4e, #62d6e8, #3a3c4e, #3a3c4e, #62d6e8
-rofi.color-urgent: #3a3c4e, #ea51b2, #3a3c4e, #3a3c4e, #ea51b2
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! Colors
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-*foreground: #e9e9f4
-
-
-
-*background: #282936
-
-*cursorColor: #e9e9f4
-
-*color0: #282936
-*color1: #ea51b2
-*color2: #ebff87
-*color3: #00f769
-*color4: #62d6e8
-*color5: #b45bcf
-*color6: #a1efe4
-*color7: #e9e9f4
-
-*color8: #626483
-*color9: #ea51b2
-*color10: #ebff87
-*color11: #00f769
-*color12: #62d6e8
-*color13: #b45bcf
-*color14: #a1efe4
-*color15: #f7f7fb
-
-! Note: colors beyond 15 might not be loaded (e.g., xterm, urxvt),
-! use 'shell' template to set these if necessary
-*color16: #b45bcf
-*color17: #00f769
-*color18: #3a3c4e
-*color19: #4d4f68
-*color20: #62d6e8
-*color21: #f1f2f8
+rofi.color-normal: #2b303b, #c0c5ce, #2b303b, #343d46, #eff1f5
+rofi.color-active: #2b303b, #8fa1b3, #2b303b, #343d46, #8fa1b3
+rofi.color-urgent: #2b303b, #bf616a, #2b303b, #343d46, #bf616a

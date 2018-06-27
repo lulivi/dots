@@ -51,5 +51,8 @@ alias g="git"
 ###############
 
 export EDITOR="emacs"
-# export BASE16_THEME="dracula"
 export XDG_CONFIG_HOME="$HOME/.config"
+export SXHKD_SHELL='/usr/bin/sh'
+
+
+# LD_PRELOAD=/usr/lib/libcurl.so.3:$HOME/.spotify_wrapper/spotifywm.so /usr/share/spotify/spotify

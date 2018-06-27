@@ -6,54 +6,14 @@
 
 #include ".Xresources.theme"
 
-#define GENERAL_FONT     Fira Code-11
-#define INTERNAL_PADDING 15
+#define FONT         Fira Code
+#define FONT_SIZE    11
+#define INNER_PAD    15
+#define BORDER_WIDTH 10
+#define background_opacity 95
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! URxvt
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-URxvt.font:             xft:GENERAL_FONT
-URxvt.termName:         rxvt-unicode
-*imLocale:              en_US.UTF8
-*saveLines:             5000
-*.letterSpace:          1
-
-! Scrollbar
-URxvt.scrollBar:        false
-
-! Border
-URxvt.borderLess:       false
-URxvt.internalBorder:   INTERNAL_PADDING
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! Emacs
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-emacs.font:             GENERAL_FONT
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! Rofi
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-rofi.font:              Fira Code 12
-rofi.modi:              combi
-rofi.combi-modi:        window,drun,run
-
-! "Padding" Set from: Default
-rofi.padding:           INTERNAL_PADDING
-
-! "Number of lines" Set from: Default
-rofi.lines:             10
-
-! Set the desired separator style
-rofi.separator-style:   solid
-
-! Enable the extended coloring options
-rofi.color-enabled:     true
-! Property Name    bg      border  sep
-rofi.color-window: base01, base01, base00
-! Property Name    bg      fg      bgalt   hibg    hifg
-rofi.color-normal: base01, base05, base01, base01, base07
-rofi.color-active: base01, base0D, base01, base01, base0D
-rofi.color-urgent: base01, base08, base01, base01, base08
+*.font:         FONT FONT_SIZE
+*.border_width: BORDER_WIDTH
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Colors
@@ -93,3 +53,56 @@ rofi.color-urgent: base01, base08, base01, base01, base08
 *color19:      base02
 *color20:      base04
 *color21:      base06
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! URxvt
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+URxvt.font:             xft:FONT:size=FONT_SIZE
+URxvt.termName:         rxvt-unicode
+*imLocale:              en_US.UTF8
+*saveLines:             5000
+*.letterSpace:          1
+
+! Scrollbar
+URxvt.scrollBar:        false
+
+! Border
+URxvt.borderLess:       false
+URxvt.internalBorder:   INNER_PAD
+
+urxvt*depth: 32
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! Emacs
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+emacs.font:             FONT-FONT_SIZE
+emacs.background:       base00
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! Rofi
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+rofi.font:              FONT FONT_SIZE
+rofi.modi:              combi
+rofi.combi-modi:        window,drun,run
+
+! "Border width"
+rofi.bw:                 10
+
+! "Padding" Set from: Default
+rofi.padding:           INTERNAL_PADDING
+
+! "Number of lines" Set from: Default
+rofi.lines:             10
+
+! Set the desired separator style
+rofi.separator-style:   solid
+
+! Enable the extended coloring options
+rofi.color-enabled:     true
+! Property Name    bg      border  sep
+rofi.color-window: base00, base03, base00
+! Property Name    bg      fg      bgalt   hibg    hifg
+rofi.color-normal: base00, base05, base00, base01, base07
+rofi.color-active: base00, base0D, base00, base01, base0D
+rofi.color-urgent: base00, base08, base00, base01, base08
+
+

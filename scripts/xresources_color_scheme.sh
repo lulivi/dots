@@ -1,17 +1,12 @@
 #!/usr/bin/env bash
 # Modified script from https://github.com/chriskempson/base16-shell/
 
-ESC_F="\x1b[38;5;"
-ESC_B="\x1b[48;5;"
-RES_C="\x1b[0m"
+r=$(tput op)
 
-theme=$HOME/.Xresources.theme
-[ -f $theme ] && {
-    color_list=($(xrdb -query | grep -e "color[0-9]" | cut -f2 | tr '\n' ' '))
-} || {
-    printf "No theme file %s found\n" $theme
-    exit 1
-}
+htc=$HOME/scripts/hex_dec_color.sh
+
+color_list=($(xrdb -query | grep -e "color[0-9]" | cut -f2 | tr '\n' ' '))
+
 
 ansi_mappings=(
     Black
@@ -56,26 +51,56 @@ base_names=(
     base06
 )
 
-for padded_value in `seq -w 0 21`; do
+# Use tput colors to get the exact ones
+for padded_value in $(seq -w 0 15); do
     # non_paded_value=10 if padded_value == 10; 02 if padded_value == 2
     non_padded_value=$((10#$padded_value))
     # current_color=#ea51b2
     current_color=${color_list[$non_padded_value]}
     # base16_color_name="base0B"
     base16_color_name=${base_names[$non_padded_value]}
-    # current_color_label="color02" or "unknown"
-    current_color_label=${current_color:-unknown}
+    # hex_label="color02" or "unknown"
+    hex_label=${current_color:-unknown}
     # ansi_label="Green"
     ansi_label=${ansi_mappings[$non_padded_value]}
+    # Background color
+    fc=$(tput setaf $non_padded_value)
+    # Foreground color
+    bc=$(tput setab $non_padded_value)
     # block=<tput setb 2>
-    block=$(printf "$ESC_B${non_padded_value}m_______________________")
+    block=$(printf "${bc}${fc}_______$r")
     # foreground<tput setf 2>${color_variable}
-    foreground=$(printf "$ESC_F${non_padded_value}m$color_variable")
-    printf "%s%s %s$RES_C %-30s %s%s\x1b[0m\n" \
+    printf "color%-2s %s %s %s %s\n" \
+           $non_padded_value \
            $base16_color_name \
-           $foreground \
-           $current_color_label \
-           ${ansi_label:-""} \
-           $foreground \
-           $block;
-done;
+           $hex_label \
+           $block \
+           ${ansi_label:-""}
+done
+
+# Use tput colors to get look-alikes ones
+for padded_value in $(seq -w 16 21); do
+    # non_paded_value=10 if padded_value == 10; 02 if padded_value == 2
+    non_padded_value=$((10#$padded_value))
+    # current_color=#ea51b2
+    current_color=${color_list[$non_padded_value]}
+    # base16_color_name="base0B"
+    base16_color_name=${base_names[$non_padded_value]}
+    # hex_label="color02" or "unknown"
+    hex_label=${current_color:-unknown}
+    # ansi_label="Green"
+    ansi_label=${ansi_mappings[$non_padded_value]}
+    # Foreground color
+    fc=$($htc -f $hex_label)
+    # Background color
+    bc=$($htc -b $hex_label)
+    # block=<tput setb 2>
+    block=$(printf "${bc}${fc}_______$r")
+    # foreground<tput setf 2>${color_variable}
+    printf "color%-2s %s %s %s %s\n" \
+           $non_padded_value \
+           $base16_color_name \
+           $hex_label \
+           $block \
+           ${ansi_label:-""}
+done

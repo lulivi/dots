@@ -12,12 +12,11 @@
 ##   -r                   Restore local files from the repository
 ##
 
-# set -e
-
 SCRIPT_NAME="$(basename ${0})"
 SCRIPT_PATH="$(dirname ${0})"
 
 usage() {
+    [[ -n "$1" ]] && printf '\n%s\n' "$1"
     grep -e "^##" $SCRIPT_PATH/$SCRIPT_NAME | \
         sed -e "s/^## \{0,1\}//g" \
             -e "s/\${SCRIPT_NAME}/${SCRIPT_NAME}/g"
@@ -30,20 +29,22 @@ exit_error () {
     exit 1
 }
 
-# Boolean variable to show if the script is restoring or backing up
-declare RESTORE
-# Boolean variable to show only file updates
-declare ONLY_UPDATES
-
 while getopts "hf:ru" args; do
     case "${args}" in
-        (h) usage 2>&1;;
-        (f) file_list="${OPTARG}";;
-        (r) RESTORE=true;;
-        (u) ONLY_UPDATES=true;;
-        (--) shift; break;;
-        (-*) usage "$1: unknown option";;
-        (*) break;;
+        (h) # Display help
+            usage 2>&1;;
+        (f) # Specified file liest
+            file_list="${OPTARG}";;
+        (r) # Inverse backup
+            RESTORE=true;;
+        (u)
+            ONLY_UPDATES=true;;
+        (--)
+            shift; break;;
+        (-*)
+            usage "$1: unknown option";;
+        (*)
+            break;;
     esac
 done
 shift $((OPTIND-1))
@@ -142,7 +143,11 @@ for (( i=0; i<$file_list_len; ++i)); do
                     || ! -f $source_file ]] && {
                  printf '%s' "$g[NOT UPDATING]$cl"
              } || {
-                 printf '%s' "$r[UPDATING]$cl"
+                 [ -f "$target_file" ] && {
+                     printf '%s' "$r[UPDATING]$cl"
+                 } || {
+                     printf '%s' "$r[MISSING-COPYING]$cl"
+                 }
              })
 
         cp --update $source_file $target_file
@@ -172,3 +177,4 @@ for (( i=0; i<$file_list_len; ++i)); do
 
 done
 
+printf "\nDone!\n"
