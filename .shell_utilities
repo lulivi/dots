@@ -20,6 +20,9 @@ alias graphic_card_in_use="glxinfo|egrep \"OpenGL vendor|OpenGL renderer*\""
 alias matrix="cmatrix -b -a -u 2 -C yellow"
 alias tubes="pipes -p 20 -s 15 -r 0 -R"
 
+alias reload_bspwm="~/.config/bspwm/bspwmrc 2>&1 1>/dev/null"
+alias cal_notif="~/scripts/calendar.sh"
+
 ## Work
 
 alias vpn_ugr="sudo openconnect vpn2.ugr.es"
@@ -53,6 +56,3 @@ alias g="git"
 export EDITOR="emacs"
 export XDG_CONFIG_HOME="$HOME/.config"
 export SXHKD_SHELL='/usr/bin/sh'
-
-
-# LD_PRELOAD=/usr/lib/libcurl.so.3:$HOME/.spotify_wrapper/spotifywm.so /usr/share/spotify/spotify

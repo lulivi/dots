@@ -3,6 +3,7 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        comment-line
         drag-stuff-right
         end-of-visual-line
         indent-for-tab-command

@@ -8,12 +8,15 @@
 
 #define FONT         Fira Code
 #define FONT_SIZE    11
-#define INNER_PAD    15
+#define INNER_PAD    10
 #define BORDER_WIDTH 10
+#define WINDOW_GAP   10
 #define background_opacity 95
 
-*.font:         FONT FONT_SIZE
+*.font:         FONT
+*.font_size:    FONT_SIZE
 *.border_width: BORDER_WIDTH
+*.window_gap:   WINDOW_GAP
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Colors

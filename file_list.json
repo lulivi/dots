@@ -51,7 +51,7 @@
         "dir":".config/dunst",
         "files":[
             "dunstrc",
-            "dunstrc_xr_themed"
+            "dunstrc_xr_colors"
         ]
     },
     {
@@ -80,6 +80,13 @@
         "dir":".config/htop",
         "files":[
             "htoprc"
+        ]
+    },
+    {
+        "name":"polybar",
+        "dir":".config/polybar",
+        "files":[
+            "config"
         ]
     },
     {

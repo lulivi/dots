@@ -40,7 +40,6 @@ Emacs will need a complete restart to clean them.
 ; Easy access files
 (setq emacsd  (expand-file-name "~/.emacs.d"))
 (setq git     (expand-file-name "~/git"))
-(setq scripts (expand-file-name "~/scripts"))
 (setq etsiit  (expand-file-name "/mnt/Data/Mega/ETSIIT/17-18/2cuatrimestre"))
 (setq config  (expand-file-name "~/.config"))
 
@@ -68,9 +67,9 @@ Emacs will need a complete restart to clean them.
 (defun conf/dunst ()
   (interactive)
   (find-file (format "%s/%s" config "dunst/dunstrc")))
-(defun git/ ()
+(defun conf/polybar ()
   (interactive)
-  (find-file git))
+  (find-file (format "%s/%s" config "polybar/config")))
 (defun etsiit/ ()
   (interactive)
   (find-file etsiit))
