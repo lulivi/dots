@@ -110,7 +110,7 @@ latex/.latexmkrc -> ~/.latexmkrc
 # Fonts
 #
 fonts/FiraCode -> ~/.fonts/FiraCode
-fonts/Font-Awesome -> ~/.fonts/Font-Awesome
+fonts/FontAwesome -> ~/.fonts/FontAwesome
 
 #
 # Themes
