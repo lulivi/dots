@@ -1,9 +1,0 @@
-[user]
-	name = lulivi
-	email = luislivilla@gmail.com
-[core]
-	editor = nano
-[alias]
- 	pl = pull --rebase
-	s  = status
-	ss = status -s
