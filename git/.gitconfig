@@ -2,7 +2,7 @@
 	name = lulivi
 	email = luislivilla@gmail.com
 [core]
-	editor = emacs
+	editor = nano
 [alias]
  	pl = pull --rebase
         c  = clone
