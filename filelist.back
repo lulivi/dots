@@ -1,0 +1,118 @@
+# This file is inspired in https://github.com/bebehei/df/blob/master/deployment
+#
+# File format line:
+#
+#     repo/path/file -> home/path/file
+#
+# Example:
+#
+#     scripts/lock.sh -> ~/scripts/lock.sh
+#
+
+#
+# Scripts
+#
+scripts/calendar.sh -> ~/scripts/calendar.sh
+scripts/colortrans.py -> ~/scripts/colortrans.py
+scripts/dec_to_hex.sh -> ~/scripts/dec_to_hex.sh
+scripts/dunst_xr_theme_changer.sh -> ~/scripts/dunst_xr_theme_changer.sh
+scripts/hex_dec_color.sh -> ~/scripts/hex_dec_color.sh
+scripts/kb-light.py -> ~/scripts/kb-light.py
+scripts/latex_doc_copy.sh -> ~/scripts/latex_doc_copy.sh
+scripts/lock.sh -> ~/scripts/lock.sh
+scripts/pandoc_doc_copy.sh -> ~/scripts/pandoc_doc_copy.sh
+scripts/session.sh -> ~/scripts/session.sh
+scripts/show_keypress.sh -> ~/scripts/show_keypress.sh
+scripts/show_sxhkd_keybindings.sh -> ~/scripts/show_sxhkd_keybindings.sh
+scripts/status.sh -> ~/scripts/status.sh
+scripts/tput_clock.sh -> ~/scripts/tput_clock.sh
+scripts/tput_colors.sh -> ~/scripts/tput_colors.sh
+scripts/wm_selector.sh -> ~/scripts/wm_selector.sh
+scripts/xr_color_scheme.sh -> ~/scripts/xr_color_scheme.sh
+scripts/xr_theme_changer.sh -> ~/scripts/xr_theme_changer.sh
+scripts/xr_wrapper_reloader.sh -> ~/scripts/xr_wrapper_reloader.sh
+
+#
+# Git
+#
+git/.gitconfig -> ~/.gitconfig
+git/.bash-git-prompt -> ~/.bash-git-prompt
+git/.diff-so-fancy -> ~/.diff-so-fancy
+
+#
+# Emacs
+#
+emacs/init.el -> ~/.emacs.d/init.el
+emacs/config.org -> ~/.emacs.d/config.org
+emacs/.mc-lists.el -> ~/.emacs.d/.mc-lists.el
+
+#
+# Bspwm
+#
+bspwm/autostart.sh -> ~/.config/bspwm/autostart.sh
+bspwm/bspwmrc -> ~/.config/bspwm/bspwmrc
+
+#
+# Sxhkd
+#
+sxhkd/sxhkdrc -> ~/.config/sxhkd/sxhkdrc
+
+#
+# Dunst
+#
+dunst/dunstrc -> ~/.config/dunst/dunstrc
+dunst/dunstrc_xr_colors -> ~/.config/dunst/dunstrc_xr_colors
+dunst/launch_dunst.sh -> ~/.config/dunst/launch_dunst.sh
+
+#
+# Compton
+#
+compton/compton.conf -> ~/.config/compton/compton.conf
+
+#
+# Shell
+#
+shell/.shell_utilities -> ~/.shell_utilities
+shell/bash/.bashrc -> ~/.bashrc
+shell/bash/.bash_profile -> ~/.bash_profile
+shell/fish/config.fish -> ~/.config/fish/config.fish
+shell/fish/fishfile -> ~/.config/fish/fishfile
+
+#
+# Pcmanfm
+#
+filemanager/pcmanfm/pcmanfm.conf -> ~/.config/pcmanfm/default/pcmanfm.conf
+
+#
+# Htop
+#
+top/htop/htoprc -> ~/.config/htop/htoprc
+
+#
+# Polybar
+#
+polybar/config -> ~/.config/polybar/config
+
+#
+# Xresources
+#
+xresources/.Xresources.src -> ~/.Xresources.src
+xresources/.Xresources.edit -> ~/.Xresources.edit
+xresources/.Xresources.theme -> ~/.Xresources.theme
+xresources/.Xresources -> ~/.Xresources
+
+#
+# Latex
+#
+latex/.latexmkrc -> ~/.latexmkrc
+
+#
+# Fonts
+#
+fonts/FiraCode -> ~/.fonts/FiraCode
+fonts/Font-Awesome -> ~/.fonts/Font-Awesome
+
+#
+# Themes
+#
+themes/base16-xresources -> ~/.themes/base16-xresources

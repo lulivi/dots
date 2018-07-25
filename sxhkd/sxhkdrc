@@ -1,0 +1,218 @@
+#!/usr/bin/env bash
+
+#  .d8888b.  Y88b   d88P 888    888 888    d8P  8888888b.
+# d88P  Y88b  Y88b d88P  888    888 888   d8P   888  "Y88b
+# Y88b.        Y88o88P   888    888 888  d8P    888    888
+#  "Y888b.      Y888P    8888888888 888d88K     888    888
+#     "Y88b.    d888b    888    888 8888888b    888    888
+#       "888   d88888b   888    888 888  Y88b   888    888
+# Y88b  d88P  d88P Y88b  888    888 888   Y88b  888  .d88P
+#  "Y8888P"  d88P   Y88b 888    888 888    Y88b 8888888P"
+
+## make sxhkd reload its configuration files:
+super + Escape
+    pkill -USR1 -x sxhkd
+
+# 8888888b.  8888888b.   .d88888b.   .d8888b.   .d8888b.
+# 888   Y88b 888   Y88b d88P" "Y88b d88P  Y88b d88P  Y88b
+# 888    888 888    888 888     888 888    888 Y88b.
+# 888   d88P 888   d88P 888     888 888         "Y888b.
+# 8888888P"  8888888P"  888     888 888  88888     "Y88b.
+# 888        888 T88b   888     888 888    888       "888
+# 888        888  T88b  Y88b. .d88P Y88b  d88P Y88b  d88P
+# 888        888   T88b  "Y88888P"   "Y8888P88  "Y8888P"
+
+## Terminal emulator
+super + Return
+    urxvt
+
+## Program launcher
+super + @space
+    rofi -show
+
+## File manager
+super + e
+    pcmanfm
+
+## Screenshooter
+Print
+    xfce4-screenshooter
+
+## Lock screen
+super + x
+    "$HOME/scripts/lock.sh"
+
+# 888     888 88888888888 8888888 888       .d8888b.
+# 888     888     888       888   888      d88P  Y88b
+# 888     888     888       888   888      Y88b.
+# 888     888     888       888   888       "Y888b.
+# 888     888     888       888   888          "Y88b.
+# 888     888     888       888   888            "888
+# Y88b. .d88P     888       888   888      Y88b  d88P
+#  "Y88888P"      888     8888888 88888888  "Y8888P"
+
+## Screen Light
+XF86MonBrightness{Down,Up}
+    xbacklight -{dec,inc} 10
+
+## Kdb Light
+XF86KbdBrightness{Down,Up}
+    $HOME/scripts/kb-light.py --{down,up};
+
+## Audio volume
+XF86Audio{LowerVolume,RaiseVolume}
+    amixer set Master {5-,5+}
+
+XF86AudioMute
+    amixer set Master {0,50}
+
+## Audio controller
+XF86Audio{Play,Stop,Prev,Next}
+    playerctl {play-pause,stop,previous,next}
+
+# 888888b.    .d8888b.  8888888b.  888       888 888b     d888
+# 888  "88b  d88P  Y88b 888   Y88b 888   o   888 8888b   d8888
+# 888  .88P  Y88b.      888    888 888  d8b  888 88888b.d88888
+# 8888888K.   "Y888b.   888   d88P 888 d888b 888 888Y88888P888
+# 888  "Y88b     "Y88b. 8888888P"  888d88888b888 888 Y888P 888
+# 888    888       "888 888        88888P Y88888 888  Y8P  888
+# 888   d88P Y88b  d88P 888        8888P   Y8888 888   "   888
+# 8888888P"   "Y8888P"  888        888P     Y888 888       888
+
+## Restart bspwm
+super + control + r
+    $HOME/.config/bspwm/bspwmrc &>/dev/null
+
+## quit bspwm normally
+super + alt + Escape
+    bspc quit
+
+## close and kill
+super + {_,shift + }c
+    bspc node -{c,k}
+
+## alternate between the tiled and monocle layout
+super + m
+    bspc desktop -l next
+
+## send the newest marked node to the newest preselected node
+super + y
+    bspc node newest.marked.local -n newest.!automatic.local
+
+## swap the current node and the biggest node
+super + g
+    bspc node -s biggest
+
+
+#  .dP"Y8 888888    db    888888 888888        dP
+#  `Ybo."   88     dPYb     88   88__         dP
+#  o.`Y8b   88    dP__Yb    88   88""        dP
+#  8bodP'   88   dP""""Yb   88   888888     dP
+#
+#  888888 88        db     dP""b8 .dP"Y8
+#  88__   88       dPYb   dP   `" `Ybo."
+#  88""   88  .o  dP__Yb  Yb  "88 o.`Y8b
+#  88     88ood8 dP""""Yb  YboodP 8bodP'
+
+## Toggle beetwen floating & tiled
+alt + @space
+    bspc node -t "~"{floating,tiled}
+
+## set the window state
+super + {t,shift + t,s,f}
+    bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
+
+## set the node flags
+super + ctrl + {m,x,y,z}
+    bspc node -g {marked,locked,sticky,private}
+
+#  888888  dP"Yb   dP""b8 88   88 .dP"Y8        dP
+#  88__   dP   Yb dP   `" 88   88 `Ybo."       dP
+#  88""   Yb   dP Yb      Y8   8P o.`Y8b      dP
+#  88      YbodP   YboodP `YbodP' 8bodP'     dP
+#
+#  .dP"Y8 Yb        dP    db    88""Yb
+#  `Ybo."  Yb  db  dP    dPYb   88__dP
+#  o.`Y8b   YbdPYbdP    dP__Yb  88"""
+#  8bodP'    YP  YP    dP""""Yb 88
+
+## focus the node in the given direction
+super + {_,shift + }{h,j,k,l}
+    bspc node -{f,s} {west,south,north,east}
+
+# ## focus the node for the given path jump
+# super + {p,b,comma,period}
+#     bspc node -f @{parent,brother,first,second}
+
+## focus the next/previous node in the current desktop
+super + {n,p}
+    bspc node -f {next,prev}.local
+
+## focus the next/previous desktop in the current monitor
+super + {Left,Right}
+    bspc desktop -f {prev,next}.local
+
+## focus the last node/desktop
+super + {grave,Tab}
+    bspc {node,desktop} -f last
+
+## focus the older or newer node in the focus history
+super + {o,i}
+    bspc wm -h off; \
+    bspc node {older,newer} -f; \
+    bspc wm -h on
+
+## focus or send to the given desktop
+super + {_,shift + }{1-9,0}
+    bspc {desktop -f,node -d} '^{1-9,10}'
+
+super + alt + {1-4}
+    bspc desktop -f '^{4-7}'
+
+#  88""Yb 88""Yb 888888 .dP"Y8 888888 88     888888  dP""b8 888888
+#  88__dP 88__dP 88__   `Ybo." 88__   88     88__   dP   `"   88
+#  88"""  88"Yb  88""   o.`Y8b 88""   88  .o 88""   Yb        88
+#  88     88  Yb 888888 8bodP' 888888 88ood8 888888  YboodP   88
+
+# ## preselect the direction
+# super + ctrl + {h,j,k,l}
+#         bspc node -p {west,south,north,east}
+
+# ## preselect the ratio
+# super + ctrl + {1-9}
+#         bspc node -o 0.{1-9}
+
+## cancel the preselection for the focused node
+super + ctrl + space
+    bspc node -p cancel
+
+## cancel the preselection for the focused desktop
+super + ctrl + shift + space
+    bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
+
+#  8b    d8  dP"Yb  Yb    dP 888888        dP
+#  88b  d88 dP   Yb  Yb  dP  88__         dP
+#  88YbdP88 Yb   dP   YbdP   88""        dP
+#  88 YY 88  YbodP     YP    888888     dP
+#
+#  88""Yb 888888 .dP"Y8 88 8888P 888888
+#  88__dP 88__   `Ybo." 88   dP  88__
+#  88"Yb  88""   o.`Y8b 88  dP   88""
+#  88  Yb 888888 8bodP' 88 d8888 888888
+
+# ## expand a window by moving one of its side outward
+# super + alt + {h,j,k,l}
+#         bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
+
+# ## contract a window by moving one of its side inward
+# super + alt + shift + {h,j,k,l}
+#         bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
+
+## Expanding Windows
+super + control + {Left,Right,Up,Down}
+    bspc node -z {left -20 0,right 20 0,top 0 -20,bottom 0 20}
+
+## Shrinking Windows
+super + alt + {Left,Right,Up,Down}
+    bspc node -z {left 20 0,right -20 0,top 0 20,bottom 0 -20}
+
