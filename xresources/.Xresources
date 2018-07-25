@@ -91,6 +91,7 @@ urxvt*depth: 32
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 emacs.font: Fira Code-11
 emacs.background: #2b303b
+emacs*toolBar: 0
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Rofi

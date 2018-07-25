@@ -84,6 +84,7 @@ urxvt*depth: 32
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 emacs.font:             FONT-FONT_SIZE
 emacs.background:       base00
+emacs*toolBar:          0
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Rofi
