@@ -11,6 +11,7 @@
 [submodule "fonts/FontAwesome"]
 	path = fonts/FontAwesome
 	url = git@github.com:FortAwesome/Font-Awesome.git
+	ignore = dirty
 [submodule "themes/base16-xresources"]
 	path = themes/base16-xresources
 	url = git@github.com:chriskempson/base16-xresources.git
