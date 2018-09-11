@@ -164,11 +164,20 @@ Emacs will need a complete restart to clean them.
 *** Python mode
 
 #+BEGIN_SRC emacs-lisp
-(use-package python-mode
+(use-package elpy
   :ensure t
   :config
-  (add-hook 'python-mode-hook 'python-mode)
+  (add-hook 'python-mode-hook 'elpy-enable)
 )
+(use-package flycheck
+  :ensure t)
+(when (require 'flycheck nil t)
+  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+  (add-hook 'elpy-mode-hook 'flycheck-mode))
+(use-package py-autopep8
+  :ensure t
+  :config
+  (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save))
 #+END_SRC
 
 
