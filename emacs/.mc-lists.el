@@ -17,6 +17,9 @@
         org-cycle
         org-self-insert-command
         overwrite-mode
+        py-electric-colon
+        py-electric-delete
+        py-indent-or-complete
         sh-assignment
         ))
 

@@ -175,7 +175,7 @@ radius = 0
 ; over-line-size = 3
 ; over-line-color = #fff ;${color.background}
 ; overline-size = 3
-
+nnn
 underline-size = ${settings.line-size}
 
 ; line-size = 3
@@ -208,7 +208,7 @@ module-margin-right = 1
 ;   font-3 = FontAwesome:size=10
 ; See the Fonts wiki page for more details
 font-0 = Fira Code:size=11;2
-font-1 = Font Awesome 5 Free Solid:style=Solid:size=10;2
+font-1 = Font Awesome 5 Free:pixelsize=10;0
 
 ; Modules are added to one of the available blocks
 ;   modules-left = cpu ram
@@ -216,7 +216,7 @@ font-1 = Font Awesome 5 Free Solid:style=Solid:size=10;2
 ;   modules-right = ipc clock
 modules-left = bspwm
 modules-center = date
-modules-right = backlight volume battery powermenu ;wlan eth
+modules-right = backlight volume battery wlan eth
 
 ; The separator will be inserted between the output of each module
 separator =
@@ -352,8 +352,8 @@ fuzzy-match = true
 ; ws-icon-[0-9]+ = label;icon
 ; Note that the label needs to correspond with the bspwm workspace name
 ws-icon-0 = I;
-ws-icon-1 = II;
-ws-icon-2 = III;♟
+ws-icon-1 = II;
+ws-icon-2 = III;
 ws-icon-3 = IV;♟
 ws-icon-4 = V;♟
 ws-icon-5 = VI;♟
@@ -361,7 +361,8 @@ ws-icon-6 = VII;♟
 ws-icon-7 = VIII;♟
 ; ws-icon-8 = IX
 ; ws-icon-9 = X
-ws-icon-default = 
+ws-icon-default = 
+ws-icon-font = 1
 
 ; Available tags:
 ;   <label-monitor>
@@ -369,8 +370,8 @@ ws-icon-default = 
 ;   <label-mode> - gets replaced with <label-(monocle|tiled|fullscreen|floating|locked|sticky|private)>
 ; Default: <label-state>
 format = <label-state> <label-mode>
-format-prefix = "["
-format-suffix = "]"
+format-prefix = "[ "
+format-suffix = " ]"
 
 ; Available tokens:
 ;   %name%
@@ -397,7 +398,7 @@ label-focused = %name%
 label-focused-foreground = ${colors.foreground-alt}
 label-focused-background = ${colors.background}
 label-focused-underline = ${colors.line-color}
-label-focused-padding = 1
+label-focused-padding = 0
 
 ; Available tokens:
 ;   %name%
@@ -406,7 +407,7 @@ label-focused-padding = 1
 ; Default: %icon%  %name%
 label-occupied = %name%
 label-occupied-foreground = ${colors.foreground}
-label-occupied-padding = 1
+label-occupied-padding = 0
 
 
 ; Available tokens:
@@ -416,7 +417,7 @@ label-occupied-padding = 1
 ; Default: %icon%  %name%
 label-urgent = %name%!
 label-urgent-background = ${colors.red}
-label-urgent-padding = 1
+label-urgent-padding = 0
 
 
 ; Available tokens:
@@ -426,7 +427,7 @@ label-urgent-padding = 1
 ; Default: %icon%  %name%
 label-empty = %name%
 label-empty-foreground = ${xrdb:color19:#444}
-label-empty-padding = 1
+label-empty-padding = 0
 
 ; The following labels will be used to indicate the layout/mode
 ; for the focused workspace. Requires <label-mode>
@@ -446,9 +447,9 @@ label-empty-padding = 1
 ;label-private-foreground = #bd2c40
 
 ; Separator in between workspaces
-label-separator = |
-label-separator-padding = 2
-label-separator-foreground = #ffb52a
+label-separator = "|"
+label-separator-padding = 1
+label-separator-foreground = ${colors.foreground}
 
 ; [module/mpd]
 ; type = internal/mpd
@@ -523,10 +524,10 @@ type = internal/network
 interface = wlp2s0
 interval = 3.0
 
-format-prefix = "[ "
-format-suffix = " ]"
+format-connected-prefix = "[ "
+format-connected-suffix = " ]"
 
-format-connected = <ramp-signal> <label-connected>
+format-connected = <label-connected>
 format-connected-underline = ${colors.line-color}
 label-connected = %essid%
 
@@ -558,8 +559,9 @@ interface = enp3s0f1
 interval = 3.0
 
 format-connected-underline = ${colors.line-color}
-format-connected-prefix = " "
+format-connected-prefix ="[ "
 format-connected-prefix-foreground = ${colors.foreground-alt}
+format-connected-suffix = " ]"
 label-connected = %local_ip%
 
 format-disconnected =
@@ -622,7 +624,7 @@ label-foreground = ${colors.foreground}
 ;    Y888P    Y88b. .d88P 888      Y88b. .d88P 888   "   888 888
 ;     Y8P      "Y88888P"  88888888  "Y88888P"  888       888 8888888888
 
-type = internal/volume
+type = internal/alsa
 
 ; Soundcard to be used
 ; Usually in the format hw:# where # is the card number
@@ -686,8 +688,8 @@ label-muted =  muted
 label-muted-foreground = #66
 
 ; Only applies if <ramp-volume> is used
-ramp-volume-1 = 
-ramp-volume-2 = 
+ramp-volume-0 = 
+ramp-volume-1 = 
 
 ; If defined, it will replace <ramp-volume> when
 ; headphones are plugged in to `headphone_control_numid`
