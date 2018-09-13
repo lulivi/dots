@@ -31,6 +31,8 @@ scripts/wm_selector.sh -> ~/scripts/wm_selector.sh
 scripts/xr_color_scheme.sh -> ~/scripts/xr_color_scheme.sh
 scripts/xr_theme_changer.sh -> ~/scripts/xr_theme_changer.sh
 scripts/xr_wrapper_reloader.sh -> ~/scripts/xr_wrapper_reloader.sh
+scripts/xrandr_scrn_right.sh -> ~/.screenlayout/xrandr_scrn_right.sh
+scripts/xrandr_scrn_duplicated.sh -> ~/.screenlayout/xrandr_scrn_duplicated.sh
 
 #
 # Git
