@@ -49,6 +49,11 @@ emacs/config.org -> ~/.emacs.d/config.org
 emacs/.mc-lists.el -> ~/.emacs.d/.mc-lists.el
 
 #
+# Neo Vim
+#
+nvim/init.vim -> ~/.config/nvim/init.vim
+
+#
 # Bspwm
 #
 bspwm/autostart.sh -> ~/.config/bspwm/autostart.sh
