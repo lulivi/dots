@@ -4,6 +4,7 @@
 
 fisher edc/bass; clear
 bass source ~/.shell_utilities
+#bass source ~/.profile
 
 ######################################
 #         Path Manipulation          #
@@ -144,13 +145,13 @@ function fish_prompt
         end
 
         set STATUS "$STATUS$GIT_PROMPT_SEPARATOR"
-	
+
 	set GIT_PROMPT_FIRST "1"
 
 	if [ "$GIT_CLEAN" = "1" ]
             set STATUS "$STATUS$GIT_PROMPT_CLEAN"
 	end
-	
+
         if [ $GIT_STAGED != "0" ]
 	    set GIT_PROMPT_FIRST "0"
             set STATUS "$STATUS$GIT_PROMPT_STAGED$GIT_STAGED$ResC"
@@ -159,7 +160,7 @@ function fish_prompt
         if [ $GIT_CONFLICTS != "0" ]
 	    if [ $GIT_PROMPT_FIRST = "0" ]
 	       set STATUS "$STATUS$GIT_PROMPT_SEP"
-	    else 
+	    else
 	        set GIT_PROMPT_FIRST "0"
 	    end
             set STATUS "$STATUS$GIT_PROMPT_CONFLICTS$GIT_CONFLICTS$ResC"
@@ -168,7 +169,7 @@ function fish_prompt
         if [ $GIT_CHANGED != "0" ]
 	    if [ $GIT_PROMPT_FIRST = "0" ]
 	       set STATUS "$STATUS$GIT_PROMPT_SEP"
-	    else 
+	    else
 	        set GIT_PROMPT_FIRST "0"
 	    end
             set STATUS "$STATUS$GIT_PROMPT_CHANGED$GIT_CHANGED$ResC"
@@ -177,7 +178,7 @@ function fish_prompt
         if [ "$GIT_UNTRACKED" != "0" ]
 	    if [ $GIT_PROMPT_FIRST = "0" ]
 	       set STATUS "$STATUS$GIT_PROMPT_SEP"
-	    else 
+	    else
 	        set GIT_PROMPT_FIRST "0"
 	    end
             set STATUS "$STATUS$GIT_PROMPT_UNTRACKED$GIT_UNTRACKED$ResC"
@@ -186,7 +187,7 @@ function fish_prompt
         if [ "$GIT_STASHED" != "0" ]
 	    if [ $GIT_PROMPT_FIRST = "0" ]
 	       set STATUS "$STATUS$GIT_PROMPT_SEP"
-	    else 
+	    else
 	        set GIT_PROMPT_FIRST "0"
 	    end
             set STATUS "$STATUS$GIT_PROMPT_STASHED$GIT_STASHED$ResC"

@@ -1,24 +1,24 @@
 [user]
-	name = lulivi
-	email = luislivilla@gmail.com
+    name = lulivi
+    email = luislivilla@gmail.com
 [core]
-	editor = nano
+    editor = nano
 [alias]
- 	pl = pull --rebase
-        c  = clone
-	s  = status
-	ss = status -s
-        d  = diff
-        dc = diff --cached
+    pullr = pull --rebase
+    c  = clone
+    s  = status
+    ss = status -s
+    d  = diff
+    dc = diff --cached
 # [color "diff-highlight"]
-# 	oldNormal = red
-# 	oldHighlight = red bold 52
-# 	newNormal = green
+#   oldNormal = red
+#   oldHighlight = red bold 52
+#   newNormal = green
 #       newHighlight = green bold 22
 # [color "diff"]
-# 	meta = yellow bold
-# 	commit = yellow bold
-# 	frag = magenta bold
-# 	old = red bold
-# 	new = green bold
+#   meta = yellow bold
+#   commit = yellow bold
+#   frag = magenta bold
+#   old = red bold
+#   new = green bold
 #       whitespace = red reverse
