@@ -1,7 +1,20 @@
+" Syntax colors
 syntax on
+
+" Line numbers
 set number
+nmap <C-N><C-N> :set invnumber<CR>
+
+" Tabs
+set expandtab
+set tabstop=4
+set shiftwidth=4
+
+" 80 column mark
 set colorcolumn=80
 highlight ColorColumn ctermbg=gray
+
+" Scroll wheel navigating
 map <ScrollWheelUp> <C-Y>
 map <ScrollWheelDown> <C-E>
 
