@@ -52,27 +52,9 @@ Emacs will need a complete restart to clean them.
 (defun em/init ()
   (interactive)
   (find-file (format "%s/%s" emacsd "init.el")))
-(defun conf/fish ()
+(defun conf/ ()
   (interactive)
-  (find-file (format "%s/%s" config "fish/config.fish")))
-(defun conf/bspwm ()
-  (interactive)
-  (find-file (format "%s/%s" config "bspwm/bspwmrc")))
-(defun conf/sxhkd ()
-  (interactive)
-  (find-file (format "%s/%s" config "sxhkd/sxhkdrc")))
-(defun conf/compton ()
-  (interactive)
-  (find-file (format "%s/%s" config "compton/compton.conf")))
-(defun conf/dunst ()
-  (interactive)
-  (find-file (format "%s/%s" config "dunst/dunstrc")))
-(defun conf/polybar ()
-  (interactive)
-  (find-file (format "%s/%s" config "polybar/config")))
-(defun etsiit/ ()
-  (interactive)
-  (find-file etsiit))
+  (find-file config))
 #+End_SRC
 
 
@@ -81,13 +63,15 @@ Emacs will need a complete restart to clean them.
 ** Basic config
 
 #+BEGIN_SRC emacs-lisp
+(setq user-full-nale "Luis Liñán")
+(setq user-mail-address "luislivilla@gmail.com")
 (setq initial-buffer-choice "~/git/")
 (setq tab-width 4)
 (set-face-attribute 'default t
   :font "Fira Code")
 (setq visual-line-mode t)
-(set-frame-parameter (selected-frame) 'alpha '(95))
-(add-to-list 'default-frame-alist '(alpha 95))
+;(set-frame-parameter (selected-frame) 'alpha '(95))
+;(add-to-list 'default-frame-alist '(alpha 95))
 (put 'upcase-region 'disabled nil)
 #+END_SRC
 

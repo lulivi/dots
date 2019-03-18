@@ -37,16 +37,16 @@ function fish_greeting
     set -l y (set_color yellow)
     set -l n (set_color normal)
 
-    echo $r"                  "$b"    __           __   "$n
-    echo $r"      <><         "$b"   /o \/        /o \/ "$n
-    echo $r"<><      <><      "$b"   \__/\    __  \__/\ "$n
-    echo $r" <><  <><    <><  "$b"           /o \/   __   "$n
-    echo $r"   <><      <><   "$b"   __     _\__/\  /o \/ "$n
-    echo $r" <><   <><        "$b"  /o \/  /o \/    \__/\ "$n
-    echo $r"    <><           "$b"  \__/\  \__/\          "$n
-    echo "                                                "
-    echo "Wellcome to "$p"Fish"$n"-"$y"Shell$n, luvo!"
-    echo
+    printf '%s\n' $r"                  "$b"    __           __   "$n
+    printf '%s\n' $r"      <><         "$b"   /o \/        /o \/ "$n
+    printf '%s\n' $r"<><      <><      "$b"   \__/\    __  \__/\ "$n
+    printf '%s\n' $r" <><  <><    <><  "$b"           /o \/   __   "$n
+    printf '%s\n' $r"   <><      <><   "$b"   __     _\__/\  /o \/ "$n
+    printf '%s\n' $r" <><   <><        "$b"  /o \/  /o \/    \__/\ "$n
+    printf '%s\n' $r"    <><           "$b"  \__/\  \__/\          "$n
+    printf '%s\n' "                                                "
+    printf '%s\n' "Wellcome to "$p"Fish"$n"-"$y"Shell$n, luvo!"
+    printf '%s\n'
 end
 
 ######################################
@@ -60,7 +60,7 @@ function fish_prompt
 
     # Colors
     # Reset
-    set ResC (set_color normal)	# Text Reset
+    set ResC (set_color normal)  # Text Reset
 
     # Regular Colors
     set Red (set_color red)                 # Red
@@ -99,6 +99,7 @@ function fish_prompt
 
     set USER_PART "$B_S$Yellow$USER$ResC@$Red"(prompt_hostname)"$ResC$B_E"
     set TIME_PART "$B_S$PaleGreen$Time$ResC$B_E"
+
     set PROMPT_START "$TIME_PART $USER_PART $B_S$Yellow$PathShort$ResC$B_E"
 
     switch "$CurrentTTY"
@@ -146,50 +147,50 @@ function fish_prompt
 
         set STATUS "$STATUS$GIT_PROMPT_SEPARATOR"
 
-	set GIT_PROMPT_FIRST "1"
+        set GIT_PROMPT_FIRST "1"
 
-	if [ "$GIT_CLEAN" = "1" ]
-            set STATUS "$STATUS$GIT_PROMPT_CLEAN"
-	end
+        if [ "$GIT_CLEAN" = "1" ]
+                set STATUS "$STATUS$GIT_PROMPT_CLEAN"
+        end
 
         if [ $GIT_STAGED != "0" ]
-	    set GIT_PROMPT_FIRST "0"
+            set GIT_PROMPT_FIRST "0"
             set STATUS "$STATUS$GIT_PROMPT_STAGED$GIT_STAGED$ResC"
         end
 
         if [ $GIT_CONFLICTS != "0" ]
-	    if [ $GIT_PROMPT_FIRST = "0" ]
-	       set STATUS "$STATUS$GIT_PROMPT_SEP"
-	    else
-	        set GIT_PROMPT_FIRST "0"
-	    end
+            if [ $GIT_PROMPT_FIRST = "0" ]
+                set STATUS "$STATUS$GIT_PROMPT_SEP"
+            else
+                set GIT_PROMPT_FIRST "0"
+            end
             set STATUS "$STATUS$GIT_PROMPT_CONFLICTS$GIT_CONFLICTS$ResC"
         end
 
         if [ $GIT_CHANGED != "0" ]
-	    if [ $GIT_PROMPT_FIRST = "0" ]
-	       set STATUS "$STATUS$GIT_PROMPT_SEP"
-	    else
-	        set GIT_PROMPT_FIRST "0"
-	    end
+            if [ $GIT_PROMPT_FIRST = "0" ]
+                set STATUS "$STATUS$GIT_PROMPT_SEP"
+            else
+                set GIT_PROMPT_FIRST "0"
+            end
             set STATUS "$STATUS$GIT_PROMPT_CHANGED$GIT_CHANGED$ResC"
         end
 
         if [ "$GIT_UNTRACKED" != "0" ]
-	    if [ $GIT_PROMPT_FIRST = "0" ]
-	       set STATUS "$STATUS$GIT_PROMPT_SEP"
-	    else
-	        set GIT_PROMPT_FIRST "0"
-	    end
+            if [ $GIT_PROMPT_FIRST = "0" ]
+                set STATUS "$STATUS$GIT_PROMPT_SEP"
+            else
+                set GIT_PROMPT_FIRST "0"
+            end
             set STATUS "$STATUS$GIT_PROMPT_UNTRACKED$GIT_UNTRACKED$ResC"
         end
 
         if [ "$GIT_STASHED" != "0" ]
-	    if [ $GIT_PROMPT_FIRST = "0" ]
-	       set STATUS "$STATUS$GIT_PROMPT_SEP"
-	    else
-	        set GIT_PROMPT_FIRST "0"
-	    end
+            if [ $GIT_PROMPT_FIRST = "0" ]
+                set STATUS "$STATUS$GIT_PROMPT_SEP"
+            else
+                set GIT_PROMPT_FIRST "0"
+            end
             set STATUS "$STATUS$GIT_PROMPT_STASHED$GIT_STASHED$ResC"
         end
 

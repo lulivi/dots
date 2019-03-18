@@ -33,10 +33,12 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (flycheck use-package restart-emacs multiple-cursors markdown-toc magit lua-mode flymd drag-stuff clips-mode))))
+    (flycheck use-package restart-emacs multiple-cursors markdown-toc magit lua-mode flymd drag-stuff clips-mode)))
+ '(user-full-name "Luis Liñán")
+ '(user-mail-address "luislivilla@gmail.com"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
-)
+ )
