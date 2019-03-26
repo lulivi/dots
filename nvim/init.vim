@@ -12,7 +12,7 @@ set shiftwidth=4
 
 " 80 column mark
 set colorcolumn=80
-highlight ColorColumn ctermbg=gray
+highlight ColorColumn ctermbg=darkgray
 
 " Scroll wheel navigating
 map <ScrollWheelUp> <C-Y>
@@ -24,9 +24,15 @@ if empty(glob("~/.local/share/nvim/site/autoload/plug.vim"))
 endif
 
 call plug#begin('~/.vim/plugged')
+" Git wrapper
 Plug 'tpope/vim-fugitive'
+" Line up text
 Plug 'godlygeek/tabular'
+" Markdown stuff
 Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
+" Rename files
 Plug 'danro/rename.vim'
+" Project tree
+Plug 'scrooloose/nerdtree'
 call plug#end()
 
