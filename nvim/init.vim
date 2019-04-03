@@ -1,6 +1,10 @@
 " Syntax colors
 syntax on
 
+" Whitespaces
+set listchars=eol:$,tab:>-,trail:·,extends:>,precedes:<,space:· 
+set list
+
 " Line numbers
 set number
 nmap <C-N><C-N> :set invnumber<CR>

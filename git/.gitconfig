@@ -3,6 +3,7 @@
     email = luislivilla@gmail.com
 [core]
     editor = nano
+	excludesfile = /home/luis/.gitignore
 [alias]
     pullr = pull --rebase
     c  = clone

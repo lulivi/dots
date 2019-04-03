@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+readonly WORKING_DIR="$(pwd)"
+readonly CHANGELOG_FILE_NAME="${1:-logbook.log}"
+readonly CHANGELOG_FILE_PATH="${WORKING_DIR}/${CHANGELOG_FILE_NAME}"
+readonly CURRENT_DATE="$(date +%d/%m/%y)"
+
+if [ -w "$CHANGELOG_FILE_PATH" ]; then
+    printf 'Existe'
+fi
+
