@@ -1,11 +1,24 @@
 #!/usr/bin/env bash
+#
+# Add new log entry to logbook if existent. If not, create it before that.
 
-readonly WORKING_DIR="$(pwd)"
-readonly CHANGELOG_FILE_NAME="${1:-logbook.log}"
-readonly CHANGELOG_FILE_PATH="${WORKING_DIR}/${CHANGELOG_FILE_NAME}"
-readonly CURRENT_DATE="$(date +%d/%m/%y)"
+readonly CHANGELOG_FILE_NAME="$(realpath "${1:-logbook.log}")"
+readonly CHANGELOG_NEW_ENTRY_TEXT="$2"
+readonly CURRENT_DATE="$(date +%Y/%m/%d)"
 
-if [ -w "$CHANGELOG_FILE_PATH" ]; then
-    printf 'Existe'
-fi
+if [ -w "$CHANGELOG_FILE_PATH" ] && [ "$CHANGELOG_NEW_ENTRY_TEXT" ]; then
+
+    changelog_file_content="$(<"$CHANGELOG_FILE_PATH")"
+
+    if [[ "$CHANGELOG_FILE_CONTENT" =~ "$CURRENT_DATE" ]]; then
+        # TODO: Add te new entry after the current date line
+        # Se puede utilizar sed '/<pattern>/a \<inserted_text>' <file>
+    else
+        # TODO: Add the date line and the new entry
+        # Se puede utilizar sed '1i\<inserted_text>' <file>
+    fi
+
+else
+
+fi  
 
