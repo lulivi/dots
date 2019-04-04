@@ -7,7 +7,7 @@ set list
 
 " Line numbers
 set number
-nmap <C-N><C-N> :set invnumber<CR>
+nmap <C-N><C-N> :set invnu<CR>:set invlist<CR>
 
 " Tabs
 set expandtab
