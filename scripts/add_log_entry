@@ -2,23 +2,60 @@
 #
 # Add new log entry to logbook if existent. If not, create it before that.
 
-readonly CHANGELOG_FILE_NAME="$(realpath "${1:-logbook.log}")"
-readonly CHANGELOG_NEW_ENTRY_TEXT="$2"
-readonly CURRENT_DATE="$(date +%Y/%m/%d)"
+print_help() {
+    printf './%s [changelog_file_name] "<changelog_entry_text>"' "$0"
+}
 
-if [ -w "$CHANGELOG_FILE_PATH" ] && [ "$CHANGELOG_NEW_ENTRY_TEXT" ]; then
+readonly WORKING_DIR="$(pwd)"
+readonly DEFAULT_CHANGELOG_NAME="logbook.log"
+readonly ARGUMENTS=("${@}")
+readonly ARGUMENTS_NUMBER="${#ARGUMENTS[@]}"
+readonly CHANGELOG_HEADER=""$(date +%Y/%m/%d)" Luis Liñán <luislivilla@gmail.com>"
+readonly CHANGELOG_HEADER_REGEX='^'"$(date +%Y/%m/%d)"
 
-    changelog_file_content="$(<"$CHANGELOG_FILE_PATH")"
-
-    if [[ "$CHANGELOG_FILE_CONTENT" =~ "$CURRENT_DATE" ]]; then
-        # TODO: Add te new entry after the current date line
-        # Se puede utilizar sed '/<pattern>/a \<inserted_text>' <file>
-    else
-        # TODO: Add the date line and the new entry
-        # Se puede utilizar sed '1i\<inserted_text>' <file>
+if [ "$ARGUMENTS_NUMBER" -gt "2" ] || [ "$ARGUMENTS_NUMBER" -eq "0" ]; then
+    print_help
+    exit 1
+elif [ "2" -eq "$ARGUMENTS_NUMBER" ]; then
+    if [ -z "$2" ]; then
+        printf 'El texto no puede estar vacío'
+        exit 1
     fi
-
+    CHANGELOG_NAME="$1"
+    CHANGELOG_ENTRY="$2"
 else
+    if [ -z "$1" ]; then
+        printf 'El texto no puede estar vacío'
+        exit 1
+    fi
+    CHANGELOG_NAME="$DEFAULT_CHANGELOG_NAME"
+    CHANGELOG_ENTRY="$1"
+fi
 
-fi  
+CHANGELOG_ENTRY="* ${CHANGELOG_ENTRY}"
+CHANGELOG_FILE_PATH="${WORKING_DIR}/${CHANGELOG_NAME}"
 
+if ! [ -w "$CHANGELOG_FILE_PATH" ]; then
+    printf '%s\n- %s %s\n' 'Error:'\
+        "$CHANGELOG_FILE_PATH"\
+        'does not exists, or it is not writeable.'
+    exit 1
+fi
+
+printf 'Archivo de destino: %s\n' "$CHANGELOG_FILE_PATH"
+
+mapfile -n 1 file_header < "$CHANGELOG_FILE_PATH"
+
+if [[ "$file_header" =~ $CHANGELOG_HEADER_REGEX ]]; then
+    sed -i '1a\\n'"$CHANGELOG_ENTRY" "$CHANGELOG_FILE_PATH"
+    printf 'Nueva entrada añadida.\n'
+else
+    CHANGELOG_HEADER_PLUS_ENTRY="${CHANGELOG_HEADER}\n\n${CHANGELOG_ENTRY}\n"
+    if [ -z "$file_header" ]; then
+        printf '%s' "$CHANGELOG_HEADER_PLUS_ENTRY" > $CHANGELOG_FILE_PATH
+        printf 'Nueva cabecera y entrada añadida a archivo vacío.\n'
+    else
+        sed -i '1i\'"$CHANGELOG_HEADER_PLUS_ENTRY" $CHANGELOG_FILE_PATH
+        printf 'Nueva cabecera y entrada añadida.\n'
+    fi
+fi
