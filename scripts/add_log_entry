@@ -47,15 +47,16 @@ printf 'Archivo de destino: %s\n' "$CHANGELOG_FILE_PATH"
 mapfile -n 1 file_header < "$CHANGELOG_FILE_PATH"
 
 if [[ "$file_header" =~ $CHANGELOG_HEADER_REGEX ]]; then
-    sed -i '1a\\n'"$CHANGELOG_ENTRY" "$CHANGELOG_FILE_PATH"
+    sed -i '1 a\\n'"$CHANGELOG_ENTRY" "$CHANGELOG_FILE_PATH"
     printf 'Nueva entrada añadida.\n'
 else
-    CHANGELOG_HEADER_PLUS_ENTRY="${CHANGELOG_HEADER}\n\n${CHANGELOG_ENTRY}\n"
     if [ -z "$file_header" ]; then
-        printf '%s' "$CHANGELOG_HEADER_PLUS_ENTRY" > $CHANGELOG_FILE_PATH
+        printf '%s\n\n%s\n' "$CHANGELOG_HEADER" "$CHANGELOG_ENTRY"\
+            > "$CHANGELOG_FILE_PATH"
         printf 'Nueva cabecera y entrada añadida a archivo vacío.\n'
     else
-        sed -i '1i\'"$CHANGELOG_HEADER_PLUS_ENTRY" $CHANGELOG_FILE_PATH
+        sed -i '1i\'"$CHANGELOG_HEADER\n\n$CHANGELOG_ENTRY\n"\
+            "$CHANGELOG_FILE_PATH"
         printf 'Nueva cabecera y entrada añadida.\n'
     fi
 fi
