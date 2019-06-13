@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+red=`tput setaf 1`
+green=`tput setaf 2`
+reset=`tput sgr0`
+
+startvm() {
+    VBoxManage startvm "$1" --type headless;
+}
+
+stopvm() {
+    VBoxManage controlvm "$1" acpipowerbutton --type headless;
+}
+
+listvms() {
+    VBoxManage list vms --long \
+        | grep -e "Name:" -e "State:" \
+        | sed -Ez 's/Name:\s+(\w+)\n\State:\s+(running|powered off)/Machine: \1 - \2/g' \
+        | sed -E 's/\(.+\)//g'
+}
+
+screenshotvm() {
+    img_path="/tmp/${1}_$(date +%y_%m_%d-%H_%M).png"
+    VBoxManage controlvm "$1" screenshotpng "$img_path";
+    feh "$img_path";
+}
+
+
+case "$#" in
+    1)
+        case "$1" in
+            l|list) listvms;;
+            *) printf '"%s" command not found' "%1";;
+        esac
+        ;;
+    2)
+        case "$2" in
+            u|up|start)
+                startvm "$1"
+                    ;;
+            d|down|stop)
+                    stopvm "$1"
+                    ;;
+            s|snp|screen)
+                    screenshotvm "$1"
+                    ;;
+            *)
+                    printf '"%s" command not found' "$2"
+                    ;;
+        esac
+        ;;
+    *) printf 'Unknown number of arguments';;
+esac

@@ -19,6 +19,7 @@
     "SCR020": {"srcfile": "scripts/add_log_entry","symlink": "scripts/add_log_entry"},
     "SCR021": {"srcfile": "scripts/xrandr_scrn_right.sh","symlink": ".screenlayout/xrandr_scrn_right.sh"},
     "SCR022": {"srcfile": "scripts/xrandr_scrn_duplicated.sh","symlink": ".screenlayout/xrandr_scrn_duplicated.sh"},
+    "SCR023": {"srcfile": "scripts/vm","symlink": "scripts/vm"},
     "GIT001": {"srcfile": "git/.gitconfig","symlink": ".gitconfig"},
     "GIT002": {"srcfile": "git/.bash-git-prompt","symlink": ".bash-git-prompt"},
     "GIT003": {"srcfile": "git/.diff-so-fancy","symlink": ".diff-so-fancy"},
