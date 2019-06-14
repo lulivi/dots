@@ -7,7 +7,7 @@
 #include ".Xresources.theme"
 
 #define FONT         Fira Code
-#define FONT_SIZE    11
+#define FONT_SIZE    10
 #define INNER_PAD    10
 #define BORDER_WIDTH 10
 #define WINDOW_GAP   10
@@ -100,7 +100,7 @@ rofi.bw:                 10
 rofi.padding:           INTERNAL_PADDING
 
 ! "Number of lines" Set from: Default
-rofi.lines:             10
+rofi.lines:             20
 
 ! Set the desired separator style
 rofi.separator-style:   solid
