@@ -39,6 +39,7 @@
     "bash-profile": {"srcfile": "shell/bash/.bash_profile","symlink": ".bash_profile"},
     "fish-config": {"srcfile": "shell/fish/config.fish","symlink": ".config/fish/config.fish"},
     "fish-file": {"srcfile": "shell/fish/fishfile","symlink": ".config/fish/fishfile"},
+    "terminator": {"srcfile": "terminals/terminator/config", "symlink": ".config/terminator/config"},
     "pcmanfm-conf": {"srcfile": "filemanager/pcmanfm/pcmanfm.conf","symlink": ".config/pcmanfm/default/pcmanfm.conf"},
     "polybar-config": {"srcfile": "polybar/config","symlink": ".config/polybar/config"},
     "xresources-src": {"srcfile": "xresources/.Xresources.src","symlink": ".Xresources.src"},

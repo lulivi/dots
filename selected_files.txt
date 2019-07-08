@@ -15,6 +15,7 @@ compton-conf
 shell-utilities
 bashrc
 bash-profile
+terminator
 pcmanfm-conf
 polybar-config
 fonts-FiraCode

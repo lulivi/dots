@@ -1,0 +1,20 @@
+[global_config]
+  extra_styling = False
+[keybindings]
+  help = None
+[layouts]
+  [[default]]
+    [[[child1]]]
+      parent = window0
+      type = Terminal
+    [[[window0]]]
+      parent = ""
+      type = Window
+[plugins]
+[profiles]
+  [[default]]
+    cursor_color = "#aaaaaa"
+    icon_bell = False
+    scrollback_lines = 2500
+    scrollbar_position = hidden
+    show_titlebar = False
