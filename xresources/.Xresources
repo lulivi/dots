@@ -21,7 +21,7 @@
 !#define background_opacity 95
 
 *.font: Fira Code
-*.font_size: 11
+*.font_size: 10
 *.border_width: 10
 *.window_gap: 10
 
@@ -67,12 +67,12 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Xterm
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-XTerm.vt100.faceName: Fira Code:size=11
+XTerm.vt100.faceName: Fira Code:size=10
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! URxvt
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-URxvt.font: xft:Fira Code:size=11
+URxvt.font: xft:Fira Code:size=10
 URxvt.termName: rxvt-unicode
 *imLocale: en_US.UTF8
 *saveLines: 5000
@@ -89,14 +89,14 @@ urxvt*depth: 32
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Emacs
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-emacs.font: Fira Code-11
+emacs.font: Fira Code-10
 emacs.background: #2b303b
 emacs*toolBar: 0
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Rofi
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-rofi.font: Fira Code 11
+rofi.font: Fira Code 10
 rofi.modi: combi
 rofi.combi-modi: window,drun,run
 
@@ -107,7 +107,7 @@ rofi.bw: 10
 rofi.padding: INTERNAL_PADDING
 
 ! "Number of lines" Set from: Default
-rofi.lines: 10
+rofi.lines: 20
 
 ! Set the desired separator style
 rofi.separator-style: solid

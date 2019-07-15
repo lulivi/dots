@@ -3,6 +3,7 @@ show_sxhkd_keybindings
 status
 xrandr_scrn_right
 vm
+screenshot
 gitconfig
 nvim-init
 bspwm-autostart
@@ -20,3 +21,8 @@ pcmanfm-conf
 polybar-config
 fonts-FiraCode
 fonts-FontAwesome
+xresources-src
+xresources-edit
+xresources-theme
+xresources
+xr_wrapper_reloader

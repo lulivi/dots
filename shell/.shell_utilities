@@ -56,4 +56,4 @@ alias g="git"
 export EDITOR="nano"
 export XDG_CONFIG_HOME="$HOME/.config"
 export SXHKD_SHELL='/usr/bin/sh'
-
+export PATH=$HOME/.local/bin/:$HOME/scripts/:$PATH

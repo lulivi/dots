@@ -45,6 +45,8 @@ if !empty(glob("~/.local/share/nvim/site/autoload/plug.vim"))
     Plug 'scrooloose/nerdtree'
     call plug#end()
 
+    autocmd vimenter * NERDTree
+
 else
 
     :echo "Not installed plug"

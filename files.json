@@ -20,6 +20,7 @@
     "xrandr_scrn_right": {"srcfile": "scripts/xrandr_scrn_right.sh","symlink": ".screenlayout/xrandr_scrn_right.sh"},
     "xrandr_xcrn_duplicated": {"srcfile": "scripts/xrandr_scrn_duplicated.sh","symlink": ".screenlayout/xrandr_scrn_duplicated.sh"},
     "vm": {"srcfile": "scripts/vm","symlink": "scripts/vm"},
+    "screenshot": {"srcfile": "scripts/screenshot", "symlink": "scripts/screenshot"},
     "gitconfig": {"srcfile": "git/.gitconfig","symlink": ".gitconfig"},
     "bash-git-prompt": {"srcfile": "git/.bash-git-prompt","symlink": ".bash-git-prompt"},
     "diff-so-fancy": {"srcfile": "git/.diff-so-fancy","symlink": ".diff-so-fancy"},
