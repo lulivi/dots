@@ -5,6 +5,6 @@
 /usr/bin/scrot /tmp/screenshot.png
 /usr/bin/convert /tmp/screenshot.png \
 		 -sample 250 \
-		 -scale 1920x1080! \
+		 -scale $(xdpyinfo | grep dimensions | grep -Po "[0-9]+x[0-9]+(?= pixels)")! \
 		 /tmp/screenshotblur.png
 /usr/bin/i3lock -i /tmp/screenshotblur.png
