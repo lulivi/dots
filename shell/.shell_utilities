@@ -23,6 +23,13 @@ alias tubes="pipes -p 20 -s 15 -r 0 -R"
 alias reload_bspwm="~/.config/bspwm/bspwmrc 2>&1 1>/dev/null"
 alias cal_notif="~/scripts/calendar.sh"
 
+alias grep='grep --color=auto'
+alias pacman='pacman --color=auto'
+alias tree='tree --dirsfirst -C'
+alias dmesg='dmesg --color=auto --reltime --human --nopager --decode'
+alias free='free -mht'
+alias yay='yay --color=auto'
+
 ## Work
 
 alias vpn_ugr="sudo openconnect vpn2.ugr.es"
