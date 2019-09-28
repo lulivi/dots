@@ -5,7 +5,13 @@ syntax on
 set listchars=eol:$,tab:>-,trail:·,extends:>,precedes:<,space:·
 set list
 
-command TrimWhitespace :%s/\s\+$//e
+if !exists(':TrimWhitespace')
+    command TrimWhitespace :%s/\s\+$//e
+endif
+
+if !exists(':Black')
+    command Black :!black -l 79 %:p
+endif
 
 " Line numbers
 set number
