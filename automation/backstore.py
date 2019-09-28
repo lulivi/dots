@@ -61,9 +61,10 @@ from blessings import Terminal
 
 TERM = Terminal()
 HOME_PATH: Path = Path.home()
-REPO_PATH: Path = Path(__file__).parent.resolve()
-ALL_FILES_PATH: Path = REPO_PATH.joinpath("files.json").resolve()
-SEL_FILES_PATH: Path = REPO_PATH.joinpath("selected_files.txt").resolve()
+AUTOMATION_PATH: Path = Path(__file__).resolve().parent
+ALL_FILES_PATH: Path = AUTOMATION_PATH.joinpath("files.json").resolve()
+SEL_FILES_PATH: Path = AUTOMATION_PATH.joinpath("selected_files.txt").resolve()
+REPO_PATH: Path = AUTOMATION_PATH.parent
 
 FILE_STATUS = {
     # Exists
@@ -129,8 +130,8 @@ def print_file_row(file_object: Dict[str, str], verbose: bool = False) -> None:
     )
     if verbose:
         print(
-            f"{found} {file_object['id']} ─┬─ {srcfile_status}\n"
-            f"          └─ {symlink_status}"
+            f"{found} {file_object['id']}\n    ├─ {srcfile_status}\n"
+            f"    └─ {symlink_status}"
         )
     else:
         print(
@@ -149,7 +150,7 @@ def print_selected_files(
         verbose: Print info in verbose mode.
     """
     if verbose:
-        print("\n< ID > ─┬─ <SOURCE_PATH>\n        └─ <TARGET_PATH>\n")
+        print("\n< ID >\n    ├ <SOURCE_PATH>\n    └─ <TARGET_PATH>\n")
     else:
         print("\n< ID >: <SOURCE_PATH> -> <TARGET_PATH>\n")
     for sel_file in selected_files_list:
@@ -197,12 +198,15 @@ def delete_selected_files(
         verbose: Print info in verbose mode.
     """
     print_selected_files(selected_files_list, verbose)
-    if (
-        input("Are you sure to delete previous links? (yes/no): ")
-        .strip()
-        .lower()
-        != "yes"
-    ):
+    try:
+        if (
+            input("Are you sure to delete previous links? (yes/no): ")
+            .strip()
+            .lower()
+            != "yes"
+        ):
+            raise KeyboardInterrupt
+    except KeyboardInterrupt:
         print("Aborting symlinks deletion.")
         return
     print()

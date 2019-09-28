@@ -1,0 +1,198 @@
+{
+    "scripts-colortrans": {
+        "srcfile": "scripts/colortrans.py",
+        "symlink": "scripts/colortrans.py"
+    },
+    "scripts-dec_to_hex": {
+        "srcfile": "scripts/dec_to_hex.sh",
+        "symlink": "scripts/dec_to_hex.sh"
+    },
+    "scripts-dunst_xr_theme_changer": {
+        "srcfile": "scripts/dunst_xr_theme_changer.sh",
+        "symlink": "scripts/dunst_xr_theme_changer.sh"
+    },
+    "scripts-hex_dec_color": {
+        "srcfile": "scripts/hex_dec_color.sh",
+        "symlink": "scripts/hex_dec_color.sh"
+    },
+    "scripts-kb_light": {
+        "srcfile": "scripts/kb_light.py",
+        "symlink": "scripts/kb_light.py"
+    },
+    "scripts-lock": {
+        "srcfile": "scripts/lock.sh",
+        "symlink": "scripts/lock.sh"
+    },
+    "scripts-pandoc_doc_copy": {
+        "srcfile": "scripts/pandoc_doc_copy.sh",
+        "symlink": "scripts/pandoc_doc_copy.sh"
+    },
+    "scripts-session": {
+        "srcfile": "scripts/session.sh",
+        "symlink": "scripts/session.sh"
+    },
+    "scripts-show_keypress": {
+        "srcfile": "scripts/show_keypress.sh",
+        "symlink": "scripts/show_keypress.sh"
+    },
+    "scripts-show_sxhkd_keybindings": {
+        "srcfile": "scripts/show_sxhkd_keybindings.sh",
+        "symlink": "scripts/show_sxhkd_keybindings.sh"
+    },
+    "scripts-status": {
+        "srcfile": "scripts/status.sh",
+        "symlink": "scripts/status.sh"
+    },
+    "scripts-tput_clock": {
+        "srcfile": "scripts/tput_clock.sh",
+        "symlink": "scripts/tput_clock.sh"
+    },
+    "scripts-tput_colors": {
+        "srcfile": "scripts/tput_colors.sh",
+        "symlink": "scripts/tput_colors.sh"
+    },
+    "scripts-wm_selector": {
+        "srcfile": "scripts/wm_selector.sh",
+        "symlink": "scripts/wm_selector.sh"
+    },
+    "scripts-xr_color_scheme": {
+        "srcfile": "scripts/xr_color_scheme.sh",
+        "symlink": "scripts/xr_color_scheme.sh"
+    },
+    "scripts-xr_theme_changer": {
+        "srcfile": "scripts/xr_theme_changer.sh",
+        "symlink": "scripts/xr_theme_changer.sh"
+    },
+    "scripts-xr_wrapper_reloader": {
+        "srcfile": "scripts/xr_wrapper_reloader.sh",
+        "symlink": "scripts/xr_wrapper_reloader.sh"
+    },
+    "scripts-add_log_entry": {
+        "srcfile": "scripts/add_log_entry",
+        "symlink": "scripts/add_log_entry"
+    },
+    "scripts-vm": {
+        "srcfile": "scripts/vm",
+        "symlink": "scripts/vm"
+    },
+    "scripts-screenshot": {
+        "srcfile": "scripts/screenshot",
+        "symlink": "scripts/screenshot"
+    },
+    "tools-git-gitconfig": {
+        "srcfile": "tools/git/.gitconfig",
+        "symlink": ".gitconfig"
+    },
+    "bash-git-prompt": {
+        "srcfile": "tools/git/.bash-git-prompt",
+        "symlink": ".bash-git-prompt"
+    },
+    "diff-so-fancy": {
+        "srcfile": "tools/git/.diff-so-fancy",
+        "symlink": ".diff-so-fancy"
+    },
+    "emacs-init": {
+        "srcfile": "tools/editors/emacs/init.el",
+        "symlink": ".emacs.d/init.el"
+    },
+    "emacs-config": {
+        "srcfile": "tools/editors/emacs/config.org",
+        "symlink": ".emacs.d/config.org"
+    },
+    "emax-mv-lists": {
+        "srcfile": "tools/editors/emacs/.mc-lists.el",
+        "symlink": ".emacs.d/.mc-lists.el"
+    },
+    "tools-editors-nvim-init": {
+        "srcfile": "tools/editors/nvim/init.vim",
+        "symlink": ".config/nvim/init.vim"
+    },
+    "wms-bspwm-autostart": {
+        "srcfile": "wms/bspwm/autostart.sh",
+        "symlink": ".config/bspwm/autostart.sh"
+    },
+    "wms-bspwm-bspwmrc": {
+        "srcfile": "wms/bspwm/bspwmrc",
+        "symlink": ".config/bspwm/bspwmrc"
+    },
+    "wms-sxhkd-sxhkdrc": {
+        "srcfile": "wms/sxhkd/sxhkdrc",
+        "symlink": ".config/sxhkd/sxhkdrc"
+    },
+    "wms-dunst-dunstrc": {
+        "srcfile": "wms/dunst/dunstrc",
+        "symlink": ".config/dunst/dunstrc"
+    },
+    "wms-dunst-dunst_xr_colors": {
+        "srcfile": "wms/dunst/dunstrc_xr_colors",
+        "symlink": ".config/dunst/dunstrc_xr_colors"
+    },
+    "wms-dunst-launch_dunst": {
+        "srcfile": "wms/dunst/launch_dunst.sh",
+        "symlink": ".config/dunst/launch_dunst.sh"
+    },
+    "wms-compton-conf": {
+        "srcfile": "wms/compton/compton.conf",
+        "symlink": ".config/compton/compton.conf"
+    },
+    "tools-shell-shell-utilities": {
+        "srcfile": "tools/shell/.shell_utilities",
+        "symlink": ".shell_utilities"
+    },
+    "tools-shell-bash-bashrc": {
+        "srcfile": "tools/shell/bash/.bashrc",
+        "symlink": ".bashrc"
+    },
+    "tools-shell-bash-profile": {
+        "srcfile": "tools/shell/bash/.bash_profile",
+        "symlink": ".bash_profile"
+    },
+    "tools-shell-fish-config": {
+        "srcfile": "tools/shell/fish/config.fish",
+        "symlink": ".config/fish/config.fish"
+    },
+    "tools-shell-fish-fishfile": {
+        "srcfile": "tools/shell/fish/fishfile",
+        "symlink": ".config/fish/fishfile"
+    },
+    "tools-terminals-terminator-config": {
+        "srcfile": "tools/terminals/terminator/config",
+        "symlink": ".config/terminator/config"
+    },
+    "tools-filemanager-pcmanfm-pcmanfm": {
+        "srcfile": "tools/filemanager/pcmanfm/pcmanfm.conf",
+        "symlink": ".config/pcmanfm/default/pcmanfm.conf"
+    },
+    "wms-polybar-config": {
+        "srcfile": "wms/polybar/config",
+        "symlink": ".config/polybar/config"
+    },
+    "wms-xresources-src": {
+        "srcfile": "wms/xresources/.Xresources.src",
+        "symlink": ".Xresources.src"
+    },
+    "wms-xresources-edit": {
+        "srcfile": "wms/xresources/.Xresources.edit",
+        "symlink": ".Xresources.edit"
+    },
+    "wms-xresources-theme": {
+        "srcfile": "wms/xresources/.Xresources.theme",
+        "symlink": ".Xresources.theme"
+    },
+    "tools=latex-latexmkrc": {
+        "srcfile": "tools/latex/.latexmkrc",
+        "symlink": ".latexmkrc"
+    },
+    "fonts-FiraCode": {
+        "srcfile": "fonts/FiraCode",
+        "symlink": ".fonts/FiraCode"
+    },
+    "fonts-FontAwesome": {
+        "srcfile": "fonts/FontAwesome",
+        "symlink": ".fonts/FontAwesome"
+    },
+    "themes-base16-xresources": {
+        "srcfile": "themes/base16-xresources",
+        "symlink": ".themes/base16-xresources"
+    }
+}
