@@ -97,7 +97,7 @@ emacs*toolBar: 0
 ! Rofi
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 rofi.font: Fira Code 10
-rofi.modi: combi
+rofi.modi: combi,run
 rofi.combi-modi: window,drun,run
 
 ! "Border width"

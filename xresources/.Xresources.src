@@ -90,7 +90,7 @@ emacs*toolBar:          0
 ! Rofi
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 rofi.font:              FONT FONT_SIZE
-rofi.modi:              combi
+rofi.modi:              combi,run
 rofi.combi-modi:        window,drun,run
 
 ! "Border width"

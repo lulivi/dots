@@ -56,7 +56,7 @@ elif [ -f "$base_x_file" \
     exit 1
 fi
 
-${EDITOR:-nano} "$src_x_file"
+${EDITOR:-vim} "$src_x_file"
 # Reload resources and call ourself as a wrapper around cpp (to create
 # .Xresources)
 if [ ! -f "$base_x_file" \
