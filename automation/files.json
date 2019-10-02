@@ -83,11 +83,11 @@
         "srcfile": "tools/git/.gitconfig",
         "symlink": ".gitconfig"
     },
-    "bash-git-prompt": {
+    "tools-git-bash-git-prompt": {
         "srcfile": "tools/git/.bash-git-prompt",
         "symlink": ".bash-git-prompt"
     },
-    "diff-so-fancy": {
+    "tools-git-diff-so-fancy": {
         "srcfile": "tools/git/.diff-so-fancy",
         "symlink": ".diff-so-fancy"
     },
