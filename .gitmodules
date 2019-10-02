@@ -1,8 +1,8 @@
 [submodule "git/.bash-git-prompt"]
-	path = git/.bash-git-prompt
+	path = tools/git/.bash-git-prompt
 	url = git@github.com:magicmonty/bash-git-prompt.git
 [submodule "git/.diff-so-fancy"]
-	path = git/.diff-so-fancy
+	path = tools/git/.diff-so-fancy
 	url = git@github.com:so-fancy/diff-so-fancy.git
 [submodule "fonts/FiraCode"]
 	path = fonts/FiraCode
