@@ -175,7 +175,7 @@ def link_selected_files(
         if not symlink.parent.exists():
             symlink.parent.mkdir(parents=True)
         try:
-            symlink.symlink_to(srcfile)
+            symlink.symlink_to(srcfile, srcfile.is_dir())
         except FileExistsError:
             print(
                 f"{TERM.yellow + TERM.bold}-{TERM.normal} "

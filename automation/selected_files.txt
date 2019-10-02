@@ -9,6 +9,7 @@ scripts-xr_wrapper_reloader
 tools-editors-nvim-init
 tools-filemanager-pcmanfm-pcmanfm
 tools-git-gitconfig
+tools-git-bash-git-prompt
 tools-shell-bash-bashrc
 tools-shell-bash-profile
 tools-shell-shell-utilities
