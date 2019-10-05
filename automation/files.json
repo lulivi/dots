@@ -1,4 +1,28 @@
 {
+    "emacs-config": {
+        "srcfile": "tools/editors/emacs/config.org",
+        "symlink": ".emacs.d/config.org"
+    },
+    "emacs-init": {
+        "srcfile": "tools/editors/emacs/init.el",
+        "symlink": ".emacs.d/init.el"
+    },
+    "emax-mv-lists": {
+        "srcfile": "tools/editors/emacs/.mc-lists.el",
+        "symlink": ".emacs.d/.mc-lists.el"
+    },
+    "fonts-FiraCode": {
+        "srcfile": "fonts/FiraCode",
+        "symlink": ".fonts/FiraCode"
+    },
+    "fonts-FontAwesome": {
+        "srcfile": "fonts/FontAwesome",
+        "symlink": ".fonts/FontAwesome"
+    },
+    "scripts-add_log_entry": {
+        "srcfile": "scripts/add_log_entry",
+        "symlink": "scripts/add_log_entry"
+    },
     "scripts-colortrans": {
         "srcfile": "scripts/colortrans.py",
         "symlink": "scripts/colortrans.py"
@@ -27,6 +51,10 @@
         "srcfile": "scripts/pandoc_doc_copy.sh",
         "symlink": "scripts/pandoc_doc_copy.sh"
     },
+    "scripts-screenshot": {
+        "srcfile": "scripts/screenshot",
+        "symlink": "scripts/screenshot"
+    },
     "scripts-session": {
         "srcfile": "scripts/session.sh",
         "symlink": "scripts/session.sh"
@@ -51,6 +79,10 @@
         "srcfile": "scripts/tput_colors.sh",
         "symlink": "scripts/tput_colors.sh"
     },
+    "scripts-vm": {
+        "srcfile": "scripts/vm",
+        "symlink": "scripts/vm"
+    },
     "scripts-wm_selector": {
         "srcfile": "scripts/wm_selector.sh",
         "symlink": "scripts/wm_selector.sh"
@@ -67,21 +99,17 @@
         "srcfile": "scripts/xr_wrapper_reloader.sh",
         "symlink": "scripts/xr_wrapper_reloader.sh"
     },
-    "scripts-add_log_entry": {
-        "srcfile": "scripts/add_log_entry",
-        "symlink": "scripts/add_log_entry"
+    "themes-base16-xresources": {
+        "srcfile": "themes/base16-xresources",
+        "symlink": ".themes/base16-xresources"
     },
-    "scripts-vm": {
-        "srcfile": "scripts/vm",
-        "symlink": "scripts/vm"
+    "tools-editors-nvim-init": {
+        "srcfile": "tools/editors/nvim/init.vim",
+        "symlink": ".config/nvim/init.vim"
     },
-    "scripts-screenshot": {
-        "srcfile": "scripts/screenshot",
-        "symlink": "scripts/screenshot"
-    },
-    "tools-git-gitconfig": {
-        "srcfile": "tools/git/.gitconfig",
-        "symlink": ".gitconfig"
+    "tools-filemanager-pcmanfm-pcmanfm": {
+        "srcfile": "tools/filemanager/pcmanfm/pcmanfm.conf",
+        "symlink": ".config/pcmanfm/default/pcmanfm.conf"
     },
     "tools-git-bash-git-prompt": {
         "srcfile": "tools/git/.bash-git-prompt",
@@ -91,53 +119,9 @@
         "srcfile": "tools/git/.diff-so-fancy",
         "symlink": ".diff-so-fancy"
     },
-    "emacs-init": {
-        "srcfile": "tools/editors/emacs/init.el",
-        "symlink": ".emacs.d/init.el"
-    },
-    "emacs-config": {
-        "srcfile": "tools/editors/emacs/config.org",
-        "symlink": ".emacs.d/config.org"
-    },
-    "emax-mv-lists": {
-        "srcfile": "tools/editors/emacs/.mc-lists.el",
-        "symlink": ".emacs.d/.mc-lists.el"
-    },
-    "tools-editors-nvim-init": {
-        "srcfile": "tools/editors/nvim/init.vim",
-        "symlink": ".config/nvim/init.vim"
-    },
-    "wms-bspwm-autostart": {
-        "srcfile": "wms/bspwm/autostart.sh",
-        "symlink": ".config/bspwm/autostart.sh"
-    },
-    "wms-bspwm-bspwmrc": {
-        "srcfile": "wms/bspwm/bspwmrc",
-        "symlink": ".config/bspwm/bspwmrc"
-    },
-    "wms-sxhkd-sxhkdrc": {
-        "srcfile": "wms/sxhkd/sxhkdrc",
-        "symlink": ".config/sxhkd/sxhkdrc"
-    },
-    "wms-dunst-dunstrc": {
-        "srcfile": "wms/dunst/dunstrc",
-        "symlink": ".config/dunst/dunstrc"
-    },
-    "wms-dunst-dunst_xr_colors": {
-        "srcfile": "wms/dunst/dunstrc_xr_colors",
-        "symlink": ".config/dunst/dunstrc_xr_colors"
-    },
-    "wms-dunst-launch_dunst": {
-        "srcfile": "wms/dunst/launch_dunst.sh",
-        "symlink": ".config/dunst/launch_dunst.sh"
-    },
-    "wms-compton-conf": {
-        "srcfile": "wms/compton/compton.conf",
-        "symlink": ".config/compton/compton.conf"
-    },
-    "tools-shell-shell-utilities": {
-        "srcfile": "tools/shell/.shell_utilities",
-        "symlink": ".shell_utilities"
+    "tools-git-gitconfig": {
+        "srcfile": "tools/git/.gitconfig",
+        "symlink": ".gitconfig"
     },
     "tools-shell-bash-bashrc": {
         "srcfile": "tools/shell/bash/.bashrc",
@@ -155,44 +139,64 @@
         "srcfile": "tools/shell/fish/fishfile",
         "symlink": ".config/fish/fishfile"
     },
+    "tools-shell-shell-utilities": {
+        "srcfile": "tools/shell/.shell_utilities",
+        "symlink": ".shell_utilities"
+    },
     "tools-terminals-terminator-config": {
         "srcfile": "tools/terminals/terminator/config",
         "symlink": ".config/terminator/config"
     },
-    "tools-filemanager-pcmanfm-pcmanfm": {
-        "srcfile": "tools/filemanager/pcmanfm/pcmanfm.conf",
-        "symlink": ".config/pcmanfm/default/pcmanfm.conf"
+    "tools-tmux-tmux": {
+    	"srcfile": "tools/tmux/.tmux.conf",
+	"symlink": ".tmux.conf"
+    },
+    "tools-latex-latexmkrc": {
+        "srcfile": "tools/latex/.latexmkrc",
+        "symlink": ".latexmkrc"
+    },
+    "wms-bspwm-autostart": {
+        "srcfile": "wms/bspwm/autostart.sh",
+        "symlink": ".config/bspwm/autostart.sh"
+    },
+    "wms-bspwm-bspwmrc": {
+        "srcfile": "wms/bspwm/bspwmrc",
+        "symlink": ".config/bspwm/bspwmrc"
+    },
+    "wms-compton-conf": {
+        "srcfile": "wms/compton/compton.conf",
+        "symlink": ".config/compton/compton.conf"
+    },
+    "wms-dunst-dunst_xr_colors": {
+        "srcfile": "wms/dunst/dunstrc_xr_colors",
+        "symlink": ".config/dunst/dunstrc_xr_colors"
+    },
+    "wms-dunst-dunstrc": {
+        "srcfile": "wms/dunst/dunstrc",
+        "symlink": ".config/dunst/dunstrc"
+    },
+    "wms-dunst-launch_dunst": {
+        "srcfile": "wms/dunst/launch_dunst.sh",
+        "symlink": ".config/dunst/launch_dunst.sh"
     },
     "wms-polybar-config": {
         "srcfile": "wms/polybar/config",
         "symlink": ".config/polybar/config"
     },
-    "wms-xresources-src": {
-        "srcfile": "wms/xresources/.Xresources.src",
-        "symlink": ".Xresources.src"
+    "wms-sxhkd-sxhkdrc": {
+        "srcfile": "wms/sxhkd/sxhkdrc",
+        "symlink": ".config/sxhkd/sxhkdrc"
     },
     "wms-xresources-edit": {
         "srcfile": "wms/xresources/.Xresources.edit",
         "symlink": ".Xresources.edit"
     },
+    "wms-xresources-src": {
+        "srcfile": "wms/xresources/.Xresources.src",
+        "symlink": ".Xresources.src"
+    },
     "wms-xresources-theme": {
         "srcfile": "wms/xresources/.Xresources.theme",
         "symlink": ".Xresources.theme"
-    },
-    "tools=latex-latexmkrc": {
-        "srcfile": "tools/latex/.latexmkrc",
-        "symlink": ".latexmkrc"
-    },
-    "fonts-FiraCode": {
-        "srcfile": "fonts/FiraCode",
-        "symlink": ".fonts/FiraCode"
-    },
-    "fonts-FontAwesome": {
-        "srcfile": "fonts/FontAwesome",
-        "symlink": ".fonts/FontAwesome"
-    },
-    "themes-base16-xresources": {
-        "srcfile": "themes/base16-xresources",
-        "symlink": ".themes/base16-xresources"
     }
 }
