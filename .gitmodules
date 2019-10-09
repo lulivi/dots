@@ -15,3 +15,6 @@
 [submodule "themes/base16-xresources"]
 	path = themes/base16-xresources
 	url = git@github.com:chriskempson/base16-xresources.git
+[submodule "tools/tmux"]
+	path = tools/tmux
+	url = https://github.com/gpakosz/.tmux.git
