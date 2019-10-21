@@ -4,6 +4,14 @@ red=`tput setaf 1`
 green=`tput setaf 2`
 reset=`tput sgr0`
 
+showhelp() {
+cat << EOF
+usage:
+    vm [help | list]
+    vm [start | stop | screen] <virtual machine name>
+EOF
+}
+
 startvm() {
     VBoxManage startvm "$1" --type headless;
 }
@@ -30,7 +38,8 @@ case "$#" in
     1)
         case "$1" in
             l|list) listvms;;
-            *) printf '"%s" command not found' "%1";;
+            h|help) showhelp;;
+            *) printf '"%s" command not found\n' "%1";;
         esac
         ;;
     2)
@@ -41,13 +50,13 @@ case "$#" in
             d|down|stop)
                     stopvm "$1"
                     ;;
-            s|snp|screen)
+            s|scr|screen)
                     screenshotvm "$1"
                     ;;
             *)
-                    printf '"%s" command not found' "$2"
+                    printf '"%s" command not found\n' "$2"
                     ;;
         esac
         ;;
-    *) printf 'Unknown number of arguments';;
+    *) printf 'Unknown number of arguments\n';;
 esac
