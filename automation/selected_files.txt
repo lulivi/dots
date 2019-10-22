@@ -10,11 +10,16 @@ tools-editors-nvim-init
 tools-filemanager-pcmanfm-pcmanfm
 tools-git-bash-git-prompt
 tools-git-gitconfig
+tools-ranger-commands
+tools-ranger-rc
+tools-ranger-rifle
+tools-ranger-scope
 tools-shell-bash-bashrc
 tools-shell-bash-profile
 tools-shell-shell-utilities
 tools-terminals-terminator-config
 tools-tmux-tmux
+tools-top-top-toprc
 wms-bspwm-autostart
 wms-bspwm-bspwmrc
 wms-compton-conf
