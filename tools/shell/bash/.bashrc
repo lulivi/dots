@@ -4,8 +4,6 @@
 
 [[ $- != *i* ]] && return
 
-. $HOME/.shell_utilities
-
 # Chow colored man-pages
 export LESS_TERMCAP_mb=$'\E[01;31m'
 export LESS_TERMCAP_md=$'\E[01;36m'
@@ -112,3 +110,5 @@ ex ()
     echo "'$1' is not a valid file"
   fi
 }
+
+[ -r $HOME/.shell_utilities ] && . $HOME/.shell_utilities
