@@ -37,11 +37,16 @@ alias etsiit="sh -c '[ -d /mnt/Data/Mega ] || sudo ntfs-3g -o uid=1000 /dev/sda1
 
 ## Playerctl
 
-alias pp="playerctl play-pause"
-alias nxt="playerctl next"
-alias prv="playerctl previous"
-alias stp="playerctl stop"
-# alias np="echo '$(playerctl metadata artist) - $(playerctl metadata title)'"
+alias pp="playerctl play-pause;exit"
+alias nxt="playerctl next;exit"
+alias prv="playerctl previous;exit"
+alias stp="playerctl stop;exit"
+# np() {
+#     if [ -n "$(playerctl metadata artist)" ]; then
+#         printf "$(playerctl metadata artist) - $(playerctl metadata title)"
+#     fi
+# }
+# alias np="$(np)"
 
 alias cvenv="python -m virtualenv venv; source ./venv/bin/activate.fish"
 alias svenv="source ./venv/bin/activate.fish"
@@ -60,7 +65,22 @@ alias g="git"
 ## Variables ##
 ###############
 
-export EDITOR="nano"
+export EDITOR="vim"
 export XDG_CONFIG_HOME="$HOME/.config"
 export SXHKD_SHELL='/usr/bin/sh'
-export PATH=$HOME/.local/bin/:$HOME/scripts/:$PATH
+export PATH="$HOME/scripts/":"$HOME/.local/bin/":$PATH
+
+#################
+## Connext DDS ##
+#################
+
+export NDDSHOME="$HOME/rti_connext_dds-6.0.0/"
+export NDDSWORKSPACE="$HOME/rti_workspace/6.0.0/"
+export NDDSEXAMPLES="$NDDSWORKSPACE/examples/"
+export LD_LIBRARY_PATH="$NDDSHOME/lib/x64Linux4gcc7.3.0/":$LD_LIBRARY_PATH
+
+## Build tools
+
+export OS_ARCH="x86_64Linux2.6"
+export PATH="$HOME/trees/Buildtools_6.0.0/current/Linux/utilities/makeheader/$OS_ARCH/":"/home/luis/.gem/ruby/2.6.0/bin/":"$HOME/Documents/llvm-project/build/bin/":"$HOME/Documents/llvm-project/clang/tools/clang-format/":$PATH
+

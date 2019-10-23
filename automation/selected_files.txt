@@ -2,8 +2,6 @@ fonts-FiraCode
 fonts-FontAwesome
 scripts-lock
 scripts-screenshot
-scripts-show_sxhkd_keybindings
-scripts-status
 scripts-vm
 scripts-xr_wrapper_reloader
 tools-editors-nvim-init
@@ -19,15 +17,6 @@ tools-shell-bash-profile
 tools-shell-shell-utilities
 tools-terminals-terminator-config
 tools-tmux-tmux
-tools-top-top-toprc
-wms-bspwm-autostart
-wms-bspwm-bspwmrc
-wms-compton-conf
-wms-dunst-dunst_xr_colors
-wms-dunst-dunstrc
-wms-dunst-launch_dunst
-wms-polybar-config
-wms-sxhkd-sxhkdrc
 wms-xresources-edit
 wms-xresources-src
 wms-xresources-theme
