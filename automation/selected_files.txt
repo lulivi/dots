@@ -16,7 +16,8 @@ tools-shell-bash-bashrc
 tools-shell-bash-profile
 tools-shell-shell-utilities
 tools-terminals-terminator-config
-tools-tmux-tmux
+tools-tmux-conf
+tools-tmux-conf-local
 wms-xresources-edit
 wms-xresources-src
 wms-xresources-theme
