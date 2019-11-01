@@ -2,8 +2,7 @@
     name = lulivi
     email = luislivilla@gmail.com
 [core]
-    editor = nano
-	excludesfile = /home/luis/.gitignore
+    editor = vim
 [alias]
     pullr = pull --rebase
     c  = clone
