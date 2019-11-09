@@ -25,6 +25,7 @@
     "scripts-xr_theme_changer": {"srcfile": "scripts/xr_theme_changer.sh","symlink": "scripts/xr_theme_changer.sh"},
     "scripts-xr_wrapper_reloader": {"srcfile": "scripts/xr_wrapper_reloader.sh","symlink": "scripts/xr_wrapper_reloader.sh"},
     "themes-base16-xresources": {"srcfile": "themes/base16-xresources","symlink": ".themes/base16-xresources"},
+    "tools-editors-vim-vimrc": {"srcfile": "tools/editors/vim/.vimrc","symlink": ".vimrc"},
     "tools-editors-nvim-init": {"srcfile": "tools/editors/nvim/init.vim","symlink": ".config/nvim/init.vim"},
     "tools-filemanager-pcmanfm-pcmanfm": {"srcfile": "tools/filemanager/pcmanfm/pcmanfm.conf","symlink": ".config/pcmanfm/default/pcmanfm.conf"},
     "tools-git-bash-git-prompt": {"srcfile": "tools/git/.bash-git-prompt","symlink": ".bash-git-prompt"},
