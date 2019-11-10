@@ -57,10 +57,6 @@ alias rvenv="rm -r ./venv/*"
 
 alias fish_reload="source ~/.config/fish/config.fish"
 
-## git
-
-alias g="git"
-
 ###############
 ## Variables ##
 ###############
@@ -69,18 +65,4 @@ export EDITOR="vim"
 export XDG_CONFIG_HOME="$HOME/.config"
 export SXHKD_SHELL='/usr/bin/sh'
 export PATH="$HOME/scripts/":"$HOME/.local/bin/":$PATH
-
-#################
-## Connext DDS ##
-#################
-
-export NDDSHOME="$HOME/rti_connext_dds-6.0.0/"
-export NDDSWORKSPACE="$HOME/rti_workspace/6.0.0/"
-export NDDSEXAMPLES="$NDDSWORKSPACE/examples/"
-export LD_LIBRARY_PATH="$NDDSHOME/lib/x64Linux4gcc7.3.0/":$LD_LIBRARY_PATH
-
-## Build tools
-
-export OS_ARCH="x86_64Linux2.6"
-export PATH="$HOME/trees/Buildtools_6.0.0/current/Linux/utilities/makeheader/$OS_ARCH/":"/home/luis/.gem/ruby/2.6.0/bin/":"$HOME/Documents/llvm-project/build/bin/":"$HOME/Documents/llvm-project/clang/tools/clang-format/":$PATH
 
