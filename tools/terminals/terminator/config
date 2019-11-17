@@ -21,8 +21,10 @@
 [plugins]
 [profiles]
   [[default]]
+    copy_on_selection = True
     cursor_color = "#aaaaaa"
     font = Fira Code Light 11
     scrollback_infinite = True
     scrollbar_position = hidden
+    show_titlebar = False
     use_system_font = False

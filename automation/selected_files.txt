@@ -4,6 +4,7 @@ scripts-lock
 scripts-screenshot
 scripts-vm
 scripts-xr_wrapper_reloader
+tools-editors-vim-vimrc
 tools-editors-nvim-init
 tools-filemanager-pcmanfm-pcmanfm
 tools-git-bash-git-prompt

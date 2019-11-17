@@ -4,8 +4,11 @@
 [core]
     editor = vim
 [alias]
-    pullr = pull --rebase
+    p  = pull
+    pr = pull --rebase
+    b  = branch
     c  = clone
+    cr = clone --recurse-submodules
     s  = status
     ss = status -s
     d  = diff

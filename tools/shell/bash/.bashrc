@@ -15,16 +15,6 @@ export LESS_TERMCAP_us=$'\E[01;32m'
 
 [ -r /usr/share/bash-completion/bash_completion ] && . /usr/share/bash-completion/bash_completion
 
-# Change the window title of X terminals
-case ${TERM} in
-    xterm*|rxvt*|Eterm*|aterm|kterm|gnome*|interix|konsole*)
-        PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME%%.*}:${PWD/#$HOME/\~}\007"'
-        ;;
-    screen*)
-        PROMPT_COMMAND='echo -ne "\033_${USER}@${HOSTNAME%%.*}:${PWD/#$HOME/\~}\033\\"'
-        ;;
-esac
-
 use_color=true
 
 # Set colorful PS1 only on colorful terminals.
@@ -32,44 +22,97 @@ use_color=true
 # instead of using /etc/DIR_COLORS.  Try to use the external file
 # first to take advantage of user additions.  Use internal bash
 # globbing instead of external grep binary.
-safe_term=${TERM//[^[:alnum:]]/?}   # sanitize TERM
+safe_term=${TERM//[^[:alnum:]]/?} # sanitize TERM
 match_lhs=""
-[[ -f ~/.dir_colors   ]] && match_lhs="${match_lhs}$(<~/.dir_colors)"
+[[ -f ~/.dir_colors ]] && match_lhs="${match_lhs}$(<~/.dir_colors)"
 [[ -f /etc/DIR_COLORS ]] && match_lhs="${match_lhs}$(</etc/DIR_COLORS)"
-[[ -z ${match_lhs}    ]] \
-    && type -P dircolors >/dev/null \
-    && match_lhs=$(dircolors --print-database)
+[[ -z ${match_lhs} ]] &&
+  type -P dircolors >/dev/null &&
+  match_lhs=$(dircolors --print-database)
 [[ $'\n'${match_lhs} == *$'\n'"TERM "${safe_term}* ]] && use_color=true
 
-if ${use_color} ; then
-    # Enable colors for ls, etc.  Prefer ~/.dir_colors #64489
-    if type -P dircolors >/dev/null ; then
-        if [[ -f ~/.dir_colors ]] ; then
-            eval $(dircolors -b ~/.dir_colors)
-        elif [[ -f /etc/DIR_COLORS ]] ; then
-            eval $(dircolors -b /etc/DIR_COLORS)
-        fi
+if ${use_color}; then
+  # Enable colors for ls, etc.  Prefer ~/.dir_colors #64489
+  if type -P dircolors >/dev/null; then
+    if [[ -f ~/.dir_colors ]]; then
+      eval $(dircolors -b ~/.dir_colors)
+    elif [[ -f /etc/DIR_COLORS ]]; then
+      eval $(dircolors -b /etc/DIR_COLORS)
     fi
-
-    if [[ ${EUID} == 0 ]] ; then
-        PS1='$(tput setaf 1)[\h $(tput setaf 4)\W$(tput setaf 1)]\n\#$(tput sgr0) '
-    else
-        PS1='$(tput setaf 3)[\W]$(tput sgr0)\n> '
-    fi
-
-else
-    if [[ ${EUID} == 0 ]] ; then
-        # show root@ when we don't have colors
-        PS1='\u@\h \W \$ '
-    else
-        PS1='\u@\h \w \$ '
-    fi
+  fi
 fi
 
+# Colors
+_C_BLACK="$(tput setaf 0)"
+_C_DARK_GRAY="$(tput bold)$(tput setaf 0)"
+_C_RED="$(tput setaf 1)"
+_C_LIGHT_RED="$(tput bold)$(tput setaf 1)"
+_C_GREEN="$(tput setaf 2)"
+_C_LIGHT_GREEN="$(tput bold)$(tput setaf 2)"
+_C_YELLOW="$(tput setaf 3)"
+_C_LIGHT_YELLOW="$(tput bold)$(tput setaf 3)"
+_C_BLUE="$(tput setaf 4)"
+_C_LIGHT_BLUE="$(tput bold)$(tput setaf 4)"
+_C_MAGENTA="$(tput setaf 5)"
+_C_LIGHT_MAGENTA="$(tput bold)$(tput setaf 5)"
+_C_CYAN="$(tput setaf 6)"
+_C_LIGHT_CYAN="$(tput bold)$(tput setaf 6)"
+_C_LIGHT_GRAY="$(tput setaf 7)"
+_C_WHITE="$(tput bold)$(tput setaf 7)"
+_C_RESET="$(tput sgr0)"
+
+function __set_git_prompt() {
+  # Set the final branch string
+  BRANCH="$(git branch --show-current 2>/dev/null)"
+  if [[ -n "$BRANCH" ]]; then
+    if [[ -z "$(git status --short)" ]]; then
+      : "[${_C_LIGHT_GREEN}${BRANCH}${_C_RESET}]"
+    else
+      : "[${_C_LIGHT_YELLOW}${BRANCH}${_C_RESET}]"
+    fi
+    GIT_PROMPT="$_"
+  fi
+}
+
+# Return the prompt symbol to use, colorized based on the return value of the
+# previous command.
+function __set_status_code() {
+  if [[ $1 -ne 0 ]]; then
+    STATUS_CODE="${_C_LIGHT_RED}${1}${_C_RESET} "
+  else
+    STATUS_CODE=""
+  fi
+}
+
+# Determine active Python virtualenv details.
+function __set_virtualenv() {
+  if [[ -n "$VIRTUAL_ENV" ]]; then
+    PYTHON_VIRTUALENV="${_C_BLUE}[$(basename "$VIRTUAL_ENV")]${_C_RESET} "
+  fi
+}
+
+# Set the full bash prompt.
+function set_bash_prompt() {
+  # Set the PROMPT_SYMBOL variable. We do this first so we don't lose the
+  # return value of the last command.
+  __set_status_code "$?"
+
+  # Set the PYTHON_VIRTUALENV variable.
+  __set_virtualenv
+
+  # Set the GIT_PROMPT variable
+  __set_git_prompt
+
+  # Set the bash prompt variable.
+  PS1="${STATUS_CODE}${PYTHON_VIRTUALENV}${_C_LIGHT_CYAN}[\w]${_C_RESET} ${GIT_PROMPT}\n> "
+}
+
+# Tell bash to execute this function just before displaying its prompt.
+PROMPT_COMMAND=set_bash_prompt
 
 unset use_color safe_term match_lhs sh
 
-xhost +local:root > /dev/null 2>&1
+xhost +local:root >/dev/null 2>&1
 
 complete -cf sudo
 
@@ -89,22 +132,21 @@ shopt -s histappend
 #
 # # ex - archive extractor
 # # usage: ex <file>
-ex ()
-{
-  if [ -f $1 ] ; then
+ex() {
+  if [ -f $1 ]; then
     case $1 in
-      *.tar.bz2)   tar xjf $1   ;;
-      *.tar.gz)    tar xzf $1   ;;
-      *.bz2)       bunzip2 $1   ;;
-      *.rar)       unrar x $1     ;;
-      *.gz)        gunzip $1    ;;
-      *.tar)       tar xf $1    ;;
-      *.tbz2)      tar xjf $1   ;;
-      *.tgz)       tar xzf $1   ;;
-      *.zip)       unzip $1     ;;
-      *.Z)         uncompress $1;;
-      *.7z)        7z x $1      ;;
-      *)           echo "'$1' cannot be extracted via ex()" ;;
+    *.tar.bz2) tar xjf $1 ;;
+    *.tar.gz) tar xzf $1 ;;
+    *.bz2) bunzip2 $1 ;;
+    *.rar) unrar x $1 ;;
+    *.gz) gunzip $1 ;;
+    *.tar) tar xf $1 ;;
+    *.tbz2) tar xjf $1 ;;
+    *.tgz) tar xzf $1 ;;
+    *.zip) unzip $1 ;;
+    *.Z) uncompress $1 ;;
+    *.7z) 7z x $1 ;;
+    *) echo "'$1' cannot be extracted via ex()" ;;
     esac
   else
     echo "'$1' is not a valid file"
