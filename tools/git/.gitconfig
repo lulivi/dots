@@ -13,6 +13,7 @@
     ss = status -s
     d  = diff
     dc = diff --cached
+    superclean = clean -dfx
 # [color "diff-highlight"]
 #   oldNormal = red
 #   oldHighlight = red bold 52
