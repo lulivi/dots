@@ -68,7 +68,6 @@ _C_WHITE="$(tput bold)$(tput setaf 7)"
 _C_RESET="$(tput sgr0)"
 
 function __set_git_prompt() {
-  # Set the final branch string
   BRANCH="$(git branch --show-current 2>/dev/null)"
   if [[ -n "$BRANCH" ]]; then
     if [[ -z "$(git status --short)" ]]; then
@@ -76,41 +75,46 @@ function __set_git_prompt() {
     else
       : "[${_C_LIGHT_YELLOW}${BRANCH}${_C_RESET}]"
     fi
-    GIT_PROMPT="$_"
+  else
+    : ""
   fi
+  _GIT_PROMPT_VAR="$_"
 }
 
 # Return the prompt symbol to use, colorized based on the return value of the
 # previous command.
 function __set_status_code() {
   if [[ $1 -ne 0 ]]; then
-    STATUS_CODE="${_C_LIGHT_RED}${1}${_C_RESET} "
+    : "${_C_LIGHT_RED}${1}${_C_RESET} "
   else
-    STATUS_CODE=""
+    : ""
   fi
+  _STATUS_CODE_VAR="$_"
 }
 
 # Determine active Python virtualenv details.
 function __set_virtualenv() {
   if [[ -n "$VIRTUAL_ENV" ]]; then
-    PYTHON_VIRTUALENV="${_C_BLUE}[$(basename "$VIRTUAL_ENV")]${_C_RESET} "
+    : "${_C_BLUE}[$(basename "$VIRTUAL_ENV")]${_C_RESET} "
+  else
+    : ""
   fi
+  _VIRTUAL_ENV="$_"
 }
 
 # Set the full bash prompt.
 function set_bash_prompt() {
-  # Set the PROMPT_SYMBOL variable. We do this first so we don't lose the
-  # return value of the last command.
+  # Set the _STATUS_CODE_VAR variable.
   __set_status_code "$?"
 
-  # Set the PYTHON_VIRTUALENV variable.
+  # Set the _VIRTUAL_ENV variable.
   __set_virtualenv
 
-  # Set the GIT_PROMPT variable
+  # Set the _GIT_PROMPT_VAR variable
   __set_git_prompt
 
   # Set the bash prompt variable.
-  PS1="${STATUS_CODE}${PYTHON_VIRTUALENV}${_C_LIGHT_CYAN}[\w]${_C_RESET} ${GIT_PROMPT}\n> "
+  PS1="${_STATUS_CODE_VAR}${_VIRTUAL_ENV}${_C_LIGHT_CYAN}[\w]${_C_RESET} ${_GIT_PROMPT_VAR}\n> "
 }
 
 # Tell bash to execute this function just before displaying its prompt.
