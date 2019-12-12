@@ -50,52 +50,56 @@ fi
 
 # Colors
 _C_BLACK="$(tput setaf 0)"
-_C_DARK_GRAY="$(tput bold)$(tput setaf 0)"
+_C_D_GRAY="$(tput bold; tput setaf 0)"
 _C_RED="$(tput setaf 1)"
-_C_LIGHT_RED="$(tput bold)$(tput setaf 1)"
+_C_L_RED="$(tput bold; tput setaf 1)"
 _C_GREEN="$(tput setaf 2)"
-_C_LIGHT_GREEN="$(tput bold)$(tput setaf 2)"
+_C_L_GREEN="$(tput bold; tput setaf 2)"
 _C_YELLOW="$(tput setaf 3)"
-_C_LIGHT_YELLOW="$(tput bold)$(tput setaf 3)"
+_C_L_YELLOW="$(tput bold; tput setaf 3)"
 _C_BLUE="$(tput setaf 4)"
-_C_LIGHT_BLUE="$(tput bold)$(tput setaf 4)"
+_C_L_BLUE="$(tput bold; tput setaf 4)"
 _C_MAGENTA="$(tput setaf 5)"
-_C_LIGHT_MAGENTA="$(tput bold)$(tput setaf 5)"
+_C_L_MAGENTA="$(tput bold; tput setaf 5)"
 _C_CYAN="$(tput setaf 6)"
-_C_LIGHT_CYAN="$(tput bold)$(tput setaf 6)"
-_C_LIGHT_GRAY="$(tput setaf 7)"
-_C_WHITE="$(tput bold)$(tput setaf 7)"
-_C_RESET="$(tput sgr0)"
+_C_L_CYAN="$(tput bold; tput setaf 6)"
+_C_L_GRAY="$(tput setaf 7)"
+_C_WHITE="$(tput bold; tput setaf 7)"
+_C_R="$(tput sgr0)"
 
 function __set_git_prompt() {
   BRANCH="$(git branch --show-current 2>/dev/null)"
   if [[ -n "$BRANCH" ]]; then
     if [[ -z "$(git status --short)" ]]; then
-      : "[${_C_LIGHT_GREEN}${BRANCH}${_C_RESET}]"
+      : "[${_C_L_GREEN}${BRANCH}${_C_R}]"
     else
-      : "[${_C_LIGHT_YELLOW}${BRANCH}${_C_RESET}]"
+      : "[${_C_L_YELLOW}${BRANCH}${_C_R}]"
     fi
   else
     : ""
   fi
-  _GIT_PROMPT_VAR="$_"
+  _GIT_PROMPT="$_"
 }
 
 # Return the prompt symbol to use, colorized based on the return value of the
 # previous command.
 function __set_status_code() {
   if [[ $1 -ne 0 ]]; then
-    : "${_C_LIGHT_RED}${1}${_C_RESET} "
+    : "${_C_L_RED}${1}${_C_R} "
   else
     : ""
   fi
-  _STATUS_CODE_VAR="$_"
+  _STATUS_CODE="$_"
+}
+
+function __relative() {
+  printf "$(realpath --relative-to="$1" "$2")"
 }
 
 # Determine active Python virtualenv details.
 function __set_virtualenv() {
   if [[ -n "$VIRTUAL_ENV" ]]; then
-    : "${_C_BLUE}[$(basename "$VIRTUAL_ENV")]${_C_RESET} "
+    : "${_C_BLUE}["$(__relative "$(pwd)" "$VIRTUAL_ENV")"]${_C_R} "
   else
     : ""
   fi
@@ -114,7 +118,7 @@ function set_bash_prompt() {
   __set_git_prompt
 
   # Set the bash prompt variable.
-  PS1="${_STATUS_CODE_VAR}${_VIRTUAL_ENV}${_C_LIGHT_CYAN}[\w]${_C_RESET} ${_GIT_PROMPT_VAR}\n> "
+  PS1="$_STATUS_CODE$_VIRTUAL_ENV$_C_L_CYAN[\w]$_C_R $_GIT_PROMPT\n> "
 }
 
 # Tell bash to execute this function just before displaying its prompt.
@@ -131,7 +135,6 @@ complete -cf sudo
 # it regains control.  #65623
 # http://cnswww.cns.cwru.edu/~chet/bash/FAQ (E11)
 shopt -s checkwinsize
-
 shopt -s expand_aliases
 
 # export QT_SELECT=4
