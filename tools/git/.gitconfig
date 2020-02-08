@@ -14,15 +14,15 @@
     d  = diff
     dc = diff --cached
     superclean = clean -dfx
-# [color "diff-highlight"]
-#   oldNormal = red
-#   oldHighlight = red bold 52
-#   newNormal = green
-#       newHighlight = green bold 22
-# [color "diff"]
-#   meta = yellow bold
-#   commit = yellow bold
-#   frag = magenta bold
-#   old = red bold
-#   new = green bold
-#       whitespace = red reverse
+[color "diff-highlight"]
+    oldNormal = red
+    oldHighlight = red bold 52
+    newNormal = green
+    newHighlight = green bold 22
+[color "diff"]
+    meta = yellow bold
+    commit = yellow bold
+    frag = magenta bold
+    old = red bold
+    new = green bold
+    whitespace = red reverse
