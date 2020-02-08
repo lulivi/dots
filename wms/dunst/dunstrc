@@ -366,4 +366,7 @@
 #    summary = *twitter.com*
 #    urgency = normal
 #
+[mastodon]
+    summary = "*favourited*"
+    format = "<small>%s</small>
 # vim: ft=cfg
