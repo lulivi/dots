@@ -70,10 +70,14 @@ _C_R="$(tput sgr0)"
 function __set_git_prompt() {
   BRANCH="$(git branch --show-current 2>/dev/null)"
   if [[ -n "$BRANCH" ]]; then
+    REPOSITORY="$(basename -s .git "$(git remote get-url origin)")"
     if [[ -z "$(git status --short)" ]]; then
       : "[${_C_L_GREEN}${BRANCH}${_C_R}]"
     else
       : "[${_C_L_YELLOW}${BRANCH}${_C_R}]"
+    fi
+    if [[ -n "$REPOSITORY" ]]; then
+      : "$_ [${_C_L_MAGENTA}${REPOSITORY}${_C_R}]"
     fi
   else
     : ""

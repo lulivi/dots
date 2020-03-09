@@ -38,6 +38,16 @@ sample="$((${res%%x*} / 8))"
     -scale "$res" \
     "/tmp/screenshotblur.png"
 
-# Lock screen with the pixelized image
-/usr/bin/i3lock -i "/tmp/screenshotblur.png"
+if [ "$(playerctl status 2>&1)" == "Playing" ]; then
+    playerctl pause
+fi
 
+# Lock screen with the pixelized image
+/usr/bin/i3lock -e -i "/tmp/screenshotblur.png"
+proc=$!
+notify-send "proc=$proc"
+wait $proc
+
+# if [ "$(playerctl status 2>&1)" == "Paused" ]; then
+#     playerctl play
+# fi

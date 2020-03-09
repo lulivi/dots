@@ -14,6 +14,7 @@
   [[default]]
     [[[child1]]]
       parent = window0
+      profile = default
       type = Terminal
     [[[window0]]]
       parent = ""
@@ -23,10 +24,8 @@
   [[default]]
     copy_on_selection = True
     cursor_color = "#aaaaaa"
-    custom_command = [ $(tmux a &> /dev/null) ] || $(tmux)
     font = Fira Code Light 11
     scrollback_infinite = True
     scrollbar_position = hidden
     show_titlebar = False
-    use_custom_command = True
     use_system_font = False
