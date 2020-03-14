@@ -2,67 +2,33 @@
 #                     T E R M I N A L   U T I L I T I E S                      #
 ################################################################################
 
+# ex - archive extractor
+# usage: ex <file>
+ex() {
+  if [ -f $1 ]; then
+    case $1 in
+    *.tar.bz2) tar xjf $1 ;;
+    *.tar.gz) tar xzf $1 ;;
+    *.bz2) bunzip2 $1 ;;
+    *.rar) unrar x $1 ;;
+    *.gz) gunzip $1 ;;
+    *.tar) tar xf $1 ;;
+    *.tbz2) tar xjf $1 ;;
+    *.tgz) tar xzf $1 ;;
+    *.zip) unzip $1 ;;
+    *.Z) uncompress $1 ;;
+    *.7z) 7z x $1 ;;
+    *) echo "'$1' cannot be extracted via ex()" ;;
+    esac
+  else
+    echo "'$1' is not a valid file"
+  fi
+}
 
-#############
-## Aliases ##
-#############
-
-alias restart_nm="systemctl restart NetworkManager.service";
-
-## Misc
-
-alias q="exit"
-alias r="reset"
-alias weather="curl wttr.in/~Granada"
-alias today="date +%d/%m/%y"
-alias graphic_card_in_use="glxinfo|egrep \"OpenGL vendor|OpenGL renderer*\""
-
-alias matrix="cmatrix -b -a -u 2 -C yellow"
-alias tubes="pipes -p 20 -s 15 -r 0 -R"
-
-alias reload_bspwm="~/.config/bspwm/bspwmrc 2>&1 1>/dev/null"
-alias cal_notif="~/scripts/calendar.sh"
-
-alias grep='grep --color=auto'
-alias pacman='pacman --color=auto'
-alias tree='tree --dirsfirst -C'
-alias dmesg='dmesg --color=auto --reltime --human --nopager --decode'
-alias free='free -mht'
-alias yay='yay --color=auto'
-
-## Work
-
-alias vpn_ugr="sudo openconnect vpn2.ugr.es"
-alias etsiit="sh -c '[ -d /mnt/Data/Mega ] || sudo ntfs-3g -o uid=1000 /dev/sda1 /mnt/Data/'; cd /mnt/Data/Mega/ETSIIT/17-18/2cuatrimestre/"
-
-## Playerctl
-
-alias pp="playerctl play-pause;exit"
-alias nxt="playerctl next;exit"
-alias prv="playerctl previous;exit"
-alias stp="playerctl stop;exit"
-# np() {
-#     if [ -n "$(playerctl metadata artist)" ]; then
-#         printf "$(playerctl metadata artist) - $(playerctl metadata title)"
-#     fi
-# }
-# alias np="$(np)"
-
-alias cvenv="python -m virtualenv venv; source ./venv/bin/activate.fish"
-alias svenv="source ./venv/bin/activate.fish"
-alias evenv="source ./venv/bin/deactivate.fish"
-alias rvenv="rm -r ./venv/*"
-
-## Fish Shell
-
-alias fish_reload="source ~/.config/fish/config.fish"
-
-###############
-## Variables ##
-###############
-
-export EDITOR="vim"
-export XDG_CONFIG_HOME="$HOME/.config"
-export SXHKD_SHELL='/usr/bin/sh'
-export PATH="$HOME/scripts/":"$HOME/.local/bin/":$PATH
-
+# np - show current music
+# usage: np
+np() {
+    if [ -n "$(playerctl metadata artist 2>/dev/null)" ]; then
+        printf "$(playerctl metadata artist) - $(playerctl metadata title)\n"
+    fi
+}

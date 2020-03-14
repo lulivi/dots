@@ -4,8 +4,8 @@ scripts-lock
 scripts-screenshot
 scripts-vm
 scripts-xr_wrapper_reloader
-tools-editors-vim-vimrc
 tools-editors-nvim-init
+tools-editors-vim-vimrc
 tools-filemanager-pcmanfm-pcmanfm
 tools-git-bash-git-prompt
 tools-git-gitconfig
@@ -15,7 +15,9 @@ tools-ranger-rifle
 tools-ranger-scope
 tools-shell-bash-bashrc
 tools-shell-bash-profile
+tools-shell-shell-aliases
 tools-shell-shell-utilities
+tools-shell-shell-variables
 tools-terminals-terminator-config
 tools-tmux-conf
 tools-tmux-conf-local
