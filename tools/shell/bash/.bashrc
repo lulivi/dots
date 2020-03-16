@@ -163,7 +163,7 @@ add_path_to_variable() {
   local new_path="$2"
 
   if [[ ${!path_variable_name} != *$new_path* ]]; then
-    export PATH=$new_path:${!path_variable_name}
+    export $path_variable_name=$new_path:${!path_variable_name}
   else
     printf '[WARNING] "%s" path already in $%s.\n' \
       "$new_path" \
