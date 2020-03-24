@@ -15,12 +15,16 @@ tools-ranger-rifle
 tools-ranger-scope
 tools-shell-bash-bashrc
 tools-shell-bash-profile
+tools-shell-fish-config
+tools-shell-fish-fishfile
 tools-shell-shell-aliases
 tools-shell-shell-utilities
 tools-shell-shell-variables
 tools-terminals-terminator-config
 tools-tmux-conf
 tools-tmux-conf-local
+tools-top-htop-htoprc
+tools-top-top-toprc
 wms-xresources-edit
 wms-xresources-src
 wms-xresources-theme
