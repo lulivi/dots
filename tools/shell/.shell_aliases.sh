@@ -12,6 +12,7 @@ alias r="reset"
 alias weather="curl wttr.in/~Granada"
 alias today="date +%d/%m/%y"
 alias graphic_card_in_use="glxinfo|egrep \"OpenGL vendor|OpenGL renderer*\""
+alias center_tmux="tmux split-window -h \; split-window -h \; swap-pane -s 1 -t 2 \; resize-pane -t1 -x 75 \; resize-pane -t3 -x 75 \; select-pane -t 2"
 
 # Entertainment
 alias matrix="cmatrix -b -a -u 2 -C yellow"
