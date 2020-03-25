@@ -152,10 +152,6 @@ source_shell_script() {
   fi
 }
 
-source_shell_script "$HOME/.shell_utilities.sh"
-source_shell_script "$HOME/.shell_aliases.sh"
-source_shell_script "$HOME/.shell_variables.sh"
-
 # Add item to a path-like variable
 # Usage: add_path_to_variable <path_variable_name> <new_path>
 add_path_to_variable() {
@@ -171,5 +167,12 @@ add_path_to_variable() {
   fi
 }
 
+source_shell_script "$HOME/.shell_utilities.sh"
+source_shell_script "$HOME/.shell_aliases.sh"
+source_shell_script "$HOME/.shell_variables.sh"
+
 add_path_to_variable "PATH" "$HOME/scripts/"
 add_path_to_variable "PATH" "$HOME/.local/bin/"
+
+
+[ -f $HOME/.cache/wal/sequences ] && (cat ~/.cache/wal/sequences &)
