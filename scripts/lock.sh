@@ -23,6 +23,8 @@
 # 
 # Dependencies: scrot, imagemagick, i3lock
 
+playerctl pause &>/dev/null
+
 # Obtain the screen resolution with xdpyinfo
 res=""$(xdpyinfo | awk '/dimensions:/ {print $2}')"!"
 
@@ -38,16 +40,5 @@ sample="$((${res%%x*} / 8))"
     -scale "$res" \
     "/tmp/screenshotblur.png"
 
-if [ "$(playerctl status 2>&1)" == "Playing" ]; then
-    playerctl pause
-fi
-
 # Lock screen with the pixelized image
 /usr/bin/i3lock -e -i "/tmp/screenshotblur.png"
-proc=$!
-notify-send "proc=$proc"
-wait $proc
-
-# if [ "$(playerctl status 2>&1)" == "Paused" ]; then
-#     playerctl play
-# fi

@@ -70,9 +70,9 @@ _C_WHITE="$(tput bold; tput setaf 7)"
 _C_R="$(tput sgr0)"
 
 function __set_git_prompt() {
-  BRANCH="$(git branch --show-current 2>/dev/null)"
+  BRANCH="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
   if [[ -n "$BRANCH" ]]; then
-    REPOSITORY="$(basename -s .git "$(git remote get-url origin)")"
+    REPOSITORY="$(basename -s .git "$(git config --get remote.origin.url)")"
     if [[ -z "$(git status --short)" ]]; then
       : "[${_C_L_GREEN}${BRANCH}${_C_R}]"
     else
