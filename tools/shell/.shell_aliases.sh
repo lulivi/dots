@@ -5,7 +5,6 @@
 # Systemd
 alias restart_nm="systemctl restart NetworkManager.service"
 alias reload_bspwm="~/.config/bspwm/bspwmrc 2>&1 1>/dev/null"
-alias activate="source .venv/bin/activate"
 
 ## Misc
 alias t="tmux"

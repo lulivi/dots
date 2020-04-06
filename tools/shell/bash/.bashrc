@@ -74,13 +74,11 @@ function __set_git_prompt() {
   if [[ -n "$BRANCH" ]]; then
     REPOSITORY="$(basename -s .git "$(git config --get remote.origin.url)")"
     if [[ -z "$(git status --short)" ]]; then
-      : "[${_C_L_GREEN}${BRANCH}${_C_R}]"
+      : "${_C_L_GREEN}${BRANCH}${_C_R}"
     else
-      : "[${_C_L_YELLOW}${BRANCH}${_C_R}]"
+      : "${_C_L_YELLOW}${BRANCH}${_C_R}"
     fi
-    if [[ -n "$REPOSITORY" ]]; then
-      : "$_ [${_C_L_MAGENTA}${REPOSITORY}${_C_R}]"
-    fi
+    : "${_C_L_GREEN}[${REPOSITORY}${_C_R}@$_${_C_L_GREEN}]${_C_R}"
   else
     : ""
   fi
@@ -173,6 +171,5 @@ source_shell_script "$HOME/.shell_variables.sh"
 
 add_path_to_variable "PATH" "$HOME/scripts/"
 add_path_to_variable "PATH" "$HOME/.local/bin/"
-
 
 [ -f $HOME/.cache/wal/sequences ] && (cat ~/.cache/wal/sequences &)

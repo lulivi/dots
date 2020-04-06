@@ -3,6 +3,7 @@
     email = luislivilla@gmail.com
 [core]
     editor = vim
+    excludesfile = ~/.gitignore
 [alias]
     p  = pull
     pr = pull --rebase

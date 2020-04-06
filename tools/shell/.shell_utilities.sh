@@ -2,6 +2,18 @@
 #                     T E R M I N A L   U T I L I T I E S                      #
 ################################################################################
 
+# activate/a - activate venv
+activate() {
+    venv_name="${1:-.venv}"
+    activate_script="${venv_name}/bin/activate"
+    if [[ -f "$activate_script" ]]; then
+        source "$activate_script"
+    else
+        printf '"%s" virtualenv does not exist.\n' "$venv_name" >&2
+        return 127
+    fi
+}
+
 # ex - archive extractor
 # usage: ex <file>
 ex() {
