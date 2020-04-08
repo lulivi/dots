@@ -14,6 +14,10 @@ activate() {
     fi
 }
 
+telert() {
+  RC="$?" $HOME/scripts/telegram_return_code.sh
+}
+
 # ex - archive extractor
 # usage: ex <file>
 ex() {

@@ -124,3 +124,6 @@ dmypy.json
 
 # code
 .vscode/
+
+# Selected files
+automation/selected_files.txt
