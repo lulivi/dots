@@ -15,19 +15,26 @@ activate() {
     fi
 }
 
-# telert - send notification with previous command return code
-# usage: <comand>; telert
-telert() {
-    RC="$?"
+# send_telegram_message - send a telegram message to CHAT_ID with a bot
+# ussage: send_telegram_message "<message_to_send>"
+send_telegram_message() {
+    message="$1"
 
-    if [ -z "$BOT_TOKEN" OR -z "$CHAT_ID" ]; then
+    if [ -z "$BOT_TOKEN" ] || [ -z "$CHAT_ID" ]; then
         printf 'Please be sure that $BOT_TOKEN and $CHAT_ID are set.\n'
         return 1
     fi
 
-    TEXT="$(printf 'Process finished\nReturn code = `%s`' "${RC}")"
+    if [ -z "$message" ]; then
+        printf 'There is no message to send. Aborting.'
+        return 1
+    elif [ "${#message}" -gt "4096" ]; then
+        printf -v message '%s\n```... The message has been trimmed.' \
+            "${message:0:4066}"
+    fi
+
     URL="https://api.telegram.org/bot${BOT_TOKEN}/sendMessage"
-    DATA="chat_id=${CHAT_ID}&parse_mode=Markdown&text=${TEXT}"
+    DATA="chat_id=${CHAT_ID}&parse_mode=Markdown&text=${message}"
 
     obtained_json="$(curl -s --data "$DATA" $URL)"
     petition_ok="$(printf '%s' "$obtained_json" | jq .ok)"
@@ -40,6 +47,21 @@ telert() {
     fi
 
     return 0
+}
+
+# telpipe - send notification with previous command output
+# usage: <comand> | telpipe
+telpipe() {
+    header='\n--------------------- Output ---------------------'
+    printf -v previous_output '```\n%b%s\n```' "$header" "$(< /dev/stdin)"
+    send_telegram_message "$previous_output"
+}
+
+# telret - send notification with previous command return code
+# usage: <comand>; telret
+telret() {
+    printf -v message 'Process finished\nReturn code = `%s`' "$?"
+    send_telegram_message "$message"
 }
 
 # ex - archive extractor
