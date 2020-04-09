@@ -198,15 +198,12 @@ def delete_selected_files(
         verbose: Print info in verbose mode.
     """
     print_selected_files(selected_files_list, verbose)
-    try:
-        if (
-            input("Are you sure to delete previous links? (yes/no): ")
-            .strip()
-            .lower()
-            != "yes"
-        ):
-            raise KeyboardInterrupt
-    except KeyboardInterrupt:
+    if (
+        input("Are you sure to delete previous links? (yes/no): ")
+        .strip()
+        .lower()
+        != "yes"
+    ):
         print("Aborting symlinks deletion.")
         return
     print()

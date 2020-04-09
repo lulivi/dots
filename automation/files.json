@@ -1,9 +1,7 @@
 {
     "emacs-config": {"srcfile": "tools/editors/emacs/config.org","symlink": ".emacs.d/config.org"},
     "emacs-init": {"srcfile": "tools/editors/emacs/init.el","symlink": ".emacs.d/init.el"},
-    "emax-mv-lists": {"srcfile": "tools/editors/emacs/.mc-lists.el","symlink": ".emacs.d/.mc-lists.el"},
-    "fonts-FiraCode": {"srcfile": "fonts/FiraCode","symlink": ".fonts/FiraCode"},
-    "fonts-FontAwesome": {"srcfile": "fonts/FontAwesome","symlink": ".fonts/FontAwesome"},
+    "emacs-mc-lists": {"srcfile": "tools/editors/emacs/.mc-lists.el","symlink": ".emacs.d/.mc-lists.el"},
     "scripts-add_log_entry": {"srcfile": "scripts/add_log_entry","symlink": "scripts/add_log_entry"},
     "scripts-colortrans": {"srcfile": "scripts/colortrans.py","symlink": "scripts/colortrans.py"},
     "scripts-dec_to_hex": {"srcfile": "scripts/dec_to_hex.sh","symlink": "scripts/dec_to_hex.sh"},
@@ -17,7 +15,6 @@
     "scripts-show_keypress": {"srcfile": "scripts/show_keypress.sh","symlink": "scripts/show_keypress.sh"},
     "scripts-show_sxhkd_keybindings": {"srcfile": "scripts/show_sxhkd_keybindings.sh","symlink": "scripts/show_sxhkd_keybindings.sh"},
     "scripts-status": {"srcfile": "scripts/status.sh","symlink": "scripts/status.sh"},
-    "scripts-telegram-return-code": {"srcfile": "scripts/telegram_return_code.sh","symlink": "scripts/telegram_return_code.sh"},
     "scripts-tput_clock": {"srcfile": "scripts/tput_clock.sh","symlink": "scripts/tput_clock.sh"},
     "scripts-tput_colors": {"srcfile": "scripts/tput_colors.sh","symlink": "scripts/tput_colors.sh"},
     "scripts-vm": {"srcfile": "scripts/vm","symlink": "scripts/vm"},
