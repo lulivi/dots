@@ -1,0 +1,154 @@
+# class HomeFile(NamedTuple):
+#     key: str
+#     relpath: Path
+#     description: str = ""
+#     packages: List[str] = []
+
+# Some useful scripts
+[scripts-add_log_entry]
+relpath = "scripts/add_log_entry"
+[scripts-colortrans]
+relpath = "scripts/colortrans.py"
+[scripts-dec_to_hex]
+relpath = "scripts/dec_to_hex.sh"
+[scripts-dunst_xr_theme_changer]
+relpath = "scripts/dunst_xr_theme_changer.sh"
+[scripts-hex_dec_color]
+relpath = "scripts/hex_dec_color.sh"
+[scripts-kb_light]
+relpath = "scripts/kb_light.py"
+[scripts-lock]
+relpath = "scripts/lock.sh"
+[scripts-pandoc_doc_copy]
+relpath = "scripts/pandoc_doc_copy.sh"
+[scripts-screenshot]
+relpath = "scripts/screenshot"
+[scripts-session]
+relpath = "scripts/session.sh"
+[scripts-show_keypress]
+relpath = "scripts/show_keypress.sh"
+[scripts-show_sxhkd_keybindings]
+relpath = "scripts/show_sxhkd_keybindings.sh"
+[scripts-status]
+relpath = "scripts/status.sh"
+[scripts-tput_clock]
+relpath = "scripts/tput_clock.sh"
+[scripts-tput_colors]
+relpath = "scripts/tput_colors.sh"
+[scripts-vm]
+relpath = "scripts/vm"
+[scripts-wm_selector]
+relpath = "scripts/wm_selector.sh"
+[scripts-xr_color_scheme]
+relpath = "scripts/xr_color_scheme.sh"
+[scripts-xr_theme_changer]
+relpath = "scripts/xr_theme_changer.sh"
+[scripts-xr_wrapper_reloader]
+relpath = "scripts/xr_wrapper_reloader.sh"
+
+# Emacs configuration
+[emacs-config]
+relpath = ".emacs.d/config.org"
+[emacs-init]
+relpath = ".emacs.d/init.el"
+[emacs-mc-lists]
+relpath = ".emacs.d/.mc-lists.el"
+
+# Themes
+[base16-xresources]
+relpath = ".themes/base16-xresources"
+
+# Editors
+[nvim-init]
+relpath = ".config/nvim/init.vim"
+[vim-vimrc]
+relpath = ".vimrc"
+
+# File managers
+[pcmanfm]
+relpath = ".config/pcmanfm/default/pcmanfm.conf"
+
+[ranger-commands]
+relpath = ".config/ranger/commands.py"
+[ranger-rc]
+relpath = ".config/ranger/rc.conf"
+[ranger-rifle]
+relpath = ".config/ranger/rifle.conf"
+[ranger-scope]
+relpath = ".config/ranger/scope.sh"
+
+# Git
+[diff-so-fancy]
+relpath = ".diff-so-fancy"
+[gitconfig]
+relpath = ".gitconfig"
+packages = ["git"]
+
+# Shell
+[bash-bashrc]
+relpath = ".bashrc"
+[bash-profile]
+relpath = ".bash_profile"
+
+[shell-aliases]
+relpath = ".shell_aliases.sh"
+[shell-utilities]
+relpath = ".shell_utilities.sh"
+[shell-variables]
+relpath = ".shell_variables.sh"
+
+[fish-config]
+relpath = ".config/fish/config.fish"
+[fish-fishfile]
+relpath = ".config/fish/fishfile"
+
+# Terminals
+[terminator-config]
+relpath = ".config/terminator/config"
+
+# Utils
+[htop-htoprc]
+relpath = ".config/htop/htoprc"
+
+[top-toprc]
+relpath = ".config/procps/toprc"
+
+# Window managers config files
+
+## Bspwm
+[bspwm-autostart]
+relpath = ".config/bspwm/autostart.sh"
+[bspwm-bspwmrc]
+relpath = ".config/bspwm/bspwmrc"
+
+## Sxhkd
+[sxhkd-sxhkdrc]
+relpath = ".config/sxhkd/sxhkdrc"
+
+## Compton
+[compton-conf]
+relpath = ".config/compton/compton.conf"
+
+## Dunst
+[dunst-dunst_xr_colors]
+relpath = ".config/dunst/dunstrc_xr_colors"
+[dunst-dunstrc]
+relpath = ".config/dunst/dunstrc"
+[dunst-launch_dunst]
+relpath = ".config/dunst/launch_dunst.sh"
+
+## Polybar
+[polybar-config]
+relpath = ".config/polybar/config"
+
+## Xresources
+[xresources-edit]
+relpath = ".Xresources.edit"
+[xresources-src]
+relpath = ".Xresources.src"
+[xresources-theme]
+relpath = ".Xresources.theme"
+
+# Tmux
+[tmux-conf-local]
+relpath = ".tmux.conf.local"
