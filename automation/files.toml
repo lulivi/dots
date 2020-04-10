@@ -1,156 +1,154 @@
+# class HomeFile(NamedTuple):
+#     key: str
+#     relpath: Path
+#     description: str = ""
+#     packages: List[str] = []
+
 # Some useful scripts
 [scripts-add_log_entry]
-symlink = "scripts/add_log_entry"
+relpath = "scripts/add_log_entry"
 [scripts-colortrans]
-symlink = "scripts/colortrans.py"
+relpath = "scripts/colortrans.py"
 [scripts-dec_to_hex]
-symlink = "scripts/dec_to_hex.sh"
+relpath = "scripts/dec_to_hex.sh"
 [scripts-dunst_xr_theme_changer]
-symlink = "scripts/dunst_xr_theme_changer.sh"
+relpath = "scripts/dunst_xr_theme_changer.sh"
 [scripts-hex_dec_color]
-symlink = "scripts/hex_dec_color.sh"
+relpath = "scripts/hex_dec_color.sh"
 [scripts-kb_light]
-symlink = "scripts/kb_light.py"
+relpath = "scripts/kb_light.py"
 [scripts-lock]
-symlink = "scripts/lock.sh"
+relpath = "scripts/lock.sh"
 [scripts-pandoc_doc_copy]
-symlink = "scripts/pandoc_doc_copy.sh"
+relpath = "scripts/pandoc_doc_copy.sh"
 [scripts-screenshot]
-symlink = "scripts/screenshot"
+relpath = "scripts/screenshot"
 [scripts-session]
-symlink = "scripts/session.sh"
+relpath = "scripts/session.sh"
 [scripts-show_keypress]
-symlink = "scripts/show_keypress.sh"
+relpath = "scripts/show_keypress.sh"
 [scripts-show_sxhkd_keybindings]
-symlink = "scripts/show_sxhkd_keybindings.sh"
+relpath = "scripts/show_sxhkd_keybindings.sh"
 [scripts-status]
-symlink = "scripts/status.sh"
+relpath = "scripts/status.sh"
 [scripts-tput_clock]
-symlink = "scripts/tput_clock.sh"
+relpath = "scripts/tput_clock.sh"
 [scripts-tput_colors]
-symlink = "scripts/tput_colors.sh"
+relpath = "scripts/tput_colors.sh"
 [scripts-vm]
-symlink = "scripts/vm"
+relpath = "scripts/vm"
 [scripts-wm_selector]
-symlink = "scripts/wm_selector.sh"
+relpath = "scripts/wm_selector.sh"
 [scripts-xr_color_scheme]
-symlink = "scripts/xr_color_scheme.sh"
+relpath = "scripts/xr_color_scheme.sh"
 [scripts-xr_theme_changer]
-symlink = "scripts/xr_theme_changer.sh"
+relpath = "scripts/xr_theme_changer.sh"
 [scripts-xr_wrapper_reloader]
-symlink = "scripts/xr_wrapper_reloader.sh"
+relpath = "scripts/xr_wrapper_reloader.sh"
 
 # Emacs configuration
 [emacs-config]
-symlink = ".emacs.d/config.org"
+relpath = ".emacs.d/config.org"
 [emacs-init]
-symlink = ".emacs.d/init.el"
+relpath = ".emacs.d/init.el"
 [emacs-mc-lists]
-symlink = ".emacs.d/.mc-lists.el"
+relpath = ".emacs.d/.mc-lists.el"
 
 # Themes
 [base16-xresources]
-symlink = ".themes/base16-xresources"
+relpath = ".themes/base16-xresources"
 
 # Editors
 [nvim-init]
-symlink = ".config/nvim/init.vim"
+relpath = ".config/nvim/init.vim"
 [vim-vimrc]
-symlink = ".vimrc"
+relpath = ".vimrc"
 
 # File managers
 [pcmanfm]
-symlink = ".config/pcmanfm/default/pcmanfm.conf"
+relpath = ".config/pcmanfm/default/pcmanfm.conf"
 
 [ranger-commands]
-symlink = ".config/ranger/commands.py"
+relpath = ".config/ranger/commands.py"
 [ranger-rc]
-symlink = ".config/ranger/rc.conf"
+relpath = ".config/ranger/rc.conf"
 [ranger-rifle]
-symlink = ".config/ranger/rifle.conf"
+relpath = ".config/ranger/rifle.conf"
 [ranger-scope]
-symlink = ".config/ranger/scope.sh"
+relpath = ".config/ranger/scope.sh"
 
 # Git
 [diff-so-fancy]
-symlink = ".diff-so-fancy"
+relpath = ".diff-so-fancy"
 [gitconfig]
-symlink = ".gitconfig"
+relpath = ".gitconfig"
+packages = ["git"]
 
 # Shell
 [bash-bashrc]
-symlink = ".bashrc"
+relpath = ".bashrc"
 [bash-profile]
-symlink = ".bash_profile"
+relpath = ".bash_profile"
 
 [shell-aliases]
-symlink = ".shell_aliases.sh"
+relpath = ".shell_aliases.sh"
 [shell-utilities]
-symlink = ".shell_utilities.sh"
+relpath = ".shell_utilities.sh"
 [shell-variables]
-symlink = ".shell_variables.sh"
+relpath = ".shell_variables.sh"
 
 [fish-config]
-symlink = ".config/fish/config.fish"
+relpath = ".config/fish/config.fish"
 [fish-fishfile]
-symlink = ".config/fish/fishfile"
+relpath = ".config/fish/fishfile"
 
 # Terminals
 [terminator-config]
-symlink = ".config/terminator/config"
+relpath = ".config/terminator/config"
 
 # Utils
 [htop-htoprc]
-symlink = ".config/htop/htoprc"
+relpath = ".config/htop/htoprc"
 
 [top-toprc]
-symlink = ".config/procps/toprc"
+relpath = ".config/procps/toprc"
 
 # Window managers config files
 
 ## Bspwm
-[wms-bspwm-autostart]
-symlink = ".config/bspwm/autostart.sh"
-[wms-bspwm-bspwmrc]
-symlink = ".config/bspwm/bspwmrc"
+[bspwm-autostart]
+relpath = ".config/bspwm/autostart.sh"
+[bspwm-bspwmrc]
+relpath = ".config/bspwm/bspwmrc"
 
 ## Sxhkd
-[wms-sxhkd-sxhkdrc]
-symlink = ".config/sxhkd/sxhkdrc"
+[sxhkd-sxhkdrc]
+relpath = ".config/sxhkd/sxhkdrc"
 
 ## Compton
-[wms-compton-conf]
-symlink = ".config/compton/compton.conf"
+[compton-conf]
+relpath = ".config/compton/compton.conf"
 
 ## Dunst
-[wms-dunst-dunst_xr_colors]
-symlink = ".config/dunst/dunstrc_xr_colors"
-[wms-dunst-dunstrc]
-symlink = ".config/dunst/dunstrc"
-[wms-dunst-launch_dunst]
-symlink = ".config/dunst/launch_dunst.sh"
+[dunst-dunst_xr_colors]
+relpath = ".config/dunst/dunstrc_xr_colors"
+[dunst-dunstrc]
+relpath = ".config/dunst/dunstrc"
+[dunst-launch_dunst]
+relpath = ".config/dunst/launch_dunst.sh"
 
 ## Polybar
-[wms-polybar-config]
-symlink = ".config/polybar/config"
+[polybar-config]
+relpath = ".config/polybar/config"
 
 ## Xresources
-[wms-xresources-edit]
-symlink = ".Xresources.edit"
-[wms-xresources-src]
-symlink = ".Xresources.src"
-[wms-xresources-theme]
-symlink = ".Xresources.theme"
+[xresources-edit]
+relpath = ".Xresources.edit"
+[xresources-src]
+relpath = ".Xresources.src"
+[xresources-theme]
+relpath = ".Xresources.theme"
 
-
-
-[tools-tmux-conf-local]
-srcfile = "tools/tmux/.tmux.conf.local"
-symlink = ".tmux.conf.local"
-
-[tools-tmux-conf]
-srcfile = "tools/tmux/.tmux.conf"
-symlink = ".tmux.conf"
-
-
-
+# Tmux
+[tmux-conf-local]
+relpath = ".tmux.conf.local"
