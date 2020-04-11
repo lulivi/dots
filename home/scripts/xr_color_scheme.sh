@@ -3,7 +3,8 @@
 
 r=$(tput op)
 
-htc=$HOME/scripts/hex_dec_color.sh
+current_directory="$(dirname "$(readlink -f "$0")")"
+htc="$current_directory/hex_dec_color.sh"
 
 color_list=($(xrdb -query | grep -e "color[0-9]" | cut -f2 | tr '\n' ' '))
 

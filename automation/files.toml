@@ -1,29 +1,21 @@
-# Add here all your new files in the repository in the following format:
-#
-# [<key name>]
-# relpath = "relative/path/from/home/dir"
-# description = "brief description of the file"
-# packages = ["<package 1>", "<package 2>"]
-
 # Some useful scripts
 [scripts-add_log_entry]
 relpath = "scripts/add_log_entry"
+description = "Append a new entry in GNU changelog style."
 [scripts-colortrans]
 relpath = "scripts/colortrans.py"
-[scripts-dec_to_hex]
-relpath = "scripts/dec_to_hex.sh"
-[scripts-dunst_xr_theme_changer]
-relpath = "scripts/dunst_xr_theme_changer.sh"
+description = "Convert values between RGB hex codes and xterm-256 color codes."
 [scripts-hex_dec_color]
 relpath = "scripts/hex_dec_color.sh"
+description = "Convert between decimal and hexadecimal"
 [scripts-kb_light]
 relpath = "scripts/kb_light.py"
+description = "Modify keyboard backlight."
+packages = ["python-dbus"]
 [scripts-lock]
 relpath = "scripts/lock.sh"
 description = "Lock screen with a pixelated screenshot of your desktop."
-packages = ["xorg-xdpyinfo", "gawk", "scrot", "imagemagick", "i3lock"]
-[scripts-pandoc_doc_copy]
-relpath = "scripts/pandoc_doc_copy.sh"
+packages = ["xorg-xdpyinfo", "scrot", "imagemagick", "i3lock"]
 [scripts-screenshot]
 relpath = "scripts/screenshot"
 description = "Select a square in your screen and save the capture in your clipboard."
@@ -33,50 +25,69 @@ relpath = "scripts/pomodoro.py"
 description = "Run the Pomodoro technique and send notifications to Telegram."
 [scripts-session]
 relpath = "scripts/session.sh"
+description = "Simple terminal GUI to suspend, restart or poweroff the system."
 [scripts-show_keypress]
 relpath = "scripts/show_keypress.sh"
+description = "Show key press."
+packages = ["xorg-xev"]
 [scripts-show_sxhkd_keybindings]
 relpath = "scripts/show_sxhkd_keybindings.sh"
+description = "Capture and show sxhkd keybindings."
 [scripts-status]
 relpath = "scripts/status.sh"
+description = "Check status of each git directory located in the current path."
+packages = ["git"]
 [scripts-tput_clock]
 relpath = "scripts/tput_clock.sh"
-[scripts-tput_colors]
-relpath = "scripts/tput_colors.sh"
+description = "Show clock in an ascii banner."
+packages = ["banner"]
+[scripts-tput_color_base16]
+relpath = "scripts/tput_color_base16.sh"
+description = "Show base16 fg/bg color combinations."
+[scripts-tput_color_table]
+relpath = "scripts/tput_color_table.sh"
+description = "Show all ANSI colors with their correspondent index."
 [scripts-vm]
 relpath = "scripts/vm"
 description = "Manage VirtualBox VM running without GUI."
 packages = ["virtualbox"]
 [scripts-wm_selector]
 relpath = "scripts/wm_selector.sh"
+description = "Select window manager from tty"
+packages = ["dialog"]
 [scripts-xr_color_scheme]
 relpath = "scripts/xr_color_scheme.sh"
-[scripts-xr_theme_changer]
-relpath = "scripts/xr_theme_changer.sh"
+description = "Show first 21 colors from Xresources."
 [scripts-xr_wrapper_reloader]
 relpath = "scripts/xr_wrapper_reloader.sh"
+description = "Reload xrdb with custom script."
 
 # Emacs configuration
 [emacs-config]
 relpath = ".emacs.d/config.org"
+description = "Emacs editor main configuration file."
 [emacs-init]
 relpath = ".emacs.d/init.el"
+description = "Emacs editor config.org loader."
 [emacs-mc-lists]
 relpath = ".emacs.d/.mc-lists.el"
-
-# Themes
-[base16-xresources]
-relpath = ".themes/base16-xresources"
+description = "Emacs editor mc-lists plugging configuration."
 
 # Editors
 [nvim-init]
 relpath = ".config/nvim/init.vim"
+description = "Nvim configuration file."
+packages = ["neovim"]
 [vim-vimrc]
 relpath = ".vimrc"
+description = "Vim configuration file."
+packages = ["vim"]
 
 # File managers
 [pcmanfm]
 relpath = ".config/pcmanfm/default/pcmanfm.conf"
+description = "LXDE file manager."
+packages = ["pcmanfm"]
 
 [ranger-commands]
 relpath = ".config/ranger/commands.py"
@@ -90,73 +101,108 @@ relpath = ".config/ranger/scope.sh"
 # Git
 [gitconfig]
 relpath = ".gitconfig"
+description = "Git global configuration."
 packages = ["git"]
 
 # Shell
 [bash-bashrc]
 relpath = ".bashrc"
+description = "Main bash user configuration file."
 [bash-profile]
 relpath = ".bash_profile"
+description = "Entrypoint for .bashrc file."
+
 
 [shell-aliases]
 relpath = ".shell_aliases.sh"
+description = "Utils file where the alias are defined."
 [shell-utilities]
 relpath = ".shell_utilities.sh"
+description = "Utils file where the functions are defined."
 [shell-variables]
 relpath = ".shell_variables.sh"
+description = "Utils file where the variables are defined."
 
 [fish-config]
 relpath = ".config/fish/config.fish"
+description = "Fish shell main configuration file."
 [fish-fishfile]
 relpath = ".config/fish/fishfile"
+description = "Fish shell file where the pluggins are defined."
+packages = ["Fisher"]
 
 # Terminals
 [terminator-config]
 relpath = ".config/terminator/config"
+description = "Terminator configuration file."
+packages = ["terminator"]
 
 # Utils
 [htop-htoprc]
 relpath = ".config/htop/htoprc"
+description = "Htop configuration file."
+packages = ["htop"]
 
 [top-toprc]
 relpath = ".config/procps/toprc"
+description = "Top configuration file."
 
 # Window managers config files
 
 ## Bspwm
 [bspwm-autostart]
 relpath = ".config/bspwm/autostart.sh"
+description = "bspwm app-autostart script."
 [bspwm-bspwmrc]
 relpath = ".config/bspwm/bspwmrc"
+description = "bspwm configuration file."
+packages = ["bspwm"]
 
 ## Sxhkd
 [sxhkd-sxhkdrc]
 relpath = ".config/sxhkd/sxhkdrc"
+description = "sxhkd configuration file."
+packages = ["sxhkd"]
 
-## Compton
-[compton-conf]
-relpath = ".config/compton/compton.conf"
+## Rofi
+[rofi-config]
+relpath = ".config/rofi/config"
+description = "Rofi configuration file."
+packages = ["rofi"]
+
+[wal-template-rofi-dark]
+relpath = ".config/wal/templates/colors-rofi-dark.rasi"
+description = "Wal template for Rofi."
+packages = ["python-pywal"]
 
 ## Dunst
 [dunst-dunst_xr_colors]
 relpath = ".config/dunst/dunstrc_xr_colors"
+description = "Dunst notification daemon Xresources theme changer."
 [dunst-dunstrc]
 relpath = ".config/dunst/dunstrc"
+description = "Dunst notification daemon main configuration file."
+packages = ["dunst"]
 [dunst-launch_dunst]
 relpath = ".config/dunst/launch_dunst.sh"
+description = "Dunst notification daemon launcher script."
 
 ## Polybar
 [polybar-config]
 relpath = ".config/polybar/config"
+description = "Polybar main configuration file."
+packages = ["aur/polybar"]
 
 ## Xresources
 [xresources-edit]
 relpath = ".Xresources.edit"
+description = "Xresources script to safely edit .Xresources through .Xresources.src."
 [xresources-src]
 relpath = ".Xresources.src"
-[xresources-theme]
-relpath = ".Xresources.theme"
+description = "Xresources brother."
 
 # Tmux
 [tmux-conf-local]
 relpath = ".tmux.conf.local"
+description = "Tmux personalization using oh my tmux config."
+packages = ["tmux"]
