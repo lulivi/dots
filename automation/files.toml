@@ -1,8 +1,9 @@
-# class HomeFile(NamedTuple):
-#     key: str
-#     relpath: Path
-#     description: str = ""
-#     packages: List[str] = []
+# Add here all your new files in the repository in the following format:
+#
+# [<key name>]
+# relpath = "relative/path/from/home/dir"
+# description = "brief description of the file"
+# packages = ["<package 1>", "<package 2>"]
 
 # Some useful scripts
 [scripts-add_log_entry]
@@ -19,10 +20,17 @@ relpath = "scripts/hex_dec_color.sh"
 relpath = "scripts/kb_light.py"
 [scripts-lock]
 relpath = "scripts/lock.sh"
+description = "Lock screen with a pixelated screenshot of your desktop."
+packages = ["xorg-xdpyinfo", "gawk", "scrot", "imagemagick", "i3lock"]
 [scripts-pandoc_doc_copy]
 relpath = "scripts/pandoc_doc_copy.sh"
 [scripts-screenshot]
 relpath = "scripts/screenshot"
+description = "Select a square in your screen and save the capture in your clipboard."
+packages = ["scrot", "xclip"]
+[scripts-pomodoro]
+relpath = "scripts/pomodoro.py"
+description = "Run the Pomodoro technique and send notifications to Telegram."
 [scripts-session]
 relpath = "scripts/session.sh"
 [scripts-show_keypress]
@@ -37,6 +45,8 @@ relpath = "scripts/tput_clock.sh"
 relpath = "scripts/tput_colors.sh"
 [scripts-vm]
 relpath = "scripts/vm"
+description = "Manage VirtualBox VM running without GUI."
+packages = ["virtualbox"]
 [scripts-wm_selector]
 relpath = "scripts/wm_selector.sh"
 [scripts-xr_color_scheme]
@@ -78,8 +88,6 @@ relpath = ".config/ranger/rifle.conf"
 relpath = ".config/ranger/scope.sh"
 
 # Git
-[diff-so-fancy]
-relpath = ".diff-so-fancy"
 [gitconfig]
 relpath = ".gitconfig"
 packages = ["git"]
