@@ -19,7 +19,7 @@ choice=`cat $tempfile`
 case $retval in
   0)
     case $choice in
-      "S") suspend;;
+      "S") systemctl suspend; exit;;
       "P") poweroff;;
       "R") reboot;;
     esac;;

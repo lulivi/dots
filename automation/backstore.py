@@ -1,72 +1,39 @@
 #!/usr/bin/env python3.7
 """Manage dotfiles.
 
-This module creates symbolic links of the configuration files in your home
-directory structure. This script can also delete those symbolic links. You have
-to define every file ``files.toml`` with the following format:
+This tool creates symbolic links of your home configuration files (dotfiles).
+This script can also delete those symbolic links and link them.
 
-    [<id>]
-    relpath = "<relative_path>"
-    packages = ["<package1>", "<package2>"]
+By default, the choosen operation (``--print``, ``--link`` and ``--delete``)
+will obtain the selected files from a file called ``selected_files.py`` located
+in this directory. It is possible to select every file listed in ``files.toml``
+using ``--all`` argument, or only one using the argument ``--only``. Also you
+can increase the printing verbosity by using ``--verbose`` argument. For
+``--link`` and ``--delete`` arguments there is an extra flag, ``--force`` if
+you want to skip some link checking before linking or deleting.
 
-For example:
+Some usage examples:
 
-    [scripts-add_log_entry]
-    relpath = "scripts/add_log_entry"
+* Print selected files:
+  ::
 
-    [pcmanfm]
-    relpath = ".config/pcmanfm/default/pcmanfm.conf"
-    packages = ["pcmanfm"]
+      python backstore.py -p
 
-    [scripts-dec_to_hex]
-    relpath = "scripts/dec_to_hex.sh"
+* Print all files:
+  ::
 
-Also you have to create the file ``selected_files.txt`` in where the selected
-ids would be. If you want to select every relation in ``files.json``, just
-write ``ALL`` in the file:
+      python blackstore.py -pa
 
-<id 1>
-<id 2>
-...
+* Link selected files:
+  ::
 
-For example:
+      python backstore.py -l
 
-scripts-add_log_entry
-pcmanfm
+* Delete selected files link:
+  ::
 
-The printed files will follow this structure:
+      python backstore.py -d
 
-For normal mode:
-
-    < ID >: <RELATIVE PATH>
-    < ID >: <RELATIVE PATH>
-    ...
-
-For verbose mode:
-
-< ID >
-    ├─ PATH=<RELATIVE PATH>
-    ├─ DESC=<DESCRIPTION>
-    └─ PKGS=<PACKAGES>
-
-< ID >
-    ├─ PATH=<RELATIVE PATH>
-    ├─ DESC=<DESCRIPTION>
-    └─ PKGS=<PACKAGES>
-...
-
-Examples:
-    Print selected files:
-        python backstore.py -p
-
-    Print all files:
-        python blackstore.py
-
-    Link selected files:
-        python backstore.py -l
-
-    Delete selected files link:
-        python backstore.py -d
 """
 import sys
 import toml
@@ -74,8 +41,9 @@ import colored
 import argparse
 import functools
 
-from typing import List, Dict, Tuple, NamedTuple
+from typing import List, NamedTuple
 from pathlib import Path
+from argparse import Namespace
 from colored import stylize
 
 HOME_PATH: Path = Path.home()
@@ -92,37 +60,13 @@ class HomeFile(NamedTuple):
     :ivar relpath: relative path of the file.
     :ivar description: brief description of the file.
     :ivar packages: required packages related to the file.
-    :ivar selected: whether the file is selected for its print.
+
     """
 
     key: str
     relpath: Path
     description: str = ""
     packages: List[str] = []
-
-
-def _color_file(file_relpath: Path) -> str:
-    """Return a colored file path string.
-
-    The color will tell the file type in the `$HOME` directory.
-
-    :param file_relpath: home-relative file path.
-    :returns: the colored file string.
-
-    """
-    link_name_path = HOME_PATH.joinpath(file_relpath)
-
-    if link_name_path.is_symlink():
-        if link_name_path.resolve() == REPO_HOME_PATH.joinpath(file_relpath):
-            style = colored.fg("cyan")
-        else:
-            style = colored.fg("yellow")
-    elif link_name_path.exists():
-        style = colored.fg("yellow")
-    else:
-        style = colored.bg("red") + colored.fg("black")
-
-    return stylize(str(link_name_path), style)
 
 
 def print_selected_files(
@@ -135,25 +79,55 @@ def print_selected_files(
 
     """
 
-    def _print_file(file: HomeFile, verbose: bool = False) -> None:
-        """Print file row with it appropiate format.
+    def color_file(file_relpath: Path) -> str:
+        """Return a colored file path string.
+
+        The color will tell the file type in the ``$HOME`` directory.
+
+        :param file_relpath: home-relative file path.
+        :returns: the colored file string.
+
+        """
+        link_name_path = HOME_PATH.joinpath(file_relpath)
+        output_text = str(link_name_path)
+
+        if link_name_path.is_symlink():
+            if link_name_path.resolve() == REPO_HOME_PATH.joinpath(
+                file_relpath
+            ):
+                style = colored.fg("cyan")
+            else:
+                style = colored.fg("yellow")
+                output_text = f"{output_text} (linked to wrong file)"
+        elif link_name_path.exists():
+            style = colored.fg("yellow")
+            output_text = f"{output_text} (file is not link)"
+        else:
+            style = colored.bg("red") + colored.fg("black")
+            output_text = f"{output_text} (file does not exist)"
+
+        return stylize(output_text, style)
+
+    def print_file(file: HomeFile, verbose: bool = False) -> None:
+        """Print file with it appropiate format.
 
         :param file: file to print.
         :param verbose: whether to use verbosity in the print function.
 
         """
+        key = stylize(file.key, colored.attr("bold"))
+
         if verbose:
             print(
-                f"{file.key}\n"
-                f"    ├─ PATH={_color_file(file.relpath)}\n"
-                f"    ├─ DESC={file.description}\n"
-                f"    └─ PKGS={file.packages}\n"
+                f"{key}\n"
+                f"├─ PATH {color_file(file.relpath)}\n"
+                f"├─ DESC {file.description}\n"
+                f"└─ PKGS {' '.join(file.packages)}"
             )
         else:
-            print(f"{file.key}: {_color_file(file.relpath)}")
+            print(f"{key}: {color_file(file.relpath)}")
 
-    list(map(functools.partial(_print_file, verbose=verbose), selected_files,))
-    print()
+    list(map(functools.partial(print_file, verbose=verbose), selected_files))
 
 
 def _print_with_attr(text: str, attributes: str):
@@ -161,7 +135,7 @@ def _print_with_attr(text: str, attributes: str):
 
 
 def link_selected_files(
-    selected_files: List[HomeFile], verbose: bool = False, force: bool = False
+    selected_files: List[HomeFile], force: bool = False
 ) -> None:
     """Link selected files.
 
@@ -169,50 +143,73 @@ def link_selected_files(
     :param verbose: print info in verbose mode.
 
     """
-    for selected_file in selected_files:
-        target_path = REPO_HOME_PATH.joinpath(selected_file.relpath)
-        link_name_path = HOME_PATH.joinpath(selected_file.relpath)
+
+    def skip_link(key: str, target_path: Path, link_name_path: Path) -> bool:
+        """Check whether we should skip linking this current file.
+
+        :param key: file key.
+        :param target_path: file repo full path.
+        :param link_name_path: file home full path.
+        :returns: True if we should skip the linking of this file.
+
+        """
+        skip = False
+
+        if link_name_path.is_symlink():
+            if link_name_path.resolve() == target_path:
+                _print_with_attr(
+                    f'{key}: File "{str(link_name_path)}" '
+                    "is already linked.",
+                    colored.fg("green"),
+                )
+            else:
+                _print_with_attr(
+                    f'{key}: File "{str(link_name_path)}" '
+                    f'is linked to "{str(link_name_path.resolve())}" '
+                    f'instead of "{str(target_path)}". Please remove it '
+                    "manually or use --force.",
+                    colored.fg("red"),
+                )
+            skip = True
+        elif link_name_path.exists():
+            _print_with_attr(
+                f'{key}: File "{str(link_name_path)}" '
+                "exists and it is not a symbolic link. Please remove it "
+                "manually or use --force argument.",
+                colored.fg("red"),
+            )
+            skip = True
+        elif not link_name_path.parent.exists():
+            link_name_path.parent.mkdir(parents=True, exist_ok=True)
+
+        return skip
+
+    def link_file(file: HomeFile, force: bool = False) -> None:
+        """Create a link of the file.
+
+        :param file: file to link.
+        :param verbose: whether to use verbosity in the print function.
+
+        """
+        key = stylize(file.key, colored.attr("bold"))
+        target_path = REPO_HOME_PATH.joinpath(file.relpath)
+        link_name_path = HOME_PATH.joinpath(file.relpath)
 
         if force:
             try:
                 link_name_path.unlink()
             except FileNotFoundError:
                 pass
-        else:
-            if link_name_path.is_symlink():
-                if link_name_path.resolve() == target_path:
-                    _print_with_attr(
-                        f'{selected_file.key}: File "{str(link_name_path)}" '
-                        "is already linked.",
-                        colored.fg("yellow"),
-                    )
-                else:
-                    _print_with_attr(
-                        f'{selected_file.key}: File "{str(link_name_path)}" '
-                        f'is linked to "{str(link_name_path.resolve())}" '
-                        f'instead of "{str(target_path)}" Please remove it '
-                        "manually.",
-                        colored.fg("red"),
-                    )
-                continue
-            elif link_name_path.exists():
-                _print_with_attr(
-                    f'{selected_file.key}: File "{str(link_name_path)}" '
-                    "exists and it is not a symbolic link. Ignoring.",
-                    colored.fg("red"),
-                )
-                continue
-            elif not link_name_path.parent.exists():
-                link_name_path.parent.mkdir(parents=True, exist_ok=True)
+        elif skip_link(key, target_path, link_name_path):
+            return
 
         link_name_path.symlink_to(target_path, target_path.is_dir())
         _print_with_attr(
-            f'{selected_file.key}: File "{str(link_name_path)}" linked '
-            "correctly.",
+            f'{key}: File "{str(link_name_path)}" linked ' "correctly.",
             colored.fg("green"),
         )
 
-    print()
+    list(map(functools.partial(link_file, force=force), selected_files))
 
 
 def delete_selected_links(
@@ -225,83 +222,107 @@ def delete_selected_links(
     :param force: whether to always delete the link or not.
 
     """
-    print_selected_files(selected_files, verbose)
 
-    question = (
-        input("Are you sure you want to delete previous links? (yes/no): ")
-        .strip()
-        .lower()
-    )
+    def skip_link(key: str, target_path: Path, link_name_path: Path) -> bool:
+        """Check whether we should skip deleting this current file link.
 
-    if question != "yes":
-        print("Aborting symlinks deletion.")
-        return
+        :param key: file key.
+        :param target_path: file repo full path.
+        :param link_name_path: file home full path.
+        :returns: True if we should skip the deleting of this file link.
 
-    print()
+        """
+        skip = False
 
-    for selected_file in selected_files:
-        target_path = REPO_HOME_PATH.joinpath(selected_file.relpath)
-        link_name_path = HOME_PATH.joinpath(selected_file.relpath)
-
-        if not force:
-            if link_name_path.is_symlink():
-                if link_name_path.resolve() != target_path:
-                    _print_with_attr(
-                        f'{selected_file.key}: File "{str(link_name_path)}" '
-                        f'is linked to "{str(link_name_path.resolve())}" '
-                        f'instead of "{str(target_path)}" Please remove it '
-                        "manually",
-                        colored.fg("red"),
-                    )
-                    continue
-            elif link_name_path.exists():
+        if link_name_path.is_symlink():
+            if link_name_path.resolve() != target_path:
                 _print_with_attr(
-                    f'{selected_file.key}: File "{str(link_name_path)}" '
-                    "exists and it is not a symbolic link. Ignoring.",
+                    f'{key}: File "{str(link_name_path)}" '
+                    f'is linked to "{str(link_name_path.resolve())}" '
+                    f'instead of "{str(target_path)}". Please remove it '
+                    "manually or use --force argument.",
                     colored.fg("red"),
                 )
-                continue
-            else:
-                _print_with_attr(
-                    f'{selected_file.key}: File "{str(link_name_path)}" '
-                    "does not exist.",
-                    colored.fg("yellow"),
-                )
-                continue
+                skip = True
+        elif link_name_path.exists():
+            _print_with_attr(
+                f'{key}: File "{str(link_name_path)}" '
+                "exists and it is not a symbolic link. Use --force to delete "
+                "it.",
+                colored.fg("red"),
+            )
+            skip = True
+        else:
+            _print_with_attr(
+                f'{key}: File "{str(link_name_path)}" ' "does not exist.",
+                colored.fg("yellow"),
+            )
+            skip = True
+
+        return skip
+
+    def delete_link(file: HomeFile, force: bool = False) -> None:
+        """Create a link of the file.
+
+        :param file: file to link.
+        :param verbose: whether to use verbosity in the print function.
+
+        """
+        key = stylize(file.key, colored.attr("bold"))
+        target_path = REPO_HOME_PATH.joinpath(file.relpath)
+        link_name_path = HOME_PATH.joinpath(file.relpath)
+
+        if not force and skip_link(key, target_path, link_name_path):
+            return
 
         try:
             link_name_path.unlink()
         except FileNotFoundError:
             pass
+
         _print_with_attr(
-            f'{selected_file.key}: File "{str(link_name_path)}" deleted '
-            "correctly.",
+            f'{key}: File "{str(link_name_path)}" deleted ' "correctly.",
             colored.fg("green"),
         )
 
-    print()
+    print_selected_files(selected_files, verbose)
+    question = input(
+        "\nAre you sure you want to delete previous links? (yes/no): "
+    )
+
+    if question.strip().lower() != "yes":
+        print("\nAborting symlinks deletion.")
+        return
+
+    list(map(functools.partial(delete_link, force=force), selected_files))
 
 
-def load_files_list(load_all: bool = False) -> List[HomeFile]:
+def load_files_list(args: Namespace) -> List[HomeFile]:
     """Load selected files.
 
-    :param load_all: whether to select all files located in ``ALL_FILES_PATH``.
+    :param load_all: whether to select all files located in
+        :data:`ALL_FILES_PATH`.
 
     """
+    # Load all files metadata
     with ALL_FILES_PATH.open() as f:
         try:
             all_files = toml.load(f)
         except toml.TomlDecodeError:
             sys.exit(f'ERROR: Problem decoding "{str(ALL_FILES_PATH)}" file')
 
-    if load_all:
+    # Obtain selected keys
+    if args.all:
         selected_keys = list(all_files)
+    elif args.only:
+        selected_keys = [args.only]
     else:
         with SEL_FILES_PATH.open() as f:
             selected_keys = list(map(str.strip, f.read().splitlines()))
 
     selected_files: List[HomeFile] = []
 
+    # Create a list of selected files
     for key in selected_keys:
         try:
             selected_files.append(HomeFile(key, **all_files[key]))
@@ -310,9 +331,9 @@ def load_files_list(load_all: bool = False) -> List[HomeFile]:
                 f'ERROR: "{key}" identifier was not found in '
                 f'"{str(ALL_FILES_PATH)}" file'
             )
-        except TypeError:
+        except TypeError as error:
             sys.exit(
-                f'ERROR: "{key}" file does not have the "relpath" attribute.'
+                f'ERROR parsing "{key}": {str(error)}.'
             )
 
     # Check if every selected file exists
@@ -338,14 +359,14 @@ def main():
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    exclusive_group = parser.add_mutually_exclusive_group(required=True)
-    exclusive_group.add_argument(
+    actions_group = parser.add_mutually_exclusive_group(required=True)
+    actions_group.add_argument(
         "-p", "--print", action="store_true", help="print selected files"
     )
-    exclusive_group.add_argument(
+    actions_group.add_argument(
         "-l", "--link", action="store_true", help="link selected files",
     )
-    exclusive_group.add_argument(
+    actions_group.add_argument(
         "-d",
         "--delete",
         action="store_true",
@@ -360,12 +381,20 @@ def main():
     parser.add_argument(
         "-v", "--verbose", action="store_true", help="print in verbose mode"
     )
-    parser.add_argument(
+    number_group = parser.add_mutually_exclusive_group(required=False)
+    number_group.add_argument(
         "-a", "--all", action="store_true", help="perform action for all files"
+    )
+    number_group.add_argument(
+        "-o",
+        "--only",
+        action="store",
+        metavar="key",
+        help="perform action only for a selected key",
     )
 
     args = parser.parse_args()
-    selected_files = load_files_list(args.all)
+    selected_files = load_files_list(args)
 
     if not selected_files:
         sys.exit("ERROR: There aren't selected files.")
@@ -377,10 +406,12 @@ def main():
         print_selected_files(selected_files, args.verbose)
     elif args.link:
         print(f"Linking selected files in {verbose_status} mode.\n")
-        link_selected_files(selected_files, args.verbose, args.force)
+        link_selected_files(selected_files, args.force)
     elif args.delete:
         print(f"Deleting selected links in {verbose_status} mode.\n")
         delete_selected_links(selected_files, args.verbose, args.force)
+
+    print()
 
 
 if __name__ == "__main__":
