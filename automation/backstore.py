@@ -331,9 +331,9 @@ def load_files_list(args: Namespace) -> List[HomeFile]:
                 f'ERROR: "{key}" identifier was not found in '
                 f'"{str(ALL_FILES_PATH)}" file'
             )
-        except TypeError:
+        except TypeError as error:
             sys.exit(
-                f'ERROR: "{key}" file does not have the "relpath" attribute.'
+                f'ERROR parsing "{key}": {str(error)}.'
             )
 
     # Check if every selected file exists
