@@ -208,4 +208,9 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("Pressed Ctrl+c")
         clean()
+        send_notification(
+            Notification(
+                "Pomodoro::TERMINATION", "Finishing Pomodoro timer..."
+            )
+        )
         sys.exit()
