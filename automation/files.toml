@@ -164,28 +164,31 @@ relpath = ".config/sxhkd/sxhkdrc"
 description = "sxhkd configuration file."
 packages = ["sxhkd"]
 
+## Wal (pywal)
+[wal-reload-services]
+relpath = ".config/wal/reload_services.sh"
+description = "Script to run after wal theme selection."
+packages = ["python-pywal"]
+
 ## Rofi
 [rofi-config]
 relpath = ".config/rofi/config"
 description = "Rofi configuration file."
 packages = ["rofi"]
-
-[wal-template-rofi-dark]
+[rofi-config-wal-template]
 relpath = ".config/wal/templates/colors-rofi-dark.rasi"
 description = "Wal template for Rofi."
 packages = ["python-pywal"]
 
 ## Dunst
-[dunst-dunst_xr_colors]
-relpath = ".config/dunst/dunstrc_xr_colors"
-description = "Dunst notification daemon Xresources theme changer."
 [dunst-dunstrc]
 relpath = ".config/dunst/dunstrc"
 description = "Dunst notification daemon main configuration file."
 packages = ["dunst"]
-[dunst-launch_dunst]
-relpath = ".config/dunst/launch_dunst.sh"
-description = "Dunst notification daemon launcher script."
+[dunst-dunstrc-wal-template]
+relpath = ".config/wal/templates/colors-dunstrc"
+description = "Dunst configuration template to use wal coloring. Don't use this one along with dunstrc file."
+packages = ["python-pywall"]
 
 ## Polybar
 [polybar-config]

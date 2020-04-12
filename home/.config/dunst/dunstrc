@@ -29,7 +29,7 @@
     # the top and down respectively.
     # The width can be negative.  In this case the actual width is the
     # screen width minus the width defined in within the geometry option.
-    geometry = "0x10-10+70"
+    geometry = "0x5-20+30"
 
     # Show how many messages are currently hidden (because of geometry).
     indicate_hidden = yes
@@ -61,7 +61,7 @@
 
     # Defines width in pixels of frame around the notification window.
     # Set to 0 to disable.
-    frame_width = 2
+    frame_width = 3
 
     # Defines color of the frame around the notification window.
     frame_color = "#aaaaaa"
@@ -80,11 +80,13 @@
     # Don't remove messages, if the user is idle (no mouse or keyboard input)
     # for longer than idle_threshold seconds.
     # Set to 0 to disable.
-    # Transient notifications ignore this setting.
+    # A client can set the 'transient' hint to bypass this. See the rules
+    # section for how to disable this if necessary
     idle_threshold = 120
 
     ### Text ###
-    font = Fira Code
+
+    font = Monospace
 
     # The spacing between lines.  If the height is smaller than the
     # font height, it will get raised to the font height.
@@ -98,7 +100,7 @@
     #        <u>underline</u>
     #
     #        For a complete reference see
-    #        <http://developer.gnome.org/pango/stable/PangoMarkupFormat.html>.
+    #        <https://developer.gnome.org/pango/stable/pango-Markup.html>.
     #
     # strip: This setting is provided for compatibility with some broken
     #        clients that send markup even though it's not enabled on the
@@ -130,10 +132,14 @@
     # Possible values are "left", "center" and "right".
     alignment = left
 
+    # Vertical alignment of message text and icon.
+    # Possible values are "top", "center" and "bottom".
+    vertical_alignment = center
+
     # Show age of message if message is older than show_age_threshold
     # seconds.
     # Set to -1 to disable.
-    show_age_threshold = -1
+    show_age_threshold = 60
 
     # Split notifications into multiple lines if they don't fit into
     # geometry.
@@ -146,10 +152,10 @@
     # Ignore newlines '\n' in notifications.
     ignore_newline = no
 
-    # Merge multiple notifications with the same content
-    stack_duplicates = true
+    # Stack together notifications with the same content
+    stack_duplicates = false
 
-    # Hide the count of merged notifications with the same content
+    # Hide the count of stacked notifications with the same content
     hide_duplicate_count = false
 
     # Display indicators for URLs (U) and actions (A).
@@ -160,8 +166,13 @@
     # Align icons left/right/off
     icon_position = left
 
+    # Scale small icons up to this size, set to 0 to disable. Helpful
+    # for e.g. small files or high-dpi screens. In case of conflict,
+    # max_icon_size takes precedence over this.
+    min_icon_size = 0
+
     # Scale larger icons down to this size, set to 0 to disable
-    max_icon_size = 128
+    max_icon_size = 150
 
     # Paths to default icons.
     icon_path = /usr/share/icons/gnome/16x16/status/:/usr/share/icons/gnome/16x16/devices/
@@ -170,7 +181,7 @@
 
     # Should a notification popped up from history be sticky or timeout
     # as if it would normally do.
-    sticky_history = no
+    sticky_history = yes
 
     # Maximum amount of notifications kept in history
     history_length = 20
@@ -224,6 +235,21 @@
     # is connected or disconnected which might break follow mode if the screen
     # layout changes.
     force_xinerama = false
+
+    ### mouse
+
+    # Defines list of actions for each mouse event
+    # Possible values are:
+    # * none: Don't do anything.
+    # * do_action: If the notification has exactly one action, or one is marked as default,
+    #              invoke it. If there are multiple and no default, open the context menu.
+    # * close_current: Close current notification.
+    # * close_all: Close all notifications.
+    # These values can be strung together for each mouse event, and
+    # will be executed in sequence.
+    mouse_left_click = close_current
+    mouse_middle_click = do_action, close_current
+    mouse_right_click = close_all
 
 # Experimental features that may or may not work correctly. Do not expect them
 # to have a consistent behaviour across releases.
@@ -285,10 +311,35 @@
 
 # Every section that isn't one of the above is interpreted as a rules to
 # override settings for certain messages.
-# Messages can be matched by "appname", "summary", "body", "icon", "category",
-# "msg_urgency" and you can override the "timeout", "urgency", "foreground",
-# "background", "frame_color", "new_icon" and "format", "fullscreen".
+#
+# Messages can be matched by
+#    appname (discouraged, see desktop_entry)
+#    body
+#    category
+#    desktop_entry
+#    icon
+#    match_transient
+#    msg_urgency
+#    stack_tag
+#    summary
+#
+# and you can override the
+#    background
+#    foreground
+#    format
+#    frame_color
+#    fullscreen
+#    new_icon
+#    set_stack_tag
+#    set_transient
+#    timeout
+#    urgency
+#
 # Shell-like globbing will get expanded.
+#
+# Instead of the appname filter, it's recommended to use the desktop_entry filter.
+# GLib based applications export their desktop-entry name. In comparison to the appname,
+# the desktop-entry won't get localized.
 #
 # SCRIPTING
 # You can specify a script that gets run when the rule matches by
@@ -302,31 +353,30 @@
 # NOTE: It might be helpful to run dunst -print in a terminal in order
 # to find fitting options for rules.
 
+# Disable the transient hint so that idle_threshold cannot be bypassed from the
+# client
+#[transient_disable]
+#    match_transient = yes
+#    set_transient = no
+#
+# Make the handling of transient notifications more strict by making them not
+# be placed in history.
+#[transient_history_ignore]
+#    match_transient = yes
+#    history_ignore = yes
+
 # fullscreen values
 # show: show the notifications, regardless if there is a fullscreen window opened
 # delay: displays the new notification, if there is no fullscreen window active
 #        If the notification is already drawn, it won't get undrawn.
 # pushback: same as delay, but when switching into fullscreen, the notification will get
 #           withdrawn from screen again and will get delayed like a new notification
-
 [fullscreen_delay_everything]
     fullscreen = delay
 
-# [Spotify]
-#     appname = "Spotify"
-#     foreground = "#FFFFFF"
-#     background = "#1ED760"
-#     history_ignore = yes
-#     set_transient = yes
-#     fullscreen = show
-
-#[fullscreen_show_critical]
-#    msg_urgency = critical
-#    fullscreen = show
-
-# [telegram]
-#      appname = "Telegram*"
-#      format = "es telegram jeje"
+[fullscreen_show_critical]
+    msg_urgency = critical
+    fullscreen = show
 
 #[espeak]
 #    summary = "*"
@@ -336,7 +386,7 @@
 #    summary = "*script*"
 #    script = dunst_test.sh
 
-# [ignore]
+#[ignore]
 #    # This notification will not be displayed
 #    summary = "foobar"
 #    format = ""
@@ -345,6 +395,11 @@
 #    # This notification will not be saved in history
 #    summary = "foobar"
 #    history_ignore = yes
+
+#[skip-display]
+#    # This notification will not be displayed, but will be included in the history
+#    summary = "foobar"
+#    skip_display = yes
 
 #[signed_on]
 #    appname = Pidgin
@@ -365,6 +420,10 @@
 #    appname = Pidgin
 #    summary = *twitter.com*
 #    urgency = normal
+#
+#[stack-volumes]
+#    appname = "some_volume_notifiers"
+#    set_stack_tag = "volume"
 #
 [mastodon]
     summary = "*favourited*"
