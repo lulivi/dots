@@ -4,7 +4,7 @@
 ! *************************************************
 ! vim:set ft=xdefaults:
 
-#include "/home/luvo/.cache/wal/colors.Xresources"
+#include ".cache/wal/colors.Xresources"
 
 #define FONT         Fira Code
 #define FONT_SIZE    10
@@ -46,5 +46,3 @@ emacs.font:             FONT-FONT_SIZE
 emacs.background:       base00
 emacs*toolBar:          0
 
-dunst.c1:  base00
-dunst.c2:  base01

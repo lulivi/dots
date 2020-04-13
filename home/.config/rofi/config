@@ -1,4 +1,4 @@
-rofi.theme: /home/luvo/.cache/wal/colors-rofi-dark.rasi
+rofi.theme: .cache/wal/colors-rofi-dark.rasi
 rofi.font: Fira Code 10
 rofi.modi: combi,run
 rofi.combi-modi: window,drun,run
