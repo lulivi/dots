@@ -128,7 +128,7 @@
     #   %n  progress value if set without any extra characters
     #   %%  Literal %
     # Markup is allowed
-    format = "<b>%s</b> <small>(%a)</small>\n%b"
+    format = "<i>%a</i>: <b>%s</b>\n\n%b"
 
     # Alignment of message text.
     # Possible values are "left", "center" and "right".
@@ -161,7 +161,7 @@
     hide_duplicate_count = false
 
     # Display indicators for URLs (U) and actions (A).
-    show_indicators = yes
+    show_indicators = no
 
     ### Icons ###
 
@@ -289,7 +289,7 @@
     # IMPORTANT: colors have to be defined in quotation marks.
     # Otherwise the "#" and following would be interpreted as a comment.
     background = "{background}"
-    foreground = "{color8}"
+    foreground = "{foreground}"
     frame_color = "{color2}"
     timeout = 10
     # Icon for notifications with low urgency, uncomment to enable
@@ -429,5 +429,11 @@
 #
 [mastodon]
     summary = "*favourited*"
-    format = "<small>%s</small>
+    format = "<small>%s</small>"
+[slack]
+    desktop_entry = Slack
+    summary = "*"
+    format = "<i>%a</i>: <b>%s</b>\n\nHidden contents."
+    frame_color = "{color2}"
+
 # vim: ft=cfg

@@ -206,13 +206,17 @@ class PomodoroTimer(object):
     def run(self):
         """Start Pomodoro timer."""
         try:
+            current_time = self.__time_callable()
+            current_time_str = time.strftime(
+                "%H:%M:%S", time.localtime(current_time)
+            )
             self.__notification_callable(
-                "Pomodoro Timer", "Starting Pomodoro in one minute..."
+                "Pomodoro Timer", f"Current time {current_time_str}: Sarting Pomodoro in one minute..."
             )
             self.__log("Starting Pomodoro Timer.")
             next_stage = 1
             current_break_end_time = (
-                self.__time_callable() + self.DELTA_START_TIME
+                current_time + self.DELTA_START_TIME
             )
             next_pomodoro_end_time = (
                 current_break_end_time + self.DELTA_POMODORO_TIME
