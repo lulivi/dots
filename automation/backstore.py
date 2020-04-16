@@ -332,24 +332,25 @@ def load_files_list(args: Namespace) -> List[HomeFile]:
                 f'"{str(ALL_FILES_PATH)}" file'
             )
         except TypeError as error:
-            sys.exit(
-                f'ERROR parsing "{key}": {str(error)}.'
-            )
+            sys.exit(f'ERROR parsing "{key}": {str(error)}.')
 
-    # Check if every selected file exists
-    try:
-        list(
-            map(
-                lambda file: REPO_HOME_PATH.joinpath(file.relpath).resolve(
-                    strict=True
-                ),
-                selected_files,
+    # Check if every selected file exists in the repository if we are not
+    # deleting
+    if not args.delete:
+        try:
+            list(
+                map(
+                    lambda file: REPO_HOME_PATH.joinpath(file.relpath).resolve(
+                        strict=True
+                    ),
+                    selected_files,
+                )
             )
-        )
-    except FileNotFoundError as error:
-        sys.exit(
-            f'ERROR: File "{error.filename}" from selected files does not exist.'
-        )
+        except FileNotFoundError as error:
+            sys.exit(
+                f'ERROR: File "{error.filename}" from selected files does not '
+                "exist."
+            )
 
     return sorted(selected_files, key=lambda file: file.key)
 

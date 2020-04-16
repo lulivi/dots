@@ -137,39 +137,46 @@ set -o ignoreeof
 complete -cf sudo
 xhost +local:root >/dev/null 2>&1
 
-# Source a shell script
-# Usage: source_shell_script <script_to_source>
-source_shell_script() {
-  local script_to_source="$1"
+# Source a shell scripts
+# Usage: source_shell_scripts <path_to_script/path_to_dir>
+source_shell_scripts() {
+  local script_path="$1"
 
-  if [ -r "$script_to_source" ]; then
-    source "$script_to_source"
+  if [ -d "$script_path" ]; then
+    for subscript_path in $script_path/*.sh; do
+      if [ -r "$subscript_path" ]; then
+        source "$subscript_path"
+      else
+        printf '[WARNING] "%s" does not exists or is not a shell script.\n' \
+          "$subscript_path"
+      fi
+    done
+  elif [ -r "$script_path" ]; then
+    source "$script_path"
   else
     printf '[WARNING] "%s" does not exists or is not a shell script.\n' \
-      "$script_to_source"
+      "$script_path"
   fi
 }
 
 # Add item to a path-like variable
-# Usage: add_path_to_variable <path_variable_name> <new_path>
-add_path_to_variable() {
+# Usage: add_paths_to_variable <path_var_name> <path_1> [<path_2> [...]]
+add_paths_to_variable() {
   local path_variable_name="$1"
-  local new_path="$2"
+  shift 1
+  local new_paths=("$@")
 
-  if [[ ${!path_variable_name} != *$new_path* ]]; then
-    export $path_variable_name=$new_path:${!path_variable_name}
-  else
-    printf '[WARNING] "%s" path already in $%s.\n' \
-      "$new_path" \
-      "$path_variable_name"
-  fi
+  for new_path in ${new_paths[@]}; do
+    if [[ ${!path_variable_name} != *$new_path* ]]; then
+      export $path_variable_name=$new_path:${!path_variable_name}
+    else
+      printf '[WARNING] "%s" path already in $%s.\n' \
+        "$new_path" \
+        "$path_variable_name"
+    fi
+  done
 }
 
-source_shell_script "$HOME/.shell_utilities.sh"
-source_shell_script "$HOME/.shell_aliases.sh"
-source_shell_script "$HOME/.shell_variables.sh"
-
-add_path_to_variable "PATH" "$HOME/scripts/"
-add_path_to_variable "PATH" "$HOME/.local/bin/"
-
+source_shell_scripts "$HOME/.shell_utilities"
+add_paths_to_variable "PATH" "$HOME/.local/bin/" "$HOME/scripts/"
 [ -f $HOME/.cache/wal/sequences ] && (cat ~/.cache/wal/sequences &)

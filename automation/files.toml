@@ -114,13 +114,13 @@ description = "Entrypoint for .bashrc file."
 
 
 [shell-aliases]
-relpath = ".shell_aliases.sh"
+relpath = ".shell_utilities/aliases.sh"
 description = "Utils file where the alias are defined."
-[shell-utilities]
-relpath = ".shell_utilities.sh"
+[shell-functions]
+relpath = ".shell_utilities/functions.sh"
 description = "Utils file where the functions are defined."
 [shell-variables]
-relpath = ".shell_variables.sh"
+relpath = ".shell_utilities/variables.sh"
 description = "Utils file where the variables are defined."
 
 [fish-config]
