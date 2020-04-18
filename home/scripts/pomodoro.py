@@ -92,7 +92,6 @@ class PomodoroTimer(object):
         self.__notification_callable = notification_callable or (
             lambda title, body: print(title, body, sep="\n")
         )
-        self.__stop_scheduler = False
         self.__logger = logger
 
     def __log(self, message: str):
@@ -206,6 +205,7 @@ class PomodoroTimer(object):
     def run(self):
         """Start Pomodoro timer."""
         try:
+            self.__stop_scheduler = False
             current_time = self.__time_callable()
             current_time_str = time.strftime(
                 "%H:%M:%S", time.localtime(current_time)
