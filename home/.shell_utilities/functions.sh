@@ -60,7 +60,7 @@ telpipe() {
 # telret - send notification with previous command return code
 # usage: <comand>; telret
 telret() {
-    printf -v message 'Process finished\nReturn code = `%s`' "$?"
+    printf -v message '💽=`%s`' "$?"
     send_telegram_message "$message"
 }
 
