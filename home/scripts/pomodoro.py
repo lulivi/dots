@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
-"""Pomodoro timer module.
+"""Pomodoro timer.
 
 When runing this python module you will start a pomodoro timer. Each 25 minutes
 of work you will get 5 minutes break. At the end of the 4th Pomodoro you will
 get a longer break (15 minutes).
+
+It is possible to run the timer within a new thread or the main one. This is
+just for demostrating purposes in case you want to run the timer while running
+other code.
+
 """
 import sys
 import time
@@ -13,11 +18,12 @@ import logging
 import urllib.request
 import urllib.parse
 import threading
+import argparse
 
 from sched import Event
 from urllib.error import HTTPError, URLError
 from os import environ
-from typing import Optional, Callable, Tuple, List
+from typing import Optional, Callable, Dict, List
 
 
 try:
@@ -27,15 +33,22 @@ except KeyError:
     sys.exit("Ensure BOT_TOKEN and CHAT_ID variables are set.")
 
 
-def send_telegram_notification(title: str, body: str) -> None:
+def send_telegram_notification(title: str, body: str = "") -> None:
     """Send a telegram notification with the title and body provided.
 
     :param title: title of the notification.
     :param body: body of the notification.
 
     """
-    print("Notifying:\n" f"- Title: {repr(title)}\n" f"- Body: {repr(body)}")
-    bot_message = f"🍅 `{title}` 🍅\n_{body}_"
+    if title:
+        if body:
+            bot_message = f"🍅 `{title}` 🍅\n_{body}_"
+        else:
+            bot_message = f"🍅 `{title}`"
+    else:
+        print("Error sending notification: no title/body provided.")
+        return
+
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     data = urllib.parse.urlencode(
         {"chat_id": CHAT_ID, "parse_mode": "Markdown", "text": bot_message}
@@ -64,18 +77,36 @@ def send_telegram_notification(title: str, body: str) -> None:
 
 
 class PomodoroTimer(object):
-    """Pomodoro timer."""
+    """Pomodoro timer.
 
-    DEFAULT_PRIORITY = 1
-    DELTA_START_TIME = 1 * 60
-    DELTA_POMODORO_TIME = 25 * 60
-    DELTA_SHORT_BREAK_TIME = 5 * 60
-    DELTA_LONG_BREAK_TIME = 15 * 60
+    This class allow to run a Pomodoro Timer notifying when time slots expire.
+
+    :ivar __time_callable: :func:`time.time`-like callable to manage sheduled
+        events and notify current time.
+    :ivar __scheduler: :class:`sched.scheduler` instance for performing timer
+        operations.
+    :ivar __notification_callable: callable with ``title`` and ``body`` as
+        arguments to call when a timer ends.
+    :ivar __logger: optional :class:`logging.Logger` instance to log info.
+    :cvar DEFAULT_PRIORITY: default scheduler priotiry.
+    :cvar DELTA_START_TIME: timer wait until first pomodoro starts after
+        starting the timer.
+    :cvar DELTA_POMODORO_TIME: each pomodoro time span.
+    :cvar DELTA_SHORT_BREAK_TIME: short breaks time span.
+    :cvar DELTA_LONG_BREAK_TIME: long breaks time span.
+
+    """
+
+    DEFAULT_PRIORITY: int = 1
+    DELTA_START_TIME: int = 1 * 60
+    DELTA_POMODORO_TIME: int = 25 * 60
+    DELTA_SHORT_BREAK_TIME: int = 5 * 60
+    DELTA_LONG_BREAK_TIME: int = 15 * 60
 
     def __init__(
         self,
-        notification_callable: Optional[Callable] = None,
-        time_callable: Callable = time.time,
+        notification_callable: Optional[Callable[[str, str], None]] = None,
+        time_callable: Callable[[], float] = time.time,
         sleep_callable: Callable = time.sleep,
         logger: Optional[logging.Logger] = None,
     ):
@@ -87,14 +118,19 @@ class PomodoroTimer(object):
         :param logger: information logger.
 
         """
-        self.__time_callable = time_callable
-        self.__scheduler = sched.scheduler(time_callable, sleep_callable)
-        self.__notification_callable = notification_callable or (
+        self.__time_callable: Callable[[], float] = time_callable
+        self.__scheduler: sched.scheduler = sched.scheduler(
+            time_callable, sleep_callable
+        )
+        self.__notification_callable: Callable[
+            [str, str], None
+        ] = notification_callable or (
             lambda title, body: print(title, body, sep="\n")
         )
-        self.__logger = logger
+        self.__logger: Optional[logging.Logger] = logger
+        self.__stop_scheduler: bool = False
 
-    def __log(self, message: str):
+    def __log(self, message: str) -> None:
         """Log message if logger exists.
 
         :param message: message to log.
@@ -103,11 +139,21 @@ class PomodoroTimer(object):
         if self.__logger:
             self.__logger.debug(message)
 
-    def __clean_jobs(self):
+    def __notify(self, title: str, body: str = "") -> None:
+        """Log and send the notification.
+
+        :param title: title of the notification.
+        :param body: body of the notification.
+
+        """
+        self.__log(f"Sending notification. Title='{title}', Body='{body}'")
+        self.__notification_callable(title, body)
+
+    def __clean_jobs(self) -> None:
         """Clean remaining jobs."""
         while not self.__scheduler.empty():
             try:
-                job = self.__scheduler.queue[0]
+                job: sched.Event = self.__scheduler.queue[0]
                 self.__log(f"Cancelling job: {job}")
                 self.__scheduler.cancel(job)
             except ValueError:
@@ -117,49 +163,58 @@ class PomodoroTimer(object):
 
     def __pomodoro_end_notification(
         self, current_stage: int, current_break_end_time: float
-    ) -> Tuple[str, str]:
+    ) -> Dict[str, str]:
         """Obtain the notification for the next Pomodoro start.
 
-        :param current_stage: Current index of Pomodoro.
-        :param current_break_end_time: Ending time of the break in seconds since epoch.
+        :param current_stage: current index of Pomodoro.
+        :param current_break_end_time: ending time of the break in seconds
+            since epoch.
+        :returns: notification to send when the current pomodoro ends.
+
         """
-        next_pomodoro_string = time.strftime(
-            "%H:%M:%S", time.localtime(current_break_end_time)
+        next_pomodoro_string: str = time.strftime(
+            "%H:%M", time.localtime(current_break_end_time)
         )
 
-        return (
-            f"Pomodoro[{current_stage}]::END",
-            f"Next Pomodoro will start at {next_pomodoro_string}.",
-        )
+        return {
+            "title": f"Pomodoro[{current_stage}]::END. Next break at "
+            f"{next_pomodoro_string}.",
+        }
 
     def __break_end_notification(
         self, next_stage: int, next_pomodoro_end_time: float
-    ) -> Tuple[str, str]:
+    ) -> Dict[str, str]:
         """Obtain the notification for the next break start.
 
         :param next_stage: Next index of Pomodoro.
         :param next_pomodoro_end_time: Ending time of the following Pomodoro in
             seconds since epoch.
+        :returns: notification to send when the current break ends.
+
         """
-        next_break_string = time.strftime(
-            "%H:%M:%S", time.localtime(next_pomodoro_end_time)
+        next_break_string: str = time.strftime(
+            "%H:%M", time.localtime(next_pomodoro_end_time)
         )
 
-        return (
-            f"Pomodoro[{next_stage}]::START",
-            f"Starting a new Pomodoro. 🔨 GO 🔨 TO 🔨 WORK 🔨\nNext break at "
-            f"{next_break_string}.",
-        )
+        return {
+            "title": f"POM[{next_stage}]::START. Next break at "
+            f"{next_break_string}."
+        }
 
     def __schedule_pomodoro(self, current_stage: int) -> None:
         """Schedule one Pomodoro and it's break time.
 
         If we are in the forth stage of Pomodoro, we will take a longer break.
 
-        :param current_stage: Current Pomodoro stage.
+        :param current_stage: current Pomodoro stage.
         """
-        current_time = self.__time_callable()
-        current_pomodoro_end_time = current_time + self.DELTA_POMODORO_TIME
+        current_time: float = self.__time_callable()
+        current_pomodoro_end_time: float = (
+            current_time + self.DELTA_POMODORO_TIME
+        )
+        next_stage: int
+        current_break_end_time: float
+        next_pomodoro_end_time: float
 
         if current_stage == 4:
             next_stage = 1
@@ -180,8 +235,8 @@ class PomodoroTimer(object):
         self.__scheduler.enterabs(
             current_pomodoro_end_time,
             self.DEFAULT_PRIORITY,
-            self.__notification_callable,
-            argument=self.__pomodoro_end_notification(
+            self.__notify,
+            kwargs=self.__pomodoro_end_notification(
                 current_stage, current_break_end_time
             ),
         )
@@ -190,8 +245,8 @@ class PomodoroTimer(object):
         self.__scheduler.enterabs(
             current_break_end_time,
             self.DEFAULT_PRIORITY,
-            self.__notification_callable,
-            argument=self.__break_end_notification(
+            self.__notify,
+            kwargs=self.__break_end_notification(
                 next_stage, next_pomodoro_end_time
             ),
         )
@@ -206,26 +261,26 @@ class PomodoroTimer(object):
         """Start Pomodoro timer."""
         try:
             self.__stop_scheduler = False
-            current_time = self.__time_callable()
-            current_time_str = time.strftime(
-                "%H:%M:%S", time.localtime(current_time)
+            current_time: float = self.__time_callable()
+            current_time_str: str = time.strftime(
+                "%H:%M", time.localtime(current_time)
             )
-            self.__notification_callable(
-                "Pomodoro Timer", f"Current time {current_time_str}: Sarting Pomodoro in one minute..."
+            self.__notify(
+                "Pomodoro Timer",
+                f"Current time {current_time_str}: Sarting Pomodoro in one "
+                "minute...",
             )
             self.__log("Starting Pomodoro Timer.")
-            next_stage = 1
-            current_break_end_time = (
-                current_time + self.DELTA_START_TIME
-            )
-            next_pomodoro_end_time = (
+            next_stage: int = 1
+            current_break_end_time: float = current_time + self.DELTA_START_TIME
+            next_pomodoro_end_time: float = (
                 current_break_end_time + self.DELTA_POMODORO_TIME
             )
             self.__scheduler.enterabs(
                 current_break_end_time,
                 self.DEFAULT_PRIORITY,
-                self.__notification_callable,
-                argument=self.__break_end_notification(
+                self.__notify,
+                kwargs=self.__break_end_notification(
                     next_stage, next_pomodoro_end_time
                 ),
             )
@@ -235,22 +290,33 @@ class PomodoroTimer(object):
             if not self.__stop_scheduler:
                 self.__schedule_pomodoro(next_stage)
         except KeyboardInterrupt:
+            self.__stop_scheduler = True
             self.__clean_jobs()
 
     def stop(self):
         """Stop scheduler."""
         self.__log("Stopping the scheduler...")
         self.__stop_scheduler = True
+        self.__notify("Stopping Pomodoro timer...")
         self.__clean_jobs()
 
 
 class PomodoroThread(threading.Thread):
-    """Thread class with exception management."""
+    """Thread class with exception management.
 
-    def __init__(self, pomodoro):
-        """Constructor."""
-        super(PomodoroThread, self).__init__()
-        self.__pomodoro_timer = pomodoro
+    :ivar __pomodoro_timer: :class:`PomodoroTimer` instance to run in the
+        thread.
+
+    """
+
+    def __init__(self, pomodoro: PomodoroTimer):
+        """Thread constructor
+
+        :param pomodoro: the :class:`PomodoroTimer` instance.
+
+        """
+        super().__init__()
+        self.__pomodoro_timer: PomodoroTimer = pomodoro
 
     def run(self):
         """Run Pomodoro timer."""
@@ -262,20 +328,34 @@ class PomodoroThread(threading.Thread):
         self.join()
 
 
-def main(argv: List[str]):
+def main():
     """Main module entripoint."""
-    logger = logging.getLogger("PomodoroLogger")
+    logger: logging.Logger = logging.getLogger("PomodoroLogger")
     logger.setLevel(logging.DEBUG)
-    stream_handler = logging.StreamHandler()
+    stream_handler: logging.StreamHandler = logging.StreamHandler()
     stream_handler.setFormatter(
-        logging.Formatter("{asctime}|{message}", style="{")
+        logging.Formatter(
+            "{asctime}|{message}", style="{", datefmt="%Y%m%d-%H:%M"
+        )
     )
     logger.addHandler(stream_handler)
-    pom = PomodoroTimer(
+    parser: argparse.ArgumentParser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        allow_abbrev=False,
+    )
+    parser.add_argument(
+        "--threads",
+        action="store_true",
+        help="use a child thread instead of the main one to run pomodoro",
+    )
+    args: argparse.Namespace = parser.parse_args()
+    pom: PomodoroTimer = PomodoroTimer(
         notification_callable=send_telegram_notification, logger=logger
     )
 
-    if argv and argv[0] == "--thread":
+    if args.threads:
+        logger.info("Starting Pomodoro timer with threads.")
         pomodoro_thread: PomodoroThread = PomodoroThread(pom)
         pomodoro_thread.start()
         try:
@@ -283,8 +363,9 @@ def main(argv: List[str]):
         except KeyboardInterrupt:
             pomodoro_thread.stop_and_join()
     else:
+        logger.info("Starting Pomodoro timer in the main process.")
         pom.run()
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    main()
