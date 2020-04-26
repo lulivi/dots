@@ -14,6 +14,7 @@
     ss = status -s
     d  = diff
     dc = diff --cached
+    lt = tag -l --sort=-creatordate --format='%(creatordate:short): %(refname:short)'
     superclean = clean -dfx
 [color "diff-highlight"]
     oldNormal = red
