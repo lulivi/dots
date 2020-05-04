@@ -73,12 +73,7 @@ function __set_git_prompt() {
   BRANCH="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
   if [[ -n "$BRANCH" ]]; then
     REPOSITORY="$(basename -s .git "$(git config --get remote.origin.url)")"
-    if [[ -z "$(git status --short)" ]]; then
-      : "${_C_L_GREEN}${BRANCH}${_C_R}"
-    else
-      : "${_C_L_YELLOW}${BRANCH}${_C_R}"
-    fi
-    : "${_C_L_GREEN}[${REPOSITORY}${_C_R}@$_${_C_L_GREEN}]${_C_R}"
+    : "${_C_L_GREEN}[${REPOSITORY}@${BRANCH}]${_C_R}"
   else
     : ""
   fi
