@@ -8,6 +8,7 @@ alias reload_bspwm="~/.config/bspwm/bspwmrc 2>&1 1>/dev/null"
 
 ## Misc
 alias t="tmux"
+alias dgit="GIT_PAGER='less' git"
 alias q="exit"
 alias r="reset"
 alias weather="curl wttr.in/~Granada"

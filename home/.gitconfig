@@ -4,6 +4,7 @@
 [core]
     editor = vim
     excludesfile = ~/.gitignore
+    pager = diff-so-fancy | less --tabs=4 -RFX
 [alias]
     p  = pull
     pr = pull --rebase
@@ -28,3 +29,6 @@
     old = red bold
     new = green bold
     whitespace = red reverse
+[diff-so-fancy]
+    useUnicodeRuler = false
+
