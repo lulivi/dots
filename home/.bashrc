@@ -173,5 +173,5 @@ add_paths_to_variable() {
 }
 
 source_shell_scripts "$HOME/.shell_utilities"
-add_paths_to_variable "PATH" "$HOME/.local/bin/" "$HOME/scripts/"
+add_paths_to_variable "PATH" "$HOME/.local/bin/" "$HOME/scripts/" "$HOME/.gem/ruby/2.7.0/bin"
 [ -f $HOME/.cache/wal/sequences ] && (cat ~/.cache/wal/sequences &)
