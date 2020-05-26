@@ -99,3 +99,8 @@ np() {
     fi
 }
 
+batf() {
+    file="$1"
+    tail -f "$file" | bat --paging=never
+}
+

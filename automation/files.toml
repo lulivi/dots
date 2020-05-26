@@ -104,6 +104,11 @@ relpath = ".gitconfig"
 description = "Git global configuration."
 packages = ["git"]
 
+[gitcommit]
+relpath = ".gitcommit"
+description = "Git commit message template."
+packages = ["git"]
+
 # Shell
 [bash-bashrc]
 relpath = ".bashrc"

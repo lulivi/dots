@@ -5,19 +5,28 @@ When runing this python module you will start a pomodoro timer. Each 25 minutes
 of work you will get 5 minutes break. At the end of the 4th Pomodoro you will
 get a longer break (15 minutes).
 
-It is possible to run the timer within a new thread or the main one. This is
+It is possible to run the timer within a new process or the main one. This is
 just for demostrating purposes in case you want to run the timer while running
 other code.
 
+.. code-block:: console
+
+    pomodoro.py
+
+.. code-block:: console
+
+    pomodoro.py --notifier desktop
+
 """
 import sys
+import os
 import time
 import sched
 import json
 import logging
 import urllib.request
 import urllib.parse
-import threading
+import multiprocessing
 import argparse
 
 from sched import Event
@@ -33,6 +42,25 @@ except KeyError:
     sys.exit("Ensure BOT_TOKEN and CHAT_ID variables are set.")
 
 
+def send_desktop_notification(title: str, body: str = "") -> None:
+    """Send a desktop notificatino with the title and body provided.
+
+    :param title: title of the notification.
+    :param body: body of the notification.
+
+    """
+    notify_send_text = "notify-send"
+    if title:
+        notify_send_text += f' "{title}"'
+        if body:
+            notify_send_text += f' "{body}"'
+    else:
+        print("Error sending notification: no title provided.")
+        return
+
+    os.system(notify_send_text)
+
+
 def send_telegram_notification(title: str, body: str = "") -> None:
     """Send a telegram notification with the title and body provided.
 
@@ -46,7 +74,7 @@ def send_telegram_notification(title: str, body: str = "") -> None:
         else:
             bot_message = f"🍅 `{title}`"
     else:
-        print("Error sending notification: no title/body provided.")
+        print("Error sending notification: no title provided.")
         return
 
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
@@ -206,7 +234,7 @@ class PomodoroTimer(object):
 
         If we are in the forth stage of Pomodoro, we will take a longer break.
 
-        :param current_stage: current Pomodoro stage.
+        :param current_stage: current Pomodoro stage
         """
         current_time: float = self.__time_callable()
         current_pomodoro_end_time: float = (
@@ -290,8 +318,7 @@ class PomodoroTimer(object):
             if not self.__stop_scheduler:
                 self.__schedule_pomodoro(next_stage)
         except KeyboardInterrupt:
-            self.__stop_scheduler = True
-            self.__clean_jobs()
+            self.stop()
 
     def stop(self):
         """Stop scheduler."""
@@ -299,33 +326,6 @@ class PomodoroTimer(object):
         self.__stop_scheduler = True
         self.__notify("Stopping Pomodoro timer...")
         self.__clean_jobs()
-
-
-class PomodoroThread(threading.Thread):
-    """Thread class with exception management.
-
-    :ivar __pomodoro_timer: :class:`PomodoroTimer` instance to run in the
-        thread.
-
-    """
-
-    def __init__(self, pomodoro: PomodoroTimer):
-        """Thread constructor
-
-        :param pomodoro: the :class:`PomodoroTimer` instance.
-
-        """
-        super().__init__()
-        self.__pomodoro_timer: PomodoroTimer = pomodoro
-
-    def run(self):
-        """Run Pomodoro timer."""
-        self.__pomodoro_timer.run()
-
-    def stop_and_join(self):
-        """Stop timer and wait until the thread ends."""
-        self.__pomodoro_timer.stop()
-        self.join()
 
 
 def main():
@@ -345,26 +345,34 @@ def main():
         allow_abbrev=False,
     )
     parser.add_argument(
-        "--threads",
-        action="store_true",
-        help="use a child thread instead of the main one to run pomodoro",
+        "-n",
+        "--notifier",
+        action="store",
+        choices=("telegram", "desktop", "all"),
+        default="desktop",
     )
     args: argparse.Namespace = parser.parse_args()
-    pom: PomodoroTimer = PomodoroTimer(
-        notification_callable=send_telegram_notification, logger=logger
-    )
 
-    if args.threads:
-        logger.info("Starting Pomodoro timer with threads.")
-        pomodoro_thread: PomodoroThread = PomodoroThread(pom)
-        pomodoro_thread.start()
-        try:
-            pomodoro_thread.join()
-        except KeyboardInterrupt:
-            pomodoro_thread.stop_and_join()
-    else:
-        logger.info("Starting Pomodoro timer in the main process.")
-        pom.run()
+    if args.notifier == "telegram":
+        logger.info("Using Telegram notifications.")
+        notifier = send_telegram_notification
+    elif args.notifier == "desktop":
+        logger.info("Using desktop notifications.")
+        notifier = send_desktop_notification
+    elif args.notifier == "all":
+        notifier = lambda t, b: list(
+            map(
+                lambda func: func(t, b),
+                (send_telegram_notification, send_desktop_notification),
+            )
+        )
+        logger.info("Using all notifications.")
+
+    pom: PomodoroTimer = PomodoroTimer(
+        notification_callable=notifier, logger=logger
+    )
+    logger.info("Starting Pomodoro timer.")
+    pom.run()
 
 
 if __name__ == "__main__":
