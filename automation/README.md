@@ -36,7 +36,7 @@ packages = ["<package 1>", "<package 2>"]
 > [scripts-lock]
 > relpath = "scripts/lock.sh"
 > description = "Lock screen with a pixelated screenshot of your desktop."
-> packages = ["xorg-xdpyinfo", "gawk", "scrot", "imagemagick", "i3lock"]
+> packages = ["xorg-xdpyinfo", "gawk", "maim", "imagemagick", "i3lock"]
 > ```
 
 ## Selected files

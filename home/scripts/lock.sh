@@ -21,7 +21,7 @@
 #
 # This script uses i3lock to lock screen with a pixelized screenshot
 # 
-# Dependencies: scrot, imagemagick, i3lock
+# Dependencies: maim, imagemagick, i3lock
 
 playerctl pause &>/dev/null
 
@@ -31,11 +31,9 @@ res=""$(xdpyinfo | awk '/dimensions:/ {print $2}')"!"
 # Compute default sample value
 sample="$((${res%%x*} / 8))"
 
-# Capture screenshot
-/usr/bin/scrot -o "/tmp/screenshot.png"
-
-# Pixelizeit with imagemagik script
-/usr/bin/convert "/tmp/screenshot.png" \
+# Capture screenshot and pixelize it with imagemagik script
+/usr/bin/maim | \
+    /usr/bin/convert - \
     -sample "${1:-$sample}" \
     -scale "$res" \
     "/tmp/screenshotblur.png"

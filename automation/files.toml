@@ -15,11 +15,11 @@ packages = ["python-dbus"]
 [scripts-lock]
 relpath = "scripts/lock.sh"
 description = "Lock screen with a pixelated screenshot of your desktop."
-packages = ["xorg-xdpyinfo", "scrot", "imagemagick", "i3lock"]
+packages = ["xorg-xdpyinfo", "maim", "imagemagick", "i3lock"]
 [scripts-screenshot]
 relpath = "scripts/screenshot"
 description = "Select a square in your screen and save the capture in your clipboard."
-packages = ["scrot", "xclip"]
+packages = ["maim", "xclip"]
 [scripts-pomodoro]
 relpath = "scripts/pomodoro.py"
 description = "Run the Pomodoro technique and send notifications to Telegram."
