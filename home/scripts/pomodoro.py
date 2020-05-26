@@ -205,7 +205,7 @@ class PomodoroTimer(object):
         )
 
         return {
-            "title": f"POM[{current_stage}]::END. Next break at "
+            "title": f"POM[{current_stage}]::END. Next pomodoro at "
             f"{next_pomodoro_string}.",
         }
 
