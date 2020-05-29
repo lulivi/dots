@@ -35,22 +35,64 @@ Some usage examples:
       python backstore.py -d
 
 """
-import sys
-import toml
-import colored
 import argparse
 import functools
+import sys
 
-from typing import List, NamedTuple
-from pathlib import Path
 from argparse import Namespace
-from colored import stylize
+from enum import Enum
+from pathlib import Path
+from typing import List, NamedTuple
+
+import toml
 
 HOME_PATH: Path = Path.home()
 AUTOMATION_PATH: Path = Path(__file__).resolve().parent
-ALL_FILES_PATH: Path = AUTOMATION_PATH.joinpath("files.toml").resolve()
-SEL_FILES_PATH: Path = AUTOMATION_PATH.joinpath("selected_files.txt").resolve()
-REPO_HOME_PATH: Path = AUTOMATION_PATH.parent.joinpath("home").resolve()
+ALL_FILES_PATH: Path = (AUTOMATION_PATH / "files.toml").resolve()
+SEL_FILES_PATH: Path = (AUTOMATION_PATH / "selected_files.txt").resolve()
+REPO_HOME_PATH: Path = (AUTOMATION_PATH.parent / "home").resolve()
+
+
+class colour(object):
+    """Scape secuences of colours and attributes."""
+
+    fg_black = "\x1b[30m"
+    fg_red = "\x1b[31m"
+    fg_green = "\x1b[32m"
+    fg_yellow = "\x1b[33m"
+    fg_blue = "\x1b[34m"
+    fg_cyan = "\x1b[36m"
+
+    bg_black = "\x1b[40m"
+    bg_red = "\x1b[41m"
+    bg_green = "\x1b[42m"
+    bg_yellow = "\x1b[43m"
+    bg_blue = "\x1b[44m"
+    bg_cyan = "\x1b[46m"
+
+    bold = "\x1b[1m"
+    blink = "\x1b[5m"
+    reset = "\x1b(B\x1b[m"
+
+
+def apply_style(text: str, style: str) -> str:
+    """Apply format from scape sequences.
+    
+    :param style: scape sequences union.
+    :param text: text that will be styled.
+
+    """
+    return f"{style}{text}{colour.reset}"
+
+
+def print_style(text: str, style: str) -> None:
+    """Print the text after applying format.
+
+    :param style: scape sequences union.
+    :param text: text that will be styled.
+
+    """
+    print(apply_style(text, style))
 
 
 class HomeFile(NamedTuple):
@@ -88,25 +130,23 @@ def print_selected_files(
         :returns: the colored file string.
 
         """
-        link_name_path = HOME_PATH.joinpath(file_relpath)
+        link_name_path = HOME_PATH / (file_relpath)
         output_text = str(link_name_path)
 
         if link_name_path.is_symlink():
-            if link_name_path.resolve() == REPO_HOME_PATH.joinpath(
-                file_relpath
-            ):
-                style = colored.fg("cyan")
+            if link_name_path.resolve() == REPO_HOME_PATH / (file_relpath):
+                style = colour.fg_cyan
             else:
-                style = colored.fg("yellow")
+                style = colour.fg_yellow
                 output_text = f"{output_text} (linked to wrong file)"
         elif link_name_path.exists():
-            style = colored.fg("yellow")
+            style = colour.fg_yellow
             output_text = f"{output_text} (file is not link)"
         else:
-            style = colored.bg("red") + colored.fg("black")
+            style = colour.bg_red + colour.fg_yellow
             output_text = f"{output_text} (file does not exist)"
 
-        return stylize(output_text, style)
+        return apply_style(output_text, style)
 
     def print_file(file: HomeFile, verbose: bool = False) -> None:
         """Print file with it appropiate format.
@@ -115,7 +155,7 @@ def print_selected_files(
         :param verbose: whether to use verbosity in the print function.
 
         """
-        key = stylize(file.key, colored.attr("bold"))
+        key = apply_style(file.key, colour.bold)
 
         if verbose:
             print(
@@ -128,10 +168,6 @@ def print_selected_files(
             print(f"{key}: {color_file(file.relpath)}")
 
     list(map(functools.partial(print_file, verbose=verbose), selected_files))
-
-
-def _print_with_attr(text: str, attributes: str):
-    print(stylize(text, attributes))
 
 
 def link_selected_files(
@@ -157,26 +193,26 @@ def link_selected_files(
 
         if link_name_path.is_symlink():
             if link_name_path.resolve() == target_path:
-                _print_with_attr(
+                print_style(
                     f'{key}: File "{str(link_name_path)}" '
                     "is already linked.",
-                    colored.fg("green"),
+                    colour.fg_green,
                 )
             else:
-                _print_with_attr(
+                print_style(
                     f'{key}: File "{str(link_name_path)}" '
                     f'is linked to "{str(link_name_path.resolve())}" '
                     f'instead of "{str(target_path)}". Please remove it '
                     "manually or use --force.",
-                    colored.fg("red"),
+                    colour.fg_red,
                 )
             skip = True
         elif link_name_path.exists():
-            _print_with_attr(
+            print_style(
                 f'{key}: File "{str(link_name_path)}" '
                 "exists and it is not a symbolic link. Please remove it "
                 "manually or use --force argument.",
-                colored.fg("red"),
+                colour.fg_red,
             )
             skip = True
         elif not link_name_path.parent.exists():
@@ -191,9 +227,9 @@ def link_selected_files(
         :param verbose: whether to use verbosity in the print function.
 
         """
-        key = stylize(file.key, colored.attr("bold"))
-        target_path = REPO_HOME_PATH.joinpath(file.relpath)
-        link_name_path = HOME_PATH.joinpath(file.relpath)
+        key = apply_style(file.key, colour.bold)
+        target_path = REPO_HOME_PATH / (file.relpath)
+        link_name_path = HOME_PATH / (file.relpath)
 
         if force:
             try:
@@ -204,9 +240,9 @@ def link_selected_files(
             return
 
         link_name_path.symlink_to(target_path, target_path.is_dir())
-        _print_with_attr(
+        print_style(
             f'{key}: File "{str(link_name_path)}" linked ' "correctly.",
-            colored.fg("green"),
+            colour.fg_green,
         )
 
     list(map(functools.partial(link_file, force=force), selected_files))
@@ -236,26 +272,26 @@ def delete_selected_links(
 
         if link_name_path.is_symlink():
             if link_name_path.resolve() != target_path:
-                _print_with_attr(
+                print_style(
                     f'{key}: File "{str(link_name_path)}" '
                     f'is linked to "{str(link_name_path.resolve())}" '
                     f'instead of "{str(target_path)}". Please remove it '
                     "manually or use --force argument.",
-                    colored.fg("red"),
+                    colour.fg_red,
                 )
                 skip = True
         elif link_name_path.exists():
-            _print_with_attr(
+            print_style(
                 f'{key}: File "{str(link_name_path)}" '
                 "exists and it is not a symbolic link. Use --force to delete "
                 "it.",
-                colored.fg("red"),
+                colour.fg_red,
             )
             skip = True
         else:
-            _print_with_attr(
+            print_style(
                 f'{key}: File "{str(link_name_path)}" ' "does not exist.",
-                colored.fg("yellow"),
+                colour.fg_yellow,
             )
             skip = True
 
@@ -268,9 +304,9 @@ def delete_selected_links(
         :param verbose: whether to use verbosity in the print function.
 
         """
-        key = stylize(file.key, colored.attr("bold"))
-        target_path = REPO_HOME_PATH.joinpath(file.relpath)
-        link_name_path = HOME_PATH.joinpath(file.relpath)
+        key = apply_style(file.key, colour.bold)
+        target_path = REPO_HOME_PATH / (file.relpath)
+        link_name_path = HOME_PATH / (file.relpath)
 
         if not force and skip_link(key, target_path, link_name_path):
             return
@@ -280,9 +316,9 @@ def delete_selected_links(
         except FileNotFoundError:
             pass
 
-        _print_with_attr(
+        print_style(
             f'{key}: File "{str(link_name_path)}" deleted ' "correctly.",
-            colored.fg("green"),
+            colour.fg_green,
         )
 
     print_selected_files(selected_files, verbose)
@@ -340,7 +376,7 @@ def load_files_list(args: Namespace) -> List[HomeFile]:
         try:
             list(
                 map(
-                    lambda file: REPO_HOME_PATH.joinpath(file.relpath).resolve(
+                    lambda file: (REPO_HOME_PATH / file.relpath).resolve(
                         strict=True
                     ),
                     selected_files,
