@@ -127,6 +127,9 @@ description = "Utils file where the functions are defined."
 [shell-variables]
 relpath = ".shell_utilities/variables.sh"
 description = "Utils file where the variables are defined."
+[shell-prompt]
+relpath = ".shell_utilities/prompt.sh"
+description = "Custom shell prompt."
 
 [fish-config]
 relpath = ".config/fish/config.fish"
