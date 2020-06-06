@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
-maim -s \
+cmd="maim"
+
+if ! [[ "$1" == "-w" ]]; then
+    cmd+=" -s"
+fi
+
+$cmd \
     | tee /tmp/screenshot_$(date +%Y_%m_%d_%H_%M).png \
     | xclip -selection clipboard -t image/png
