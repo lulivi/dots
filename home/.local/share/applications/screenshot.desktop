@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Screenshot
+Comment=Take a screenshot and save it to the clipboard and in /tmp
+Exec=bash -c "$HOME/scripts/screenshot"
+Terminal=false
+Categories=System;Utils

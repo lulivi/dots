@@ -20,6 +20,9 @@ packages = ["xorg-xdpyinfo", "maim", "imagemagick", "i3lock"]
 relpath = "scripts/screenshot"
 description = "Select a square in your screen and save the capture in your clipboard."
 packages = ["maim", "xclip"]
+[scripts-screenshot-desktop]
+relpath = ".local/share/applications/screenshot.desktop"
+description = "Desktop entry for screenshot script."
 [scripts-pomodoro]
 relpath = "scripts/pomodoro.py"
 description = "Run the Pomodoro technique and send notifications to Telegram."
