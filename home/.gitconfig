@@ -34,3 +34,5 @@
 [diff-so-fancy]
     useUnicodeRuler = false
 
+[pull]
+	rebase = false
