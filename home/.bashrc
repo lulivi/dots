@@ -57,6 +57,8 @@ shopt -s histappend
 
 # Shell options
 set -o ignoreeof
+# Unbind Ctrl+s and Ctrl+q
+stty -ixon -ixoff
 
 complete -cf sudo
 xhost +local:root >/dev/null 2>&1
