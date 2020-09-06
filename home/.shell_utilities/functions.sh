@@ -61,6 +61,7 @@ telpipe() {
 # usage: <comand>; telret
 telret() {
     printf -v message '💽=`%s`' "$?"
+    notify-send "Sending notification" "$message"
     send_telegram_message "$message"
 }
 

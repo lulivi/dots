@@ -1,8 +1,9 @@
 " Syntax colors
 syntax on
+highlight Visual cterm=reverse ctermbg=NONE
 
 " Whitespaces
-let listchars_str = 'eol:$,tab:>-,trail:·,extends:>,precedes:<'
+let listchars_str = 'eol:$,tab:<->,extends:>,precedes:<,nbsp:%,trail:·'
 if has("patch-7.4.710")
     let listchars_str .= ',space:·'
 endif
@@ -55,14 +56,14 @@ set laststatus=2
 set statusline=
 set statusline+=%2*\ %l
 set statusline+=\ %*
-set statusline+=%1*\ ‹‹\ 
-set statusline+=%1*%F%*
-set statusline+=%1*\ ››\ 
+set statusline+=%1*\ ‹‹
+set statusline+=\ %1*%F%*
+set statusline+=%1*\ ››
 set statusline+=%=
-set statusline+=%3*\ ‹‹\ 
-set statusline+=%3*w-%{wordcount().words}
-set statusline+=%3*\ ::\ 
-set statusline+=%3*l-%l,\ c-%c
+set statusline+=%3*\ ‹‹
+set statusline+=\ %3*w-%{wordcount().words}
+set statusline+=\ ::
+set statusline+=\ %3*l-%l,\ c-%c
 set statusline+=%3*\ ››\ %*
 
 hi User1 guifg=#FFFFFF guibg=#191f26 gui=BOLD
