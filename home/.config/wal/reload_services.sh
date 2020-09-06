@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 prog_exists() {
-    printf "$(command -v >/dev/null 2>&1)"
+    printf "$(command -v "$1" >/dev/null 2>&1)"
 }
 
 # Dunst
