@@ -2,7 +2,11 @@
 syntax on
 
 " Whitespaces
-set listchars=eol:$,tab:>-,trail:·,extends:>,precedes:<,space:·
+let listchars_str = 'eol:$,tab:>-,trail:·,extends:>,precedes:<'
+if has("patch-7.4.710")
+    let listchars_str .= ',space:·'
+endif
+exe 'set listchars=' . listchars_str
 set list
 
 if !exists(':TrimWhitespace')
@@ -14,8 +18,13 @@ if !exists(':Black')
 endif
 
 " Line numbers
-set rnu nu
-nmap <C-N><C-N> :set invrnu<CR>:set invnu<CR>:set invlist<CR>
+set nu
+let line_numbers_str = ':set invnu<CR>:set invlist<CR>'
+if v:version > 703
+    set rnu
+    let line_numbers_str .= ':set invrnu <CR>'
+endif
+exe 'nmap <C-N><C-N> ' . line_numbers_str
 
 " Tabs
 set expandtab
@@ -26,8 +35,10 @@ set shiftwidth=4
 set smartindent
 
 " 80 column mark
-set colorcolumn=80
-highlight ColorColumn ctermbg=darkgray
+if has("patch-7.3.799")
+    set colorcolumn=80
+    highlight ColorColumn ctermbg=darkgray
+endif
 
 " Folding
 set nofoldenable "enable with zc
