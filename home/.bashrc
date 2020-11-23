@@ -108,7 +108,8 @@ add_paths_to_variable "PATH" \
     "$HOME/.local/bin/" \
     "$HOME/scripts/" \
     "$HOME/.gem/ruby/2.7.0/bin" \
-    "$HOME/.luarocks/bin/"
+    "$HOME/.luarocks/bin/" \
+    "$HOME/.cargo/bin/"
 
 [ -f $HOME/.cache/wal/sequences ] && (cat ~/.cache/wal/sequences &)
 

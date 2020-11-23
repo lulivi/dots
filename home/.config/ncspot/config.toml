@@ -60,7 +60,6 @@ volume = 80
 ##################
 "F1" = "focus queue"
 "F2" = "focus search"
-"/" = "focus search"
 "F3" = "focus library"
 # Go to the playing track
 "." = "move playing"
