@@ -1,3 +1,0 @@
-[submodule "home/.submodules/lz4json"]
-	path = home/.submodules/lz4json
-	url = https://github.com/andikleen/lz4json.git
