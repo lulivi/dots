@@ -5,39 +5,40 @@
 [core]
     editor = vim
     excludesfile = ~/.gitignore
-    pager = diff-so-fancy | less --tabs=4 -RFX
+    pager = delta
+    autocrlf = input
+
+[interactive]
+    diffFilter = delta --color-only --side-by-side
 
 [commit]
     template = ~/.gitcommit
 
-[alias]
-    p  = pull
-    pr = pull --rebase
-    b  = branch
-    c  = clone
-    cr = clone --recurse-submodules
-    s  = status
-    ss = status -s
-    d  = diff
-    dc = diff --cached
-    lt = tag -l --sort=-creatordate --format='%(creatordate:short): %(refname:short)'
-    superclean = clean -dfx
-
-[color "diff-highlight"]
-    oldNormal = red
-    oldHighlight = red bold 52
-    newNormal = green
-    newHighlight = green bold 22
-[color "diff"]
-    meta = yellow bold
-    commit = yellow bold
-    frag = magenta bold
-    old = red bold
-    new = green bold
-    whitespace = red reverse
-[diff-so-fancy]
-    useUnicodeRuler = false
 [pull]
     rebase = false
     ff = only
 
+[init]
+    defaultBranch = main
+
+[alias]
+    p   = pull
+    pr  = pull --rebase
+    b   = branch
+    c   = clone
+    cr  = clone --recurse-submodules
+    s   = status
+    ss  = status -s
+    d   = diff
+    dc  = diff --cached
+    ch  = checkout
+    chb = checkout -b
+    lt  = tag -l --sort=-creatordate --format='%(creatordate:short): %(refname:short)'
+    superclean = clean -dfx
+
+[delta]
+    line-numbers = true
+    plus-style = green
+    plus-emph-style = green bold 22
+    minus-style = red
+    minus-emph-style = red bold 52

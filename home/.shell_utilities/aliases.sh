@@ -2,11 +2,13 @@
 #                       T E R M I N A L   A L I A S E S                        #
 ################################################################################
 
-# Systemd
+# System
 alias please='sudo $(history -p !!)'
 alias restart_nm="systemctl restart NetworkManager.service"
 alias reload_bspwm="~/.config/bspwm/bspwmrc 2>&1 1>/dev/null"
 alias open="xdg-open &>/dev/null"
+alias o="xdg-open·&>/dev/null"
+alias abspath="readlink -f"
 
 ## Misc
 alias t="tmux"
@@ -20,6 +22,8 @@ alias center_tmux="tmux split-window -h \; split-window -h \; swap-pane -s 1 -t 
 alias walr="wal -R -o ~/.config/wal/reload_services.sh"
 alias myip="wget http://ipecho.net/plain -O - -q ; echo"
 alias spotify="ct Spotify; ncspot"
+alias sp="spotify"
+alias gitlab_run_job="gitlab-runner exec docker"
 
 # Entertainment
 alias matrix="cmatrix -b -a -u 2 -C yellow"

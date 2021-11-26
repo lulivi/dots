@@ -105,7 +105,7 @@ relpath = ".config/ranger/scope.sh"
 [gitconfig]
 relpath = ".gitconfig"
 description = "Git global configuration."
-packages = ["git"]
+packages = ["git", "dandavison/delta"]
 
 [gitcommit]
 relpath = ".gitcommit"
