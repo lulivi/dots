@@ -3,7 +3,7 @@
 ######################################
 
 fisher edc/bass; clear
-bass source ~/.shell_utilities
+bass source ~/.config/bash/
 #bass source ~/.profile
 
 ######################################

@@ -73,7 +73,7 @@ source_shell_scripts() {
   fi
 }
 
-source_shell_scripts "$HOME/.shell_utilities"
+source_shell_scripts "$HOME/.config/bash/"
 . $HOME/scripts/add_paths_to_variable.sh "PATH" \
     "$HOME/.local/bin/" \
     "$HOME/scripts/" \
