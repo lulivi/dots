@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.8
+#!/usr/bin/env python
 """Manage dotfiles.
 
 This tool creates symbolic links of your home configuration files (dotfiles).

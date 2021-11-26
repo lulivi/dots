@@ -124,17 +124,17 @@ description = "Main bash user configuration file."
 relpath = ".bash_profile"
 description = "Entrypoint for .bashrc file."
 
-[shell-aliases]
-relpath = ".shell_utilities/aliases.sh"
+[bash-aliases]
+relpath = ".config/bash/aliases.sh"
 description = "Utils file where the alias are defined."
-[shell-functions]
-relpath = ".shell_utilities/functions.sh"
+[bash-functions]
+relpath = ".config/bash/functions.sh"
 description = "Utils file where the functions are defined."
-[shell-variables]
-relpath = ".shell_utilities/variables.sh"
+[bash-variables]
+relpath = ".config/bash/variables.sh"
 description = "Utils file where the variables are defined."
-[shell-prompt]
-relpath = ".shell_utilities/prompt.sh"
+[bash-prompt]
+relpath = ".config/bash/prompt.sh"
 description = "Custom shell prompt."
 
 [fish-config]
