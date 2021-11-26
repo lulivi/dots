@@ -54,7 +54,7 @@ autocmd BufNewFile,BufRead *.texw set syntax=tex
 " Status line
 set laststatus=2
 set statusline=
-set statusline+=%2*\ %l
+set statusline+=%2*\ %P
 set statusline+=\ %*
 set statusline+=%1*\ ‹‹
 set statusline+=\ %1*%F%*

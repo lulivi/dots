@@ -1,0 +1,63 @@
+#!/bin/sh
+
+## @brief Open bookmarks with the default web browser
+
+## @desc If no <FILE> is passed, the file $HOME/.bookmarks will be used by
+## default. The bookmarks file uses TOML and must follow the following format:
+##
+##   ['<folder 1>']
+##   '<bookmark 1>' = '<bookmark 1 url>'
+##   # This is a comment
+##   '<bookmark 2>' = '<bookmark 2 url>'
+##
+##   ['<folder 2>']
+##   '<bookmark 3>' = '<bookmark 3 url>'
+##
+## This way, the script will display the following entries in rofi:
+##
+##   +-------------------------------+
+##   | ['<folder 1>'] - <bookmark 1> |
+##   +-------------------------------+
+##   | ['<folder 1>'] - <bookmark 2> |
+##   +-------------------------------+
+##   | ['<folder 2>'] - <bookmark 3> |
+##   +-------------------------------+
+
+BOOMKARK_TMP_FILE="/tmp/bookmarks_temp"
+trap 'rm -f $BOOMKARK_TMP_FILE' INT EXIT
+
+main() {
+    bookmark_file_path="${1:-$HOME/.bookmarks}"
+
+    [ ! -f "$bookmark_file_path" ] && {
+        printf 'File <%s> not found\n' "$bookmark_file_path"
+        exit 1
+    }
+
+    # shellcheck disable=SC2016
+    tomlq -c '[
+        keys[] as $k |
+        .[$k]  |
+        to_entries |
+        map({"[\($k)] - \(.key)": .value}) |
+        add
+    ] | add' "$bookmark_file_path" > $BOOMKARK_TMP_FILE
+
+    selection="$(
+        jq -r 'keys | .[]' $BOOMKARK_TMP_FILE | rofi -dmenu -i -p Bookmarks
+    )"
+    bookmark_url="$(jq -r .\""$selection"\" $BOOMKARK_TMP_FILE)"
+
+    [ "$bookmark_url" != "null" ] && xdg-open "$bookmark_url" || exit 1
+}
+
+## @usage bookmarks [-h] [FILE]
+while getopts ":" o; do case "${o}" in
+    ## @option -h
+    ## Print this help and exit.
+    *) shellman "$0"; exit 1 ;;
+esac done
+
+shift $((OPTIND - 1))
+
+main "$@"

@@ -64,6 +64,10 @@ description = "Show first 21 colors from Xresources."
 [scripts-xr_wrapper_reloader]
 relpath = "scripts/xr_wrapper_reloader.sh"
 description = "Reload xrdb with custom script."
+[scripts-bookmarks]
+relpath = "scripts/bookmarks"
+description = "Open bookmarks with the default web browser."
+packages = ["yq"]
 
 # Emacs configuration
 [emacs-config]
@@ -120,7 +124,6 @@ description = "Main bash user configuration file."
 relpath = ".bash_profile"
 description = "Entrypoint for .bashrc file."
 
-
 [shell-aliases]
 relpath = ".shell_utilities/aliases.sh"
 description = "Utils file where the alias are defined."
@@ -149,11 +152,6 @@ description = "Terminator configuration file."
 packages = ["terminator"]
 
 # Utils
-[htop-htoprc]
-relpath = ".config/htop/htoprc"
-description = "Htop configuration file."
-packages = ["htop"]
-
 [top-toprc]
 relpath = ".config/procps/toprc"
 description = "Top configuration file."

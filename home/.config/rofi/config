@@ -1,4 +1,6 @@
-rofi.theme: .cache/wal/colors-rofi-dark.rasi
-rofi.font: Fira Code 10
-rofi.modi: combi,run
-rofi.combi-modi: window,drun,run
+configuration {
+        modi: "combi,run";
+        font: "Fira Code 10";
+        combi-modi: "window,drun,run";
+        theme: "/home/luis/.cache/wal/colors-rofi-dark.rasi";
+}
