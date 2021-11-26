@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.7
+#!/usr/bin/env python3.8
 """Manage dotfiles.
 
 This tool creates symbolic links of your home configuration files (dotfiles).
@@ -36,7 +36,10 @@ Some usage examples:
 
 """
 import argparse
+import contextlib
 import functools
+import os
+import subprocess
 import sys
 
 from argparse import Namespace
@@ -77,7 +80,7 @@ class colour(object):
 
 def apply_style(text: str, style: str) -> str:
     """Apply format from scape sequences.
-    
+
     :param style: scape sequences union.
     :param text: text that will be styled.
 
@@ -111,9 +114,7 @@ class HomeFile(NamedTuple):
     packages: List[str] = []
 
 
-def print_selected_files(
-    selected_files: List[HomeFile], verbose: bool = False
-) -> None:
+def print_selected_files(selected_files: List[HomeFile], verbose: bool = False) -> None:
     """Print selected files.
 
     :param selected_files: list of selected files.
@@ -160,9 +161,9 @@ def print_selected_files(
         if verbose:
             print(
                 f"{key}\n"
-                f"├─ PATH {color_file(file.relpath)}\n"
-                f"├─ DESC {file.description}\n"
-                f"└─ PKGS {' '.join(file.packages)}"
+                f"├─ PATH: {color_file(file.relpath)}\n"
+                f"├─ DESC: {file.description}\n"
+                f"└─ PKGS: {' '.join(file.packages)}"
             )
         else:
             print(f"{key}: {color_file(file.relpath)}")
@@ -170,9 +171,7 @@ def print_selected_files(
     list(map(functools.partial(print_file, verbose=verbose), selected_files))
 
 
-def link_selected_files(
-    selected_files: List[HomeFile], force: bool = False
-) -> None:
+def link_selected_files(selected_files: List[HomeFile], force: bool = False) -> None:
     """Link selected files.
 
     :param selected_files: list of selected files.
@@ -194,24 +193,23 @@ def link_selected_files(
         if link_name_path.is_symlink():
             if link_name_path.resolve() == target_path:
                 print_style(
-                    f'{key}: File "{str(link_name_path)}" '
-                    "is already linked.",
+                    f"{key}: File `{str(link_name_path)}` is already linked.",
                     colour.fg_green,
                 )
             else:
                 print_style(
-                    f'{key}: File "{str(link_name_path)}" '
-                    f'is linked to "{str(link_name_path.resolve())}" '
-                    f'instead of "{str(target_path)}". Please remove it '
+                    f"{key}: File `{str(link_name_path)}` "
+                    f"is linked to `{str(link_name_path.resolve())}` "
+                    f"instead of `{str(target_path)}`. Please remove it "
                     "manually or use --force.",
                     colour.fg_red,
                 )
             skip = True
         elif link_name_path.exists():
             print_style(
-                f'{key}: File "{str(link_name_path)}" '
-                "exists and it is not a symbolic link. Please remove it "
-                "manually or use --force argument.",
+                f"{key}: File `{str(link_name_path)}` exists and it is not a "
+                "symbolic link. Please remove it manually or use --force "
+                "argument.",
                 colour.fg_red,
             )
             skip = True
@@ -241,7 +239,7 @@ def link_selected_files(
 
         link_name_path.symlink_to(target_path, target_path.is_dir())
         print_style(
-            f'{key}: File "{str(link_name_path)}" linked ' "correctly.",
+            f"{key}: File `{str(link_name_path)}` linked correctly.",
             colour.fg_green,
         )
 
@@ -273,24 +271,23 @@ def delete_selected_links(
         if link_name_path.is_symlink():
             if link_name_path.resolve() != target_path:
                 print_style(
-                    f'{key}: File "{str(link_name_path)}" '
-                    f'is linked to "{str(link_name_path.resolve())}" '
-                    f'instead of "{str(target_path)}". Please remove it '
+                    f"{key}: File `{str(link_name_path)}` "
+                    f"is linked to `{str(link_name_path.resolve())}` "
+                    f"instead of `{str(target_path)}`. Please remove it "
                     "manually or use --force argument.",
                     colour.fg_red,
                 )
                 skip = True
         elif link_name_path.exists():
             print_style(
-                f'{key}: File "{str(link_name_path)}" '
-                "exists and it is not a symbolic link. Use --force to delete "
-                "it.",
+                f"{key}: File `{str(link_name_path)}` exists and it is not a "
+                "symbolic link. Use --force to delete it.",
                 colour.fg_red,
             )
             skip = True
         else:
             print_style(
-                f'{key}: File "{str(link_name_path)}" ' "does not exist.",
+                f"{key}: File `{str(link_name_path)}` does not exist.",
                 colour.fg_yellow,
             )
             skip = True
@@ -317,14 +314,12 @@ def delete_selected_links(
             pass
 
         print_style(
-            f'{key}: File "{str(link_name_path)}" deleted ' "correctly.",
+            f"{key}: File `{str(link_name_path)}` deleted correctly.",
             colour.fg_green,
         )
 
     print_selected_files(selected_files, verbose)
-    question = input(
-        "\nAre you sure you want to delete previous links? (yes/no): "
-    )
+    question = input("\nAre you sure you want to delete previous links? (yes/no): ")
 
     if question.strip().lower() != "yes":
         print("\nAborting symlinks deletion.")
@@ -345,7 +340,7 @@ def load_files_list(args: Namespace) -> List[HomeFile]:
         try:
             all_files = toml.load(f)
         except toml.TomlDecodeError:
-            sys.exit(f'ERROR: Problem decoding "{str(ALL_FILES_PATH)}" file')
+            sys.exit(f"ERROR: Problem decoding `{str(ALL_FILES_PATH)}` file")
 
     # Obtain selected keys
     if args.all:
@@ -363,12 +358,9 @@ def load_files_list(args: Namespace) -> List[HomeFile]:
         try:
             selected_files.append(HomeFile(key, **all_files[key]))
         except KeyError:
-            sys.exit(
-                f'ERROR: "{key}" identifier was not found in '
-                f'"{str(ALL_FILES_PATH)}" file'
-            )
+            sys.exit(f"ERROR: `{key}` identifier was not found in `{str(ALL_FILES_PATH)}` file")
         except TypeError as error:
-            sys.exit(f'ERROR parsing "{key}": {str(error)}.')
+            sys.exit(f"ERROR parsing `{key}`: {str(error)}.")
 
     # Check if every selected file exists in the repository if we are not
     # deleting
@@ -376,17 +368,12 @@ def load_files_list(args: Namespace) -> List[HomeFile]:
         try:
             list(
                 map(
-                    lambda file: (REPO_HOME_PATH / file.relpath).resolve(
-                        strict=True
-                    ),
+                    lambda file: (REPO_HOME_PATH / file.relpath).resolve(strict=True),
                     selected_files,
                 )
             )
         except FileNotFoundError as error:
-            sys.exit(
-                f'ERROR: File "{error.filename}" from selected files does not '
-                "exist."
-            )
+            sys.exit(f"ERROR: File `{error.filename}` from selected files does not exist.")
 
     return sorted(selected_files, key=lambda file: file.key)
 
@@ -397,12 +384,8 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     actions_group = parser.add_mutually_exclusive_group(required=True)
-    actions_group.add_argument(
-        "-p", "--print", action="store_true", help="print selected files"
-    )
-    actions_group.add_argument(
-        "-l", "--link", action="store_true", help="link selected files",
-    )
+    actions_group.add_argument("-p", "--print", action="store_true", help="print selected files")
+    actions_group.add_argument("-l", "--link", action="store_true", help="link selected files")
     actions_group.add_argument(
         "-d",
         "--delete",
@@ -415,9 +398,7 @@ def main():
         action="store_true",
         help="force linking and deleting symlinks",
     )
-    parser.add_argument(
-        "-v", "--verbose", action="store_true", help="print in verbose mode"
-    )
+    parser.add_argument("-v", "--verbose", action="store_true", help="print in verbose mode")
     number_group = parser.add_mutually_exclusive_group(required=False)
     number_group.add_argument(
         "-a", "--all", action="store_true", help="perform action for all files"
