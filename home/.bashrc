@@ -2,40 +2,22 @@
 # ~/.bashrc
 #
 
+# Check if running in interactive mode, if not, GTFO
 [[ $- != *i* ]] && return
 
+# Bash completions
 [ -r /usr/share/bash-completion/bash_completion ] && {
   . /usr/share/bash-completion/bash_completion
 }
 
-use_color=true
-
-# Set colorful PS1 only on colorful terminals.
-# dircolors --print-database uses its own built-in database
-# instead of using /etc/DIR_COLORS.  Try to use the external file
-# first to take advantage of user additions.  Use internal bash
-# globbing instead of external grep binary.
-safe_term=${TERM//[^[:alnum:]]/?} # sanitize TERM
-match_lhs=""
-[[ -f ~/.dir_colors ]] && match_lhs="${match_lhs}$(<~/.dir_colors)"
-[[ -f /etc/DIR_COLORS ]] && match_lhs="${match_lhs}$(</etc/DIR_COLORS)"
-[[ -z ${match_lhs} ]] &&
-  type -P dircolors >/dev/null &&
-  match_lhs=$(dircolors --print-database)
-[[ $'\n'${match_lhs} == *$'\n'"TERM "${safe_term}* ]] && use_color=true
-
-if ${use_color}; then
-  # Enable colors for ls, etc.  Prefer ~/.dir_colors #64489
-  if type -P dircolors >/dev/null; then
-    if [[ -f ~/.dir_colors ]]; then
-      eval $(dircolors -b ~/.dir_colors)
-    elif [[ -f /etc/DIR_COLORS ]]; then
-      eval $(dircolors -b /etc/DIR_COLORS)
-    fi
-  fi
+# Colourize ls output
+if [[ -f ~/.dir_colors && -n "$(cat ~/.dir_colors)" ]]; then
+  dircolors_file="$HOME/.dir_colors"
+elif [[ -f /etc/DIR_COLORS && -n "$(cat /etc/DIR_COLORS)" ]]; then
+  dircolors_file="/etc/DIR_COLORS"
 fi
-
-unset use_color safe_term match_lhs
+eval $(dircolors -b ${dircolors_file})
+unset dircolors_file
 
 # Bash options
 shopt -s checkwinsize
@@ -45,6 +27,7 @@ shopt -s histappend
 # Shell options
 set -o ignoreeof
 set -o vi
+
 # Unbind Ctrl+s and Ctrl+q
 stty -ixon -ixoff
 
@@ -73,6 +56,7 @@ source_shell_scripts() {
   fi
 }
 
+# Load all the shell configuration files
 source_shell_scripts "$HOME/.config/bash/"
 . $HOME/scripts/add_paths_to_variable.sh "PATH" \
     "$HOME/.local/bin/" \
