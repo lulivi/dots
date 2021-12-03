@@ -34,37 +34,18 @@ stty -ixon -ixoff
 complete -cf sudo
 xhost +local:root >/dev/null 2>&1
 
-# Source a shell scripts
-# Usage: source_shell_scripts <path_to_script/path_to_dir>
-source_shell_scripts() {
-  local script_path="$1"
+# Define the common paths
+. $HOME/.sh/add_paths_to_variable.sh "PATH" \
+  "$HOME/.local/bin/" \
+  "$HOME/.bin/" \
+  "$HOME/.gem/ruby/2.7.0/bin" \
+  "$HOME/.luarocks/bin/" \
+  "$HOME/.cargo/bin/" \
+  "$HOME/.screenlayout/"
 
-  if [ -d "$script_path" ]; then
-    for subscript_path in $script_path/*.sh; do
-      if [ -r "$subscript_path" ]; then
-        . "$subscript_path"
-      else
-        printf '[WARNING] "%s" does not exists or is not a shell script.\n' \
-          "$subscript_path"
-      fi
-    done
-  elif [ -r "$script_path" ]; then
-    . "$script_path"
-  else
-    printf '[WARNING] "%s" does not exists or is not a shell script.\n' \
-      "$script_path"
-  fi
-}
+# Load all shell utils: variables, aliases and functions
+. $HOME/.sh/load_shell_scripts.sh "$HOME/.config/bash/"
 
-# Load all the shell configuration files
-source_shell_scripts "$HOME/.config/bash/"
-. $HOME/scripts/add_paths_to_variable.sh "PATH" \
-    "$HOME/.local/bin/" \
-    "$HOME/scripts/" \
-    "$HOME/.gem/ruby/2.7.0/bin" \
-    "$HOME/.luarocks/bin/" \
-    "$HOME/.cargo/bin/" \
-    "$HOME/.screenlayout/"
-
+# Theming
 [ -f $HOME/.cache/wal/sequences ] && (cat ~/.cache/wal/sequences &)
 

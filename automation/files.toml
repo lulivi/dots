@@ -1,73 +1,70 @@
-# Some useful scripts
-[scripts-add_log_entry]
-relpath = "scripts/add_log_entry"
+# Scripts
+[bin-add_log_entry]
+relpath = ".bin/add_log_entry"
 description = "Append a new entry in GNU changelog style."
-[scripts-colortrans]
-relpath = "scripts/colortrans.py"
-description = "Convert values between RGB hex codes and xterm-256 color codes."
-[scripts-hex_dec_color]
-relpath = "scripts/hex_dec_color.sh"
-description = "Convert between decimal and hexadecimal"
-[scripts-kb_light]
-relpath = "scripts/kb_light.py"
-description = "Modify keyboard backlight."
-packages = ["python-dbus"]
-[scripts-lock]
-relpath = "scripts/lock.sh"
-description = "Lock screen with a pixelated screenshot of your desktop."
-packages = ["xorg-xdpyinfo", "maim", "imagemagick", "i3lock"]
-[scripts-screenshot]
-relpath = "scripts/screenshot"
-description = "Select a square in your screen and save the capture in your clipboard."
-packages = ["maim", "xclip"]
-[scripts-screenshot-desktop]
-relpath = ".local/share/applications/screenshot.desktop"
-description = "Desktop entry for screenshot script."
-[scripts-pomodoro]
-relpath = "scripts/pomodoro.py"
-description = "Run the Pomodoro technique and send notifications to Telegram."
-[scripts-session]
-relpath = "scripts/session.sh"
-description = "Simple terminal GUI to suspend, restart or poweroff the system."
-[scripts-show_keypress]
-relpath = "scripts/show_keypress.sh"
-description = "Show key press."
-packages = ["xorg-xev"]
-[scripts-show_sxhkd_keybindings]
-relpath = "scripts/show_sxhkd_keybindings.sh"
-description = "Capture and show sxhkd keybindings."
-[scripts-status]
-relpath = "scripts/status.sh"
-description = "Check status of each git directory located in the current path."
-packages = ["git"]
-[scripts-tput_clock]
-relpath = "scripts/tput_clock.sh"
-description = "Show clock in an ascii banner."
-packages = ["banner"]
-[scripts-tput_color_base16]
-relpath = "scripts/tput_color_base16.sh"
-description = "Show base16 fg/bg color combinations."
-[scripts-tput_color_table]
-relpath = "scripts/tput_color_table.sh"
-description = "Show all ANSI colors with their correspondent index."
-[scripts-vm]
-relpath = "scripts/vm"
-description = "Manage VirtualBox VM running without GUI."
-packages = ["virtualbox"]
-[scripts-wm_selector]
-relpath = "scripts/wm_selector.sh"
-description = "Select window manager from tty"
-packages = ["dialog"]
-[scripts-xr_color_scheme]
-relpath = "scripts/xr_color_scheme.sh"
-description = "Show first 21 colors from Xresources."
-[scripts-xr_wrapper_reloader]
-relpath = "scripts/xr_wrapper_reloader.sh"
-description = "Reload xrdb with custom script."
-[scripts-bookmarks]
-relpath = "scripts/bookmarks"
+[bin-bookmarks]
+relpath = ".bin/bookmarks"
 description = "Open bookmarks with the default web browser."
 packages = ["yq"]
+[bin-kb_light]
+relpath = ".bin/kb_light.py"
+description = "Modify keyboard backlight."
+packages = ["python-dbus"]
+[bin-lock]
+relpath = ".bin/lock.sh"
+description = "Lock screen with a pixelated screenshot of your desktop."
+packages = ["xorg-xdpyinfo", "maim", "imagemagick", "i3lock"]
+[bin-pomodoro]
+relpath = ".bin/pomodoro.py"
+description = "Run the Pomodoro technique and send notifications to Telegram."
+[bin-screenshot]
+relpath = ".bin/screenshot"
+description = "Select a square in your screen and save the capture in your clipboard."
+packages = ["maim", "xclip"]
+[bin-screenshot-desktop]
+relpath = ".local/share/applications/screenshot.desktop"
+description = "Desktop entry for screenshot script."
+[bin-session]
+relpath = ".bin/session.sh"
+description = "Simple terminal GUI to suspend, restart or poweroff the system."
+[bin-show_keypress]
+relpath = ".bin/show_keypress.sh"
+description = "Show key press."
+packages = ["xorg-xev"]
+[bin-show_sxhkd_keybindings]
+relpath = ".bin/show_sxhkd_keybindings.sh"
+description = "Capture and show sxhkd keybindings."
+[bin-status]
+relpath = ".bin/status.sh"
+description = "Check status of each git directory located in the current path."
+packages = ["git"]
+[bin-tput_color_base16]
+relpath = ".bin/tput_color_base16.sh"
+description = "Show base16 fg/bg color combinations."
+[bin-tput_color_table]
+relpath = ".bin/tput_color_table.sh"
+description = "Show all ANSI colors with their correspondent index."
+[bin-vm]
+relpath = ".bin/vm"
+description = "Manage VirtualBox VM running without GUI."
+packages = ["virtualbox"]
+[bin-xr_color_scheme]
+relpath = ".bin/xr_color_scheme.sh"
+description = "Show first 21 colors from Xresources."
+[bin-xr_wrapper_reloader]
+relpath = ".bin/xr_wrapper_reloader.sh"
+description = "Reload xrdb with custom script."
+
+# Shell scripts (non-executable)
+[sh-add_paths_to_variable]
+relpath = ".sh/add_paths_to_variable.sh"
+description = "Add new paths to a PATH-like variable."
+[sh-del_paths_from_variable]
+relpath = ".sh/del_paths_from_variable.sh"
+description = "Delete paths from a PATH-like variable."
+[sh-load_shell_scripts_dir]
+relpath = ".sh/load_shell_scripts_dir.sh"
+description = "Load shell scripts from a path or a directory."
 
 # Emacs configuration
 [emacs-config]
