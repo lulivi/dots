@@ -8,7 +8,7 @@ showhelp() {
 cat << EOF
 usage:
     vm [help | list]
-    vm [start | stop | screen] <virtual machine name>
+    vm <virtual machine name> [start | stop | screen]
 EOF
 }
 
@@ -46,16 +46,16 @@ case "$#" in
         case "$2" in
             u|up|start)
                 startvm "$1"
-                    ;;
+                ;;
             d|down|stop)
-                    stopvm "$1"
-                    ;;
+                stopvm "$1"
+                ;;
             s|scr|screen)
-                    screenshotvm "$1"
-                    ;;
+                screenshotvm "$1"
+                ;;
             *)
-                    printf '"%s" command not found\n' "$2"
-                    ;;
+                printf '"%s" command not found\n' "$2"
+                ;;
         esac
         ;;
     *) printf 'Unknown number of arguments\n';;
