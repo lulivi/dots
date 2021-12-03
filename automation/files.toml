@@ -66,17 +66,6 @@ description = "Delete paths from a PATH-like variable."
 relpath = ".sh/load_shell_scripts_dir.sh"
 description = "Load shell scripts from a path or a directory."
 
-# Emacs configuration
-[emacs-config]
-relpath = ".emacs.d/config.org"
-description = "Emacs editor main configuration file."
-[emacs-init]
-relpath = ".emacs.d/init.el"
-description = "Emacs editor config.org loader."
-[emacs-mc-lists]
-relpath = ".emacs.d/.mc-lists.el"
-description = "Emacs editor mc-lists plugging configuration."
-
 # Editors
 [nvim-init]
 relpath = ".config/nvim/init.vim"
