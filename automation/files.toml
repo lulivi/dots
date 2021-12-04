@@ -62,8 +62,8 @@ description = "Add new paths to a PATH-like variable."
 [sh-del_paths_from_variable]
 relpath = ".sh/del_paths_from_variable.sh"
 description = "Delete paths from a PATH-like variable."
-[sh-load_shell_scripts_dir]
-relpath = ".sh/load_shell_scripts_dir.sh"
+[sh-load_shell_scripts]
+relpath = ".sh/load_shell_scripts.sh"
 description = "Load shell scripts from a path or a directory."
 
 # Editors
