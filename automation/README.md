@@ -33,8 +33,8 @@ packages = ["<package 1>", "<package 2>"]
 > For example:
 > 
 > ```toml
-> [scripts-lock]
-> relpath = "scripts/lock.sh"
+> [bin-lock]
+> relpath = ".bin/lock.sh"
 > description = "Lock screen with a pixelated screenshot of your desktop."
 > packages = ["xorg-xdpyinfo", "gawk", "maim", "imagemagick", "i3lock"]
 > ```
@@ -53,6 +53,6 @@ The selected files will be located in a new `selected_files.txt` file with one
 > For example:
 > 
 > ```
-> scripts-lock
+> bin-lock
 > pcmanfm
 > ```

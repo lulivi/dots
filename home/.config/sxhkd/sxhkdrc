@@ -40,7 +40,7 @@ Print
 
 ## Lock screen
 super + x
-    "$HOME/scripts/lock.sh"
+    "$HOME/.bin/lock.sh"
 
 # 888     888 88888888888 8888888 888       .d8888b.
 # 888     888     888       888   888      d88P  Y88b
@@ -57,7 +57,7 @@ XF86MonBrightness{Down,Up}
 
 ## Kdb Light
 XF86KbdBrightness{Down,Up}
-    $HOME/scripts/kb-light.py --{down,up};
+    $HOME/.bin/kb-light.py --{down,up};
 
 ## Audio volume
 XF86Audio{LowerVolume,RaiseVolume}
