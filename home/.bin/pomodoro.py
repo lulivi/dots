@@ -36,10 +36,10 @@ from typing import Optional, Callable, Dict, List
 
 
 try:
-    BOT_TOKEN = environ["BOT_TOKEN"]
-    CHAT_ID = environ["CHAT_ID"]
+    TG_BOT_TOKEN = environ["TG_BOT_TOKEN"]
+    TG_MY_ID = environ["TG_MY_ID"]
 except KeyError:
-    sys.exit("Ensure BOT_TOKEN and CHAT_ID variables are set.")
+    sys.exit("Ensure TG_BOT_TOKEN and TG_MY_ID variables are set.")
 
 
 def send_desktop_notification(title: str, body: str = "") -> None:
@@ -77,9 +77,9 @@ def send_telegram_notification(title: str, body: str = "") -> None:
         print("Error sending notification: no title provided.")
         return
 
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    url = f"https://api.telegram.org/bot{TG_BOT_TOKEN}/sendMessage"
     data = urllib.parse.urlencode(
-        {"chat_id": CHAT_ID, "parse_mode": "Markdown", "text": bot_message}
+        {"TG_MY_ID": TG_MY_ID, "parse_mode": "Markdown", "text": bot_message}
     ).encode("ascii")
     request = urllib.request.Request(url, data)
 

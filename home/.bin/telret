@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+# telret - send notification with previous command return code
+# usage: <comand>; telret
+
+ret_code="$?"
+
+[ "$(command -v send_telegram_message)" ] || {
+    printf 'Could not find "send_telegram_message" required for this script. Exiting.\n' 
+    exit 1
+}
+
+message="$(printf '💽=`%s`' "$ret_code")"
+[ "$(command -v notify-send)" ] && notify-send "Sending notification" "$message"
+send_telegram_message "$message"

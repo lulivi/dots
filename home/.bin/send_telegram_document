@@ -1,0 +1,30 @@
+#!/usr/bin/env sh
+# send_telegram_document - send a telegram document to TG_MY_ID with a bot
+# ussage: send_telegram_document "<path_to_document>"
+document="$(realpath -P $1)"
+caption="$2"
+
+[[ -z "$TG_BOT_TOKEN" || -z "$TG_MY_ID" ]] && {
+    printf 'Please be sure that $TG_BOT_TOKEN and $TG_MY_ID are set.\n'
+    exit 1
+}
+
+[ -f "$document" ] || {
+    printf 'There is no document to send. Aborting.\n'
+    exit 1
+}
+
+printf 'Sending document "%s"...\n' "$document"
+
+URL="https://api.telegram.org/bot${TG_BOT_TOKEN}/sendDocument"
+DATA="-F document=@\"${document}\" -F chat_id=${TG_MY_ID}"
+
+obtained_json="$(curl -s -k $DATA $URL)"
+petition_ok="$(printf '%s' "$obtained_json" | jq .ok)"
+
+$petition_ok || {
+    printf 'There was an error: \n'
+    printf '%s' "$obtained_json" | jq
+    printf '\nPetition parementers:\n%s\n' "$DATA"
+    exit 1
+}

@@ -1,0 +1,31 @@
+#!/usr/bin/env sh
+# send_telegram_message - send a telegram message to TG_MY_ID with a bot
+# ussage: send_telegram_message "<message_to_send>"
+message="$1"
+
+[[ -z "$TG_BOT_TOKEN" || -z "$TG_MY_ID" ]] && {
+    printf 'Please be sure that $TG_BOT_TOKEN and $TG_MY_ID are set.\n'
+    exit 1
+}
+
+[ -z "$message" ] && {
+    printf 'There is no message to send. Aborting.'
+    exit 1
+}
+[ "${#message}" -gt "4096" ] && {
+    message="$(printf '%s\n```... The message has been trimmed.' "${message:0:4066}")"
+}
+
+URL="https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage"
+DATA="chat_id=${TG_MY_ID}&parse_mode=Markdown&text=${message}"
+
+obtained_json="$(curl -s --data "$DATA" $URL)"
+petition_ok="$(printf '%s' "$obtained_json" | jq .ok)"
+
+$petition_ok || {
+    printf 'There was an error: \n'
+    printf '%s' "$obtained_json" | jq
+    printf '\nPetition parementers:\n%s\n' "$DATA"
+    exit 1
+}
+

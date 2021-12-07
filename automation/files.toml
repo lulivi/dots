@@ -20,7 +20,15 @@ description = "Run the Pomodoro technique and send notifications to Telegram."
 [bin-screenshot]
 relpath = ".bin/screenshot"
 description = "Select a square in your screen and save the capture in your clipboard."
-packages = ["maim", "xclip"]
+packages = ["maim", "xclip"] 
+[bin-send_telegram_document]
+relpath = ".bin/send_telegram_document"
+description = "Send a document to the telegram bot setted up."
+packages = ["jq", "curl"]
+[bin-send_telegram_message]
+relpath = ".bin/send_telegram_message"
+description = "Send a message to the telegram bot setted up."
+packages = ["jq", "curl"]
 [bin-screenshot-desktop]
 relpath = ".local/share/applications/screenshot.desktop"
 description = "Desktop entry for screenshot script."
@@ -38,6 +46,12 @@ description = "Capture and show sxhkd keybindings."
 relpath = ".bin/status.sh"
 description = "Check status of each git directory located in the current path."
 packages = ["git"]
+[bin-telpipe]
+relpath = ".bin/telpipe"
+description = "Send the output of the piped command to your telegram user."
+[bin-telret]
+relpath = ".bin/telret"
+description = "Send the return code of the previous command to your telegram user."
 [bin-tput_color_base16]
 relpath = ".bin/tput_color_base16.sh"
 description = "Show base16 fg/bg color combinations."
