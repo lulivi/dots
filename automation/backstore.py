@@ -6,7 +6,7 @@ This script can also delete those symbolic links and link them.
 
 By default, the choosen operation (``--print``, ``--link`` and ``--delete``)
 will obtain the selected files from a file called ``selected_files.py`` located
-in this directory. It is possible to select every file listed in ``files.toml``
+in this directory. It is possible to select every file listed in ``files.json``
 using ``--all`` argument, or only one using the argument ``--only``. Also you
 can increase the printing verbosity by using ``--verbose`` argument. For
 ``--link`` and ``--delete`` arguments there is an extra flag, ``--force`` if
@@ -38,6 +38,7 @@ Some usage examples:
 import argparse
 import contextlib
 import functools
+import json
 import os
 import subprocess
 import sys
@@ -47,11 +48,9 @@ from enum import Enum
 from pathlib import Path
 from typing import List, NamedTuple
 
-import toml
-
 HOME_PATH: Path = Path.home()
 AUTOMATION_PATH: Path = Path(__file__).resolve().parent
-ALL_FILES_PATH: Path = (AUTOMATION_PATH / "files.toml").resolve()
+ALL_FILES_PATH: Path = (AUTOMATION_PATH / "files.json").resolve()
 SEL_FILES_PATH: Path = (AUTOMATION_PATH / "selected_files.txt").resolve()
 REPO_HOME_PATH: Path = (AUTOMATION_PATH.parent / "home").resolve()
 
@@ -144,7 +143,7 @@ def print_selected_files(selected_files: List[HomeFile], verbose: bool = False) 
             style = colour.fg_yellow
             output_text = f"{output_text} (file is not link)"
         else:
-            style = colour.bg_red + colour.fg_yellow
+            style = colour.fg_red
             output_text = f"{output_text} (file does not exist)"
 
         return apply_style(output_text, style)
@@ -175,7 +174,7 @@ def link_selected_files(selected_files: List[HomeFile], force: bool = False) -> 
     """Link selected files.
 
     :param selected_files: list of selected files.
-    :param verbose: print info in verbose mode.
+    :param force: whether to always delete the link or not.
 
     """
 
@@ -222,7 +221,7 @@ def link_selected_files(selected_files: List[HomeFile], force: bool = False) -> 
         """Create a link of the file.
 
         :param file: file to link.
-        :param verbose: whether to use verbosity in the print function.
+        :param force: whether to always delete the link or not.
 
         """
         key = apply_style(file.key, colour.bold)
@@ -246,13 +245,10 @@ def link_selected_files(selected_files: List[HomeFile], force: bool = False) -> 
     list(map(functools.partial(link_file, force=force), selected_files))
 
 
-def delete_selected_links(
-    selected_files: List[HomeFile], verbose: bool = False, force: bool = False
-) -> None:
+def delete_selected_links(selected_files: List[HomeFile], force: bool = False) -> None:
     """Delete selected files.
 
     :param selected_files: list of selected files.
-    :param verbose: print info in verbose mode.
     :param force: whether to always delete the link or not.
 
     """
@@ -318,7 +314,7 @@ def delete_selected_links(
             colour.fg_green,
         )
 
-    print_selected_files(selected_files, verbose)
+    print_selected_files(selected_files)
     question = input("\nAre you sure you want to delete previous links? (yes/no): ")
 
     if question.strip().lower() != "yes":
@@ -338,8 +334,8 @@ def load_files_list(args: Namespace) -> List[HomeFile]:
     # Load all files metadata
     with ALL_FILES_PATH.open() as f:
         try:
-            all_files = toml.load(f)
-        except toml.TomlDecodeError:
+            all_files = json.load(f)
+        except json.JSONDecodeError:
             sys.exit(f"ERROR: Problem decoding `{str(ALL_FILES_PATH)}` file")
 
     # Obtain selected keys
@@ -417,19 +413,15 @@ def main():
     if not selected_files:
         sys.exit("ERROR: There aren't selected files.")
 
-    verbose_status = "verbose" if args.verbose else "quiet"
-
     if args.print:
-        print(f"Listing selected files in {verbose_status} mode.\n")
+        print(f"Listing selected files.\n")
         print_selected_files(selected_files, args.verbose)
     elif args.link:
-        print(f"Linking selected files in {verbose_status} mode.\n")
+        print(f"Linking selected files.\n")
         link_selected_files(selected_files, args.force)
     elif args.delete:
-        print(f"Deleting selected links in {verbose_status} mode.\n")
-        delete_selected_links(selected_files, args.verbose, args.force)
-
-    print()
+        print(f"Deleting selected links.\n")
+        delete_selected_links(selected_files, args.force)
 
 
 if __name__ == "__main__":

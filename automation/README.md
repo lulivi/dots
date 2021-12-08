@@ -15,28 +15,37 @@ python automation/backstore.py --help
 
 ## File definition
 
-Every wanted file definition will be located in [files.toml](./files.toml) with
-the following format (in [TOML](https://github.com/toml-lang/toml) language):
+Every wanted file definition will be located in [files.json](./files.json) with
+the following format (in [JSON](https://www.json.org/json-en.html) language):
 
-```toml
-# The choosen key to identify the file
-[<key name>]
-# The $HOME relative path of the file (i.e.: for /home/user/.vimrc would 
-# be relpath = ".vimrc")
-relpath = "<home relative file path>"
-# A brief description of the file
-description = "<description>"
-# A list with the required packages by the file
-packages = ["<package 1>", "<package 2>"]
+```json
+{
+    # The choosen key to identify the file
+    "<key name>": {
+        # The $HOME relative path of the file (i.e.: for /home/user/.vimrc would 
+        # be "relpath": ".vimrc")
+        "relpath": "<home relative file path>",
+        # A brief description of the file
+        "description": "<description>",
+        # A list with the required packages by the file
+        "packages": ["<package 1>", "<package 2>"]
+    }
+}
 ```
 
 > For example:
 > 
-> ```toml
-> [bin-lock]
-> relpath = ".local/bin/lock.sh"
-> description = "Lock screen with a pixelated screenshot of your desktop."
-> packages = ["xorg-xdpyinfo", "gawk", "maim", "imagemagick", "i3lock"]
+> ```json
+> "bin-lock": {
+>   "relpath": ".local/bin/lock.sh",
+>   "description": "Lock screen with a pixelated screenshot of your desktop.",
+>   "packages": [
+>     "xorg-xdpyinfo",
+>     "maim",
+>     "imagemagick",
+>     "i3lock"
+>   ]
+> },
 > ```
 
 ## Selected files
@@ -44,7 +53,7 @@ packages = ["<package 1>", "<package 2>"]
 The selected files will be located in a new `selected_files.txt` file with one
 `key` by line:
 
-```
+```plain
 <key 1>
 <key 2>
 ...
@@ -52,7 +61,7 @@ The selected files will be located in a new `selected_files.txt` file with one
 
 > For example:
 > 
-> ```
+> ```plain
 > bin-lock
 > pcmanfm
 > ```
