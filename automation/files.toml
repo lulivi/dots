@@ -1,90 +1,90 @@
 # Scripts
 [bin-add_log_entry]
-relpath = ".bin/add_log_entry"
+relpath = ".local/bin/add_log_entry"
 description = "Append a new entry in GNU changelog style."
 [bin-bookmarks]
-relpath = ".bin/bookmarks"
+relpath = ".local/bin/bookmarks"
 description = "Open bookmarks with the default web browser."
 packages = ["yq"]
 [bin-cht]
-relpath = ".bin/cht"
+relpath = ".local/bin/cht"
 description = "Change terminal title."
 [bin-docker_run]
-relpath = ".bin/docker_run"
+relpath = ".local/bin/docker_run"
 description = "Run a docker image."
 packages = ["docker"]
 [bin-extract]
-relpath = ".bin/extract"
+relpath = ".local/bin/extract"
 description = "Extract various format of compressed files."
 [bin-kb_light]
-relpath = ".bin/kb_light.py"
+relpath = ".local/bin/kb_light.py"
 description = "Modify keyboard backlight."
 packages = ["python-dbus"]
 [bin-lock]
-relpath = ".bin/lock.sh"
+relpath = ".local/bin/lock.sh"
 description = "Lock screen with a pixelated screenshot of your desktop."
 packages = ["xorg-xdpyinfo", "maim", "imagemagick", "i3lock"]
 [bin-mdrender]
-relpath = ".bin/mdrender"
+relpath = ".local/bin/mdrender"
 description = "Create a html preview of the markdown file."
 packages = ["pandoc"]
 [bin-np]
-relpath = ".bin/np"
+relpath = ".local/bin/np"
 description = "Show current artist and song playing."
 packages = ["playerctl"]
 [bin-pomodoro]
-relpath = ".bin/pomodoro.py"
+relpath = ".local/bin/pomodoro.py"
 description = "Run the Pomodoro technique and send notifications to Telegram."
 [bin-screenshot]
-relpath = ".bin/screenshot"
+relpath = ".local/bin/screenshot"
 description = "Select a square in your screen and save the capture in your clipboard."
 packages = ["maim", "xclip"] 
 [bin-send_telegram_document]
-relpath = ".bin/send_telegram_document"
+relpath = ".local/bin/send_telegram_document"
 description = "Send a document to the telegram bot setted up."
 packages = ["jq", "curl"]
 [bin-send_telegram_message]
-relpath = ".bin/send_telegram_message"
+relpath = ".local/bin/send_telegram_message"
 description = "Send a message to the telegram bot setted up."
 packages = ["jq", "curl"]
 [bin-screenshot-desktop]
 relpath = ".local/share/applications/screenshot.desktop"
 description = "Desktop entry for screenshot script."
 [bin-session]
-relpath = ".bin/session.sh"
+relpath = ".local/bin/session.sh"
 description = "Simple terminal GUI to suspend, restart or poweroff the system."
 [bin-show_keypress]
-relpath = ".bin/show_keypress.sh"
+relpath = ".local/bin/show_keypress.sh"
 description = "Show key press."
 packages = ["xorg-xev"]
 [bin-show_sxhkd_keybindings]
-relpath = ".bin/show_sxhkd_keybindings.sh"
+relpath = ".local/bin/show_sxhkd_keybindings.sh"
 description = "Capture and show sxhkd keybindings."
 [bin-status]
-relpath = ".bin/status.sh"
+relpath = ".local/bin/status.sh"
 description = "Check status of each git directory located in the current path."
 packages = ["git"]
 [bin-telpipe]
-relpath = ".bin/telpipe"
+relpath = ".local/bin/telpipe"
 description = "Send the output of the piped command to your telegram user."
 [bin-telret]
-relpath = ".bin/telret"
+relpath = ".local/bin/telret"
 description = "Send the return code of the previous command to your telegram user."
 [bin-tput_color_base16]
-relpath = ".bin/tput_color_base16.sh"
+relpath = ".local/bin/tput_color_base16.sh"
 description = "Show base16 fg/bg color combinations."
 [bin-tput_color_table]
-relpath = ".bin/tput_color_table.sh"
+relpath = ".local/bin/tput_color_table.sh"
 description = "Show all ANSI colors with their correspondent index."
 [bin-vm]
-relpath = ".bin/vm"
+relpath = ".local/bin/vm"
 description = "Manage VirtualBox VM running without GUI."
 packages = ["virtualbox"]
 [bin-xr_color_scheme]
-relpath = ".bin/xr_color_scheme.sh"
+relpath = ".local/bin/xr_color_scheme.sh"
 description = "Show first 21 colors from Xresources."
 [bin-xr_wrapper_reloader]
-relpath = ".bin/xr_wrapper_reloader.sh"
+relpath = ".local/bin/xr_wrapper_reloader.sh"
 description = "Reload xrdb with custom script."
 
 # Editors

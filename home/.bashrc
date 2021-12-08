@@ -73,7 +73,6 @@ del_paths_from_variable() {
 # Define the common paths
 add_paths_to_variable "PATH" \
   "$HOME/.local/bin/" \
-  "$HOME/.bin/" \
   "$HOME/.gem/ruby/2.7.0/bin" \
   "$HOME/.luarocks/bin/" \
   "$HOME/.cargo/bin/" \

@@ -34,7 +34,7 @@ packages = ["<package 1>", "<package 2>"]
 > 
 > ```toml
 > [bin-lock]
-> relpath = ".bin/lock.sh"
+> relpath = ".local/bin/lock.sh"
 > description = "Lock screen with a pixelated screenshot of your desktop."
 > packages = ["xorg-xdpyinfo", "gawk", "maim", "imagemagick", "i3lock"]
 > ```
