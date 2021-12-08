@@ -6,6 +6,12 @@ description = "Append a new entry in GNU changelog style."
 relpath = ".bin/bookmarks"
 description = "Open bookmarks with the default web browser."
 packages = ["yq"]
+[bin-cht]
+relpath = ".bin/cht"
+description = "Change terminal title."
+[bin-extract]
+relpath = ".bin/extract"
+description = "Extract various format of compressed files."
 [bin-kb_light]
 relpath = ".bin/kb_light.py"
 description = "Modify keyboard backlight."
@@ -14,6 +20,10 @@ packages = ["python-dbus"]
 relpath = ".bin/lock.sh"
 description = "Lock screen with a pixelated screenshot of your desktop."
 packages = ["xorg-xdpyinfo", "maim", "imagemagick", "i3lock"]
+[bin-np]
+relpath = ".bin/np"
+description = "Show current artist and song playing."
+packages = ["playerctl"]
 [bin-pomodoro]
 relpath = ".bin/pomodoro.py"
 description = "Run the Pomodoro technique and send notifications to Telegram."

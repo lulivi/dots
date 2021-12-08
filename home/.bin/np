@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+# np - show current playing music
+# usage: np
+
+[ "$(command -v playerctl)" ] || {
+    printf 'Could not find "playerctl" required for this script. Exiting.\n' 
+    exit 1
+}
+
+[ -n "$(playerctl metadata artist 2>/dev/null)" ] || {
+    printf 'No players found.\n'
+}
+
+printf '%s - %s\n' "$(playerctl metadata artist)" "$(playerctl metadata title)"

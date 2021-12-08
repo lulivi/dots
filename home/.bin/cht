@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+# cht - change terminal window title
+# usage: cht "<text>"
+
+printf '\033]0;%s\007' "$1"

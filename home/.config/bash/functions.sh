@@ -38,52 +38,11 @@ activate() {
     fi
 }
 
-# ex - archive extractor
-# usage: ex <file>
-ex() {
-    if [ -f $1 ]; then
-        case $1 in
-        *.tar.bz2) tar xjf $1 ;;
-        *.tar.gz) tar xzf $1 ;;
-        *.bz2) bunzip2 $1 ;;
-        *.rar) unrar x $1 ;;
-        *.gz) gunzip $1 ;;
-        *.tar) tar xf $1 ;;
-        *.tbz2) tar xjf $1 ;;
-        *.tgz) tar xzf $1 ;;
-        *.zip) unzip $1 ;;
-        *.Z) uncompress $1 ;;
-        *.7z) 7z x $1 ;;
-        *) echo "'$1' cannot be extracted via ex()" ;;
-        esac
-    else
-        echo "'$1' is not a valid file"
-    fi
-}
-
-# np - show current music
-# usage: np
-np() {
-    if [ -n "$(playerctl metadata artist 2>/dev/null)" ]; then
-        printf '%s - %s\n' \
-            "$(playerctl metadata artist)" \
-            "$(playerctl metadata title)"
-    else
-        printf 'No players found.\n'
-    fi
-}
-
 # batf - bat as a tail replacement
 # usage: batf <file>
 batf() {
     file="$1"
     tail -f "$file" | bat --paging=never
-}
-
-# ct - change terminal window title
-# usage: ct "<text>"
-ct() {
-    echo -n -e "\033]0;${1}\007"
 }
 
 todo() {
