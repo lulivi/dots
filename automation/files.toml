@@ -87,17 +87,6 @@ description = "Show first 21 colors from Xresources."
 relpath = ".bin/xr_wrapper_reloader.sh"
 description = "Reload xrdb with custom script."
 
-# Shell scripts (non-executable)
-[sh-add_paths_to_variable]
-relpath = ".sh/add_paths_to_variable.sh"
-description = "Add new paths to a PATH-like variable."
-[sh-del_paths_from_variable]
-relpath = ".sh/del_paths_from_variable.sh"
-description = "Delete paths from a PATH-like variable."
-[sh-load_shell_scripts]
-relpath = ".sh/load_shell_scripts.sh"
-description = "Load shell scripts from a path or a directory."
-
 # Editors
 [nvim-init]
 relpath = ".config/nvim/init.vim"
