@@ -21,12 +21,16 @@
 #
 # This script takes a screenshot
 # 
-# Dependencies: maim, tee, xclip
+# Dependencies: maim, xclip
+
+[[ "$(command -v maim)" && "$(command -v xclip)" ]] || {
+    printf 'Could not find "maim" or "xclip". Exiting.\n' 
+    exit 1
+}
 
 cmd="maim"
 
-[ "$1" != "-w" ] && cmd="$cmd -s"
+[ "$1" = "-w" ] || cmd="maim -s"
 
-$cmd \
-    | tee /tmp/screenshot_$(date +%Y_%m_%d_%H_%M).png \
-    | xclip -selection clipboard -t image/png
+$cmd | xclip -sel c -t image/png
+xclip -sel c -t image/png -o > /tmp/screenshot_$(date +%Y_%m_%d_%H_%M).png
