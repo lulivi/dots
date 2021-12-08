@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+# docker_run - run a docker image and remove it after exiting
+# usage: docker_run <image ID>
+
+
+[ "$(command -v docker)" ] || {
+    printf 'Could not find "docker" required for this script. Exiting.\n' 
+    exit 1
+}
+
+_image="${1}"
+
+[ -z "$_image" ] && {
+    printf 'Please, provide the image ID\n' >&2
+    return
+}
+
+docker run --rm -it ${_image} /bin/bash

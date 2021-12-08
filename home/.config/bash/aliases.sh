@@ -21,7 +21,7 @@ alias graphic_card_in_use="glxinfo|egrep \"OpenGL vendor|OpenGL renderer*\""
 alias center_tmux="tmux split-window -h \; split-window -h \; swap-pane -s 1 -t 2 \; resize-pane -t1 -x 75 \; resize-pane -t3 -x 75 \; select-pane -t 2"
 alias walr="wal -R -o ~/.config/wal/reload_services.sh"
 alias myip="wget http://ipecho.net/plain -O - -q ; echo"
-alias spotify="ct Spotify; ncspot"
+alias spotify="cht Spotify; ncspot"
 alias sp="spotify"
 alias gitlab_run_job="gitlab-runner exec docker"
 

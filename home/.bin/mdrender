@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+# mdrender - create a html preview of the markdown file
+# usage: mdrender <markdown file>
+
+[ "$(command -v pandoc)" ] || {
+    printf 'Could not find "pandoc" required for this script. Exiting.\n' 
+    exit 1
+}
+
+_target="$(readlink -f "$1")"
+_output="/tmp/${_target##*/}.html"
+
+pandoc -f markdown -t html "${_target}" > "${_output}"
+
+printf 'Rendered file: %s\n' "$_output"
+
+open "$_output"
