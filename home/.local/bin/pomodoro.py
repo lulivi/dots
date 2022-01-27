@@ -18,28 +18,31 @@ other code.
     pomodoro.py --notifier desktop
 
 """
-import sys
-import os
-import time
-import sched
+import argparse
 import json
 import logging
-import urllib.request
-import urllib.parse
 import multiprocessing
-import argparse
+import os
+import sched
+import sys
+import time
+import urllib.parse
+import urllib.request
 
-from sched import Event
-from urllib.error import HTTPError, URLError
+from enum import Enum
 from os import environ
-from typing import Optional, Callable, Dict, List
+from sched import Event
+from typing import Callable, Dict, List, Optional
+from urllib.error import HTTPError, URLError
+
+TG_BOT_TOKEN = ""
+TG_MY_ID = ""
 
 
-try:
-    TG_BOT_TOKEN = environ["TG_BOT_TOKEN"]
-    TG_MY_ID = environ["TG_MY_ID"]
-except KeyError:
-    sys.exit("Ensure TG_BOT_TOKEN and TG_MY_ID variables are set.")
+class Notifier(Enum):
+    TELEGRAM = 0
+    DESKTOP = 1
+    ALL = 2
 
 
 def send_desktop_notification(title: str, body: str = "") -> None:
@@ -49,16 +52,11 @@ def send_desktop_notification(title: str, body: str = "") -> None:
     :param body: body of the notification.
 
     """
-    notify_send_text = "notify-send"
-    if title:
-        notify_send_text += f' "{title}"'
-        if body:
-            notify_send_text += f' "{body}"'
-    else:
+    if not title:
         print("Error sending notification: no title provided.")
         return
 
-    os.system(notify_send_text)
+    os.system(f"notify-send '{title}' '{body}'")
 
 
 def send_telegram_notification(title: str, body: str = "") -> None:
@@ -68,18 +66,19 @@ def send_telegram_notification(title: str, body: str = "") -> None:
     :param body: body of the notification.
 
     """
-    if title:
-        if body:
-            bot_message = f"🍅 `{title}` 🍅\n_{body}_"
-        else:
-            bot_message = f"🍅 `{title}`"
-    else:
+    if not title:
         print("Error sending notification: no title provided.")
         return
 
+    bot_message = f"🍅 `{title}` 🍅\n_{body}_"
+
     url = f"https://api.telegram.org/bot{TG_BOT_TOKEN}/sendMessage"
     data = urllib.parse.urlencode(
-        {"TG_MY_ID": TG_MY_ID, "parse_mode": "Markdown", "text": bot_message}
+        {
+            "chat_id": TG_MY_ID,
+            "parse_mode": "Markdown",
+            "text": bot_message,
+        }
     ).encode("ascii")
     request = urllib.request.Request(url, data)
 
@@ -97,10 +96,7 @@ def send_telegram_notification(title: str, body: str = "") -> None:
         responsed_json = json.loads(response.read().decode("utf-8"))
         if not responsed_json.get("ok"):
             print("*" * 79)
-            print(
-                "Errorcete con el bot:\n"
-                f"{json.dumps(responsed_json, indent=2)}"
-            )
+            print(f"Errorcete con el bot:\n{json.dumps(responsed_json, indent=2)}")
             print("*" * 79)
 
 
@@ -147,12 +143,8 @@ class PomodoroTimer(object):
 
         """
         self.__time_callable: Callable[[], float] = time_callable
-        self.__scheduler: sched.scheduler = sched.scheduler(
-            time_callable, sleep_callable
-        )
-        self.__notification_callable: Callable[
-            [str, str], None
-        ] = notification_callable or (
+        self.__scheduler: sched.scheduler = sched.scheduler(time_callable, sleep_callable)
+        self.__notification_callable: Callable[[str, str], None] = notification_callable or (
             lambda title, body: print(title, body, sep="\n")
         )
         self.__logger: Optional[logging.Logger] = logger
@@ -200,13 +192,10 @@ class PomodoroTimer(object):
         :returns: notification to send when the current pomodoro ends.
 
         """
-        next_pomodoro_string: str = time.strftime(
-            "%H:%M", time.localtime(current_break_end_time)
-        )
+        next_pomodoro_string: str = time.strftime("%H:%M", time.localtime(current_break_end_time))
 
         return {
-            "title": f"POM[{current_stage}]::END. Next pomodoro at "
-            f"{next_pomodoro_string}.",
+            "title": f"POM[{current_stage}]::END. Next pomodoro at {next_pomodoro_string}.",
         }
 
     def __break_end_notification(
@@ -220,14 +209,9 @@ class PomodoroTimer(object):
         :returns: notification to send when the current break ends.
 
         """
-        next_break_string: str = time.strftime(
-            "%H:%M", time.localtime(next_pomodoro_end_time)
-        )
+        next_break_string: str = time.strftime("%H:%M", time.localtime(next_pomodoro_end_time))
 
-        return {
-            "title": f"POM[{next_stage}]::START. Next break at "
-            f"{next_break_string}."
-        }
+        return {"title": f"POM[{next_stage}]::START. Next break at {next_break_string}."}
 
     def __schedule_pomodoro(self, current_stage: int) -> None:
         """Schedule one Pomodoro and it's break time.
@@ -237,36 +221,26 @@ class PomodoroTimer(object):
         :param current_stage: current Pomodoro stage
         """
         current_time: float = self.__time_callable()
-        current_pomodoro_end_time: float = (
-            current_time + self.DELTA_POMODORO_TIME
-        )
+        current_pomodoro_end_time: float = current_time + self.DELTA_POMODORO_TIME
         next_stage: int
         current_break_end_time: float
         next_pomodoro_end_time: float
 
         if current_stage == 4:
             next_stage = 1
-            current_break_end_time = (
-                current_pomodoro_end_time + self.DELTA_LONG_BREAK_TIME
-            )
+            current_break_end_time = current_pomodoro_end_time + self.DELTA_LONG_BREAK_TIME
         else:
             next_stage = current_stage + 1
-            current_break_end_time = (
-                current_pomodoro_end_time + self.DELTA_SHORT_BREAK_TIME
-            )
+            current_break_end_time = current_pomodoro_end_time + self.DELTA_SHORT_BREAK_TIME
 
-        next_pomodoro_end_time = (
-            current_break_end_time + self.DELTA_POMODORO_TIME
-        )
+        next_pomodoro_end_time = current_break_end_time + self.DELTA_POMODORO_TIME
 
         # Pomodoro end notification: break start
         self.__scheduler.enterabs(
             current_pomodoro_end_time,
             self.DEFAULT_PRIORITY,
             self.__notify,
-            kwargs=self.__pomodoro_end_notification(
-                current_stage, current_break_end_time
-            ),
+            kwargs=self.__pomodoro_end_notification(current_stage, current_break_end_time),
         )
 
         # Break end notification: next Pomodoro start
@@ -274,9 +248,7 @@ class PomodoroTimer(object):
             current_break_end_time,
             self.DEFAULT_PRIORITY,
             self.__notify,
-            kwargs=self.__break_end_notification(
-                next_stage, next_pomodoro_end_time
-            ),
+            kwargs=self.__break_end_notification(next_stage, next_pomodoro_end_time),
         )
 
         self.__scheduler.run()
@@ -290,27 +262,20 @@ class PomodoroTimer(object):
         try:
             self.__stop_scheduler = False
             current_time: float = self.__time_callable()
-            current_time_str: str = time.strftime(
-                "%H:%M", time.localtime(current_time)
-            )
+            current_time_str: str = time.strftime("%H:%M", time.localtime(current_time))
             self.__notify(
                 "Pomodoro Timer",
-                f"Current time {current_time_str}: Sarting Pomodoro in one "
-                "minute...",
+                f"Current time {current_time_str}: Sarting Pomodoro in one minute...",
             )
             self.__log("Starting Pomodoro Timer.")
             next_stage: int = 1
             current_break_end_time: float = current_time + self.DELTA_START_TIME
-            next_pomodoro_end_time: float = (
-                current_break_end_time + self.DELTA_POMODORO_TIME
-            )
+            next_pomodoro_end_time: float = current_break_end_time + self.DELTA_POMODORO_TIME
             self.__scheduler.enterabs(
                 current_break_end_time,
                 self.DEFAULT_PRIORITY,
                 self.__notify,
-                kwargs=self.__break_end_notification(
-                    next_stage, next_pomodoro_end_time
-                ),
+                kwargs=self.__break_end_notification(next_stage, next_pomodoro_end_time),
             )
 
             self.__scheduler.run()
@@ -328,15 +293,44 @@ class PomodoroTimer(object):
         self.__clean_jobs()
 
 
+def get_update_function(notifier: Notifier, logger: logging.Logger) -> Callable:
+    """Obtain the notifier function given a notifier enum.
+
+    :param notifier: The notifier to use.
+    :returns: The notifier function.
+
+    """
+    if notifier == Notifier.DESKTOP:
+        logger.info("Using desktop notifications.")
+        return send_desktop_notification
+
+    global TG_BOT_TOKEN, TG_MY_ID
+    try:
+        TG_BOT_TOKEN = environ["TG_BOT_TOKEN"]
+        TG_MY_ID = environ["TG_MY_ID"]
+    except KeyError:
+        sys.exit("Ensure TG_BOT_TOKEN and TG_MY_ID variables are set.")
+
+    if notifier == Notifier.TELEGRAM:
+        logger.info("Using Telegram notifications.")
+        return send_telegram_notification
+
+    logger.info("Using all notifications.")
+    return lambda t, b: list(
+        map(
+            lambda func: func(t, b),
+            (send_telegram_notification, send_desktop_notification),
+        )
+    )
+
+
 def main():
     """Main module entripoint."""
     logger: logging.Logger = logging.getLogger("PomodoroLogger")
     logger.setLevel(logging.DEBUG)
     stream_handler: logging.StreamHandler = logging.StreamHandler()
     stream_handler.setFormatter(
-        logging.Formatter(
-            "{asctime}|{message}", style="{", datefmt="%Y%m%d-%H:%M"
-        )
+        logging.Formatter("{asctime}|{message}", style="{", datefmt="%Y%m%d-%H:%M")
     )
     logger.addHandler(stream_handler)
     parser: argparse.ArgumentParser = argparse.ArgumentParser(
@@ -353,24 +347,9 @@ def main():
     )
     args: argparse.Namespace = parser.parse_args()
 
-    if args.notifier == "telegram":
-        logger.info("Using Telegram notifications.")
-        notifier = send_telegram_notification
-    elif args.notifier == "desktop":
-        logger.info("Using desktop notifications.")
-        notifier = send_desktop_notification
-    elif args.notifier == "all":
-        notifier = lambda t, b: list(
-            map(
-                lambda func: func(t, b),
-                (send_telegram_notification, send_desktop_notification),
-            )
-        )
-        logger.info("Using all notifications.")
+    notifier = get_update_function(Notifier[args.notifier.upper()], logger)
 
-    pom: PomodoroTimer = PomodoroTimer(
-        notification_callable=notifier, logger=logger
-    )
+    pom: PomodoroTimer = PomodoroTimer(notification_callable=notifier, logger=logger)
     logger.info("Starting Pomodoro timer.")
     pom.run()
 
