@@ -7,8 +7,7 @@ This script can also delete those symbolic links and link them.
 By default, the choosen operation (``--print``, ``--link`` and ``--delete``)
 will obtain the selected files from a file called ``selected_files.py`` located
 in this directory. It is possible to select every file listed in ``files.json``
-using ``--all`` argument, or only one using the argument ``--only``. Also you
-can increase the printing verbosity by using ``--verbose`` argument. For
+using ``--all`` argument, or only one using the argument ``--only``. For
 ``--link`` and ``--delete`` arguments there is an extra flag, ``--force`` if
 you want to skip some link checking before linking or deleting.
 
@@ -107,17 +106,15 @@ class HomeFile(NamedTuple):
 
     """
 
-    key: str
     relpath: Path
     description: str = ""
     packages: List[str] = []
 
 
-def print_selected_files(selected_files: List[HomeFile], verbose: bool = False) -> None:
+def print_selected_files(selected_files: List[HomeFile]) -> None:
     """Print selected files.
 
     :param selected_files: list of selected files.
-    :param verbose: print info in verbose mode.
 
     """
 
@@ -148,26 +145,17 @@ def print_selected_files(selected_files: List[HomeFile], verbose: bool = False) 
 
         return apply_style(output_text, style)
 
-    def print_file(file: HomeFile, verbose: bool = False) -> None:
+    def print_file(file: HomeFile) -> None:
         """Print file with it appropiate format.
 
         :param file: file to print.
-        :param verbose: whether to use verbosity in the print function.
 
         """
-        key = apply_style(file.key, colour.bold)
+        print(f"{color_file(file.relpath)}: {file.description}")
+        if file.packages:
+            print(f"└─ PKGS: {' '.join(file.packages)}")
 
-        if verbose:
-            print(
-                f"{key}\n"
-                f"├─ PATH: {color_file(file.relpath)}\n"
-                f"├─ DESC: {file.description}\n"
-                f"└─ PKGS: {' '.join(file.packages)}"
-            )
-        else:
-            print(f"{key}: {color_file(file.relpath)}")
-
-    list(map(functools.partial(print_file, verbose=verbose), selected_files))
+    list(map(print_file, selected_files))
 
 
 def link_selected_files(selected_files: List[HomeFile], force: bool = False) -> None:
@@ -224,7 +212,7 @@ def link_selected_files(selected_files: List[HomeFile], force: bool = False) -> 
         :param force: whether to always delete the link or not.
 
         """
-        key = apply_style(file.key, colour.bold)
+        key = apply_style(file.relpath, colour.bold)
         target_path = REPO_HOME_PATH / (file.relpath)
         link_name_path = HOME_PATH / (file.relpath)
 
@@ -294,10 +282,9 @@ def delete_selected_links(selected_files: List[HomeFile], force: bool = False) -
         """Create a link of the file.
 
         :param file: file to link.
-        :param verbose: whether to use verbosity in the print function.
 
         """
-        key = apply_style(file.key, colour.bold)
+        key = apply_style(file.relpath, colour.bold)
         target_path = REPO_HOME_PATH / (file.relpath)
         link_name_path = HOME_PATH / (file.relpath)
 
@@ -340,23 +327,23 @@ def load_files_list(args: Namespace) -> List[HomeFile]:
 
     # Obtain selected keys
     if args.all:
-        selected_keys = list(all_files)
+        selected_files = list(all_files)
     elif args.only:
-        selected_keys = [args.only]
+        selected_files = [args.only]
     else:
         with SEL_FILES_PATH.open() as f:
-            selected_keys = list(map(str.strip, f.read().splitlines()))
+            selected_files = list(map(str.strip, f.read().splitlines()))
 
-    selected_files: List[HomeFile] = []
+    chosen_files: List[HomeFile] = []
 
     # Create a list of selected files
-    for key in selected_keys:
+    for file_path in selected_files:
         try:
-            selected_files.append(HomeFile(key, **all_files[key]))
+            chosen_files.append(HomeFile(file_path, **all_files[file_path]))
         except KeyError:
-            sys.exit(f"ERROR: `{key}` identifier was not found in `{str(ALL_FILES_PATH)}` file")
+            sys.exit(f"ERROR: `{file_path}` was not found in `{str(ALL_FILES_PATH)}` file")
         except TypeError as error:
-            sys.exit(f"ERROR parsing `{key}`: {str(error)}.")
+            sys.exit(f"ERROR parsing `{file_path}`: {str(error)}.")
 
     # Check if every selected file exists in the repository if we are not
     # deleting
@@ -365,13 +352,13 @@ def load_files_list(args: Namespace) -> List[HomeFile]:
             list(
                 map(
                     lambda file: (REPO_HOME_PATH / file.relpath).resolve(strict=True),
-                    selected_files,
+                    chosen_files,
                 )
             )
         except FileNotFoundError as error:
             sys.exit(f"ERROR: File `{error.filename}` from selected files does not exist.")
 
-    return sorted(selected_files, key=lambda file: file.key)
+    return sorted(chosen_files, key=lambda file: file.relpath)
 
 
 def main():
@@ -394,7 +381,6 @@ def main():
         action="store_true",
         help="force linking and deleting symlinks",
     )
-    parser.add_argument("-v", "--verbose", action="store_true", help="print in verbose mode")
     number_group = parser.add_mutually_exclusive_group(required=False)
     number_group.add_argument(
         "-a", "--all", action="store_true", help="perform action for all files"
@@ -415,7 +401,7 @@ def main():
 
     if args.print:
         print(f"Listing selected files.\n")
-        print_selected_files(selected_files, args.verbose)
+        print_selected_files(selected_files)
     elif args.link:
         print(f"Linking selected files.\n")
         link_selected_files(selected_files, args.force)

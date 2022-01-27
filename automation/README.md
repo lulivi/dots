@@ -20,11 +20,9 @@ the following format (in [JSON](https://www.json.org/json-en.html) language):
 
 ```json
 {
-    // The choosen key to identify the file
-    "<key name>": {
-        // The $HOME relative path of the file (i.e.: for /home/user/.vimrc 
-        // would be "relpath": ".vimrc")
-        "relpath": "<home relative file path>",
+    // The $HOME relative path of the file (i.e.: for /home/<user>/.vimrc would
+    // be ".vimrc")
+    "<home relative file path>": {
         // A brief description of the file
         "description": "<description>",
         // A list with the required packages by the file
@@ -34,10 +32,9 @@ the following format (in [JSON](https://www.json.org/json-en.html) language):
 ```
 
 > For example:
-> 
+>
 > ```json
-> "bin-lock": {
->   "relpath": ".local/bin/lock.sh",
+> ".local/bin/lock.sh": {
 >   "description": "Lock screen with a pixelated screenshot of your desktop.",
 >   "packages": [
 >     "xorg-xdpyinfo",
@@ -46,22 +43,28 @@ the following format (in [JSON](https://www.json.org/json-en.html) language):
 >     "i3lock"
 >   ]
 > },
+> ".config/pcmanfm/default/pcmanfm.conf": {
+>   "description": "LXDE file manager.",
+>   "packages": [
+>     "pcmanfm"
+>   ]
+> },
 > ```
 
 ## Selected files
 
 The selected files will be located in a new `selected_files.txt` file with one
-`key` by line:
+`home relative file path` by line:
 
 ```plain
-<key 1>
-<key 2>
+<path 1>
+<path 2>
 ...
 ```
 
 > For example:
-> 
+>
 > ```plain
-> bin-lock
-> pcmanfm
+> .local/bin/lock.sh
+> .config/pcmanfm/default/pcmanfm.conf
 > ```

@@ -1,39 +1,32 @@
 {
-  "bin-add_log_entry": {
-    "relpath": ".local/bin/add_log_entry",
+  ".local/bin/add_log_entry": {
     "description": "Append a new entry in GNU changelog style."
   },
-  "bin-bookmarks": {
-    "relpath": ".local/bin/bookmarks",
+  ".local/bin/bookmarks": {
     "description": "Open bookmarks with the default web browser.",
     "packages": [
       "yq"
     ]
   },
-  "bin-cht": {
-    "relpath": ".local/bin/cht",
+  ".local/bin/cht": {
     "description": "Change terminal title."
   },
-  "bin-docker_run": {
-    "relpath": ".local/bin/docker_run",
+  ".local/bin/docker_run": {
     "description": "Run a docker image.",
     "packages": [
       "docker"
     ]
   },
-  "bin-extract": {
-    "relpath": ".local/bin/extract",
+  ".local/bin/extract": {
     "description": "Extract various format of compressed files."
   },
-  "bin-kb_light": {
-    "relpath": ".local/bin/kb_light.py",
+  ".local/bin/kb_light.py": {
     "description": "Modify keyboard backlight.",
     "packages": [
       "python-dbus"
     ]
   },
-  "bin-lock": {
-    "relpath": ".local/bin/lock.sh",
+  ".local/bin/lock.sh": {
     "description": "Lock screen with a pixelated screenshot of your desktop.",
     "packages": [
       "xorg-xdpyinfo",
@@ -42,277 +35,225 @@
       "i3lock"
     ]
   },
-  "bin-mdrender": {
-    "relpath": ".local/bin/mdrender",
+  ".local/bin/mdrender": {
     "description": "Create a html preview of the markdown file.",
     "packages": [
       "pandoc"
     ]
   },
-  "bin-np": {
-    "relpath": ".local/bin/np",
+  ".local/bin/np": {
     "description": "Show current artist and song playing.",
     "packages": [
       "playerctl"
     ]
   },
-  "bin-pomodoro": {
-    "relpath": ".local/bin/pomodoro.py",
+  ".local/bin/pomodoro.py": {
     "description": "Run the Pomodoro technique and send notifications to Telegram."
   },
-  "bin-screenshot": {
-    "relpath": ".local/bin/screenshot",
+  ".local/bin/screenshot": {
     "description": "Select a square in your screen and save the capture in your clipboard.",
     "packages": [
       "maim",
       "xclip"
     ]
   },
-  "bin-send_telegram_document": {
-    "relpath": ".local/bin/send_telegram_document",
+  ".local/bin/send_telegram_document": {
     "description": "Send a document to the telegram bot setted up.",
     "packages": [
       "jq",
       "curl"
     ]
   },
-  "bin-send_telegram_message": {
-    "relpath": ".local/bin/send_telegram_message",
+  ".local/bin/send_telegram_message": {
     "description": "Send a message to the telegram bot setted up.",
     "packages": [
       "jq",
       "curl"
     ]
   },
-  "bin-screenshot-desktop": {
-    "relpath": ".local/share/applications/screenshot.desktop",
+  ".local/share/applications/screenshot.desktop": {
     "description": "Desktop entry for screenshot script."
   },
-  "bin-session": {
-    "relpath": ".local/bin/session.sh",
+  ".local/bin/session.sh": {
     "description": "Simple terminal GUI to suspend, restart or poweroff the system."
   },
-  "bin-show_keypress": {
-    "relpath": ".local/bin/show_keypress.sh",
+  ".local/bin/show_keypress.sh": {
     "description": "Show key press.",
     "packages": [
       "xorg-xev"
     ]
   },
-  "bin-show_sxhkd_keybindings": {
-    "relpath": ".local/bin/show_sxhkd_keybindings.sh",
+  ".local/bin/show_sxhkd_keybindings.sh": {
     "description": "Capture and show sxhkd keybindings."
   },
-  "bin-status": {
-    "relpath": ".local/bin/status.sh",
+  ".local/bin/status.sh": {
     "description": "Check status of each git directory located in the current path.",
     "packages": [
       "git"
     ]
   },
-  "bin-telpipe": {
-    "relpath": ".local/bin/telpipe",
+  ".local/bin/telpipe": {
     "description": "Send the output of the piped command to your telegram user."
   },
-  "bin-telret": {
-    "relpath": ".local/bin/telret",
+  ".local/bin/telret": {
     "description": "Send the return code of the previous command to your telegram user."
   },
-  "bin-tput_color_base16": {
-    "relpath": ".local/bin/tput_color_base16.sh",
+  ".local/bin/tput_color_base16.sh": {
     "description": "Show base16 fg/bg color combinations."
   },
-  "bin-tput_color_table": {
-    "relpath": ".local/bin/tput_color_table.sh",
+  ".local/bin/tput_color_table.sh": {
     "description": "Show all ANSI colors with their correspondent index."
   },
-  "bin-vm": {
-    "relpath": ".local/bin/vm",
+  ".local/bin/vm": {
     "description": "Manage VirtualBox VM running without GUI.",
     "packages": [
       "virtualbox"
     ]
   },
-  "bin-xr_color_scheme": {
-    "relpath": ".local/bin/xr_color_scheme.sh",
+  ".local/bin/xr_color_scheme.sh": {
     "description": "Show first 21 colors from Xresources."
   },
-  "bin-xr_wrapper_reloader": {
-    "relpath": ".local/bin/xr_wrapper_reloader.sh",
+  ".local/bin/xr_wrapper_reloader.sh": {
     "description": "Reload xrdb with custom script."
   },
-  "nvim-init": {
-    "relpath": ".config/nvim/init.vim",
+  ".config/nvim/init.vim": {
     "description": "Nvim configuration file.",
     "packages": [
       "neovim"
     ]
   },
-  "vim-vimrc": {
-    "relpath": ".vimrc",
+  ".vimrc": {
     "description": "Vim configuration file.",
     "packages": [
       "vim"
     ]
   },
-  "pcmanfm": {
-    "relpath": ".config/pcmanfm/default/pcmanfm.conf",
+  ".config/pcmanfm/default/pcmanfm.conf": {
     "description": "LXDE file manager.",
     "packages": [
       "pcmanfm"
     ]
   },
-  "ranger-commands": {
-    "relpath": ".config/ranger/commands.py"
-  },
-  "ranger-rc": {
-    "relpath": ".config/ranger/rc.conf"
-  },
-  "ranger-rifle": {
-    "relpath": ".config/ranger/rifle.conf"
-  },
-  "ranger-scope": {
-    "relpath": ".config/ranger/scope.sh"
-  },
-  "gitconfig": {
-    "relpath": ".gitconfig",
+  ".config/ranger/commands.py": {},
+  ".config/ranger/rc.conf": {},
+  ".config/ranger/rifle.conf": {},
+  ".config/ranger/scope.sh": {},
+  ".gitconfig": {
     "description": "Git global configuration.",
     "packages": [
       "git",
       "dandavison/delta"
     ]
   },
-  "gitcommit": {
-    "relpath": ".gitcommit",
+  ".gitcommit": {
     "description": "Git commit message template.",
     "packages": [
       "git"
     ]
   },
-  "bash-bashrc": {
-    "relpath": ".bashrc",
+  ".bashrc": {
     "description": "Main bash user configuration file."
   },
-  "bash-profile": {
-    "relpath": ".bash_profile",
+  ".bash_profile": {
     "description": "Entrypoint for .bashrc file."
   },
-  "bash-aliases": {
-    "relpath": ".config/bash/aliases.sh",
+  ".config/bash/aliases.sh": {
     "description": "Utils file where the alias are defined."
   },
-  "bash-functions": {
-    "relpath": ".config/bash/functions.sh",
+  ".config/bash/functions.sh": {
     "description": "Utils file where the functions are defined."
   },
-  "bash-variables": {
-    "relpath": ".config/bash/variables.sh",
+  ".config/bash/variables.sh": {
     "description": "Utils file where the variables are defined."
   },
-  "bash-prompt": {
-    "relpath": ".config/bash/prompt.sh",
+  ".config/bash/prompt.sh": {
     "description": "Custom shell prompt."
   },
-  "fish-config": {
-    "relpath": ".config/fish/config.fish",
+  ".config/fish/config.fish": {
     "description": "Fish shell main configuration file."
   },
-  "fish-fishfile": {
-    "relpath": ".config/fish/fishfile",
+  ".config/fish/fishfile": {
     "description": "Fish shell file where the pluggins are defined.",
     "packages": [
       "Fisher"
     ]
   },
-  "terminator-config": {
-    "relpath": ".config/terminator/config",
+  ".config/terminator/config": {
     "description": "Terminator configuration file.",
     "packages": [
       "terminator"
     ]
   },
-  "top-toprc": {
-    "relpath": ".config/procps/toprc",
+  ".config/procps/toprc": {
     "description": "Top configuration file."
   },
-  "bspwm-autostart": {
-    "relpath": ".config/bspwm/autostart.sh",
+  ".config/bspwm/autostart.sh": {
     "description": "bspwm app-autostart script."
   },
-  "bspwm-bspwmrc": {
-    "relpath": ".config/bspwm/bspwmrc",
+  ".config/bspwm/bspwmrc": {
     "description": "bspwm configuration file.",
     "packages": [
       "bspwm"
     ]
   },
-  "sxhkd-sxhkdrc": {
-    "relpath": ".config/sxhkd/sxhkdrc",
+  ".config/sxhkd/sxhkdrc": {
     "description": "sxhkd configuration file.",
     "packages": [
       "sxhkd"
     ]
   },
-  "wal-reload-services": {
-    "relpath": ".config/wal/reload_services.sh",
+  ".config/wal/reload_services.sh": {
     "description": "Script to run after wal theme selection.",
     "packages": [
       "python-pywal"
     ]
   },
-  "rofi-config": {
-    "relpath": ".config/rofi/config",
+  ".config/rofi/config": {
     "description": "Rofi configuration file.",
     "packages": [
       "rofi"
     ]
   },
-  "rofi-config-wal-template": {
-    "relpath": ".config/wal/templates/colors-rofi-dark.rasi",
+  ".config/wal/templates/colors-rofi-dark.rasi": {
     "description": "Wal template for Rofi.",
     "packages": [
       "python-pywal"
     ]
   },
-  "dunst-dunstrc": {
-    "relpath": ".config/dunst/dunstrc",
+  ".config/dunst/dunstrc": {
     "description": "Dunst notification daemon main configuration file.",
     "packages": [
       "dunst"
     ]
   },
-  "dunst-dunstrc-wal-template": {
-    "relpath": ".config/wal/templates/colors-dunstrc",
+  ".config/wal/templates/colors-dunstrc": {
     "description": "Dunst configuration template to use wal coloring. Don't use this one along with dunstrc file.",
     "packages": [
       "python-pywall"
     ]
   },
-  "polybar-config": {
-    "relpath": ".config/polybar/config",
+  ".config/polybar/config": {
     "description": "Polybar main configuration file.",
     "packages": [
       "aur/polybar"
     ]
   },
-  "xresources-edit": {
-    "relpath": ".Xresources.edit",
+  ".Xresources.edit": {
     "description": "Xresources script to safely edit .Xresources through .Xresources.src."
   },
-  "xresources-src": {
-    "relpath": ".Xresources.src",
+  ".Xresources.src": {
     "description": "Xresources brother."
   },
-  "tmux-conf-local": {
-    "relpath": ".tmux.conf.local",
+  ".tmux.conf.local": {
     "description": "Tmux personalization using oh my tmux config.",
     "packages": [
       "tmux"
     ]
   },
-  "ncspot-config": {
-    "relpath": ".config/ncspot/config.toml",
+  ".config/ncspot/config.toml": {
     "description": "NCurses Spotify client.",
-    "packages": "ncspot"
+    "packages": [
+      "ncspot"
+    ]
   }
 }
