@@ -20,12 +20,13 @@ endif
 
 " Line numbers
 set nu
-let line_numbers_str = ':set invnu<CR>:set invlist<CR>'
+let line_numbers_str = ':set invnu<CR>'
 if v:version > 703
     set rnu
     let line_numbers_str .= ':set invrnu <CR>'
 endif
 exe 'nmap <C-N><C-N> ' . line_numbers_str
+nmap <C-S><C-S> :set invlist<CR>
 
 " Tabs
 set expandtab
