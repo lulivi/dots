@@ -20,14 +20,14 @@ the following format (in [JSON](https://www.json.org/json-en.html) language):
 
 ```json
 {
-    # The choosen key to identify the file
+    // The choosen key to identify the file
     "<key name>": {
-        # The $HOME relative path of the file (i.e.: for /home/user/.vimrc would 
-        # be "relpath": ".vimrc")
+        // The $HOME relative path of the file (i.e.: for /home/user/.vimrc 
+        // would be "relpath": ".vimrc")
         "relpath": "<home relative file path>",
-        # A brief description of the file
+        // A brief description of the file
         "description": "<description>",
-        # A list with the required packages by the file
+        // A list with the required packages by the file
         "packages": ["<package 1>", "<package 2>"]
     }
 }
