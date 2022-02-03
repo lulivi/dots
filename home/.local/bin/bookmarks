@@ -3,52 +3,71 @@
 ## @brief Open bookmarks with the default web browser
 
 ## @desc If no <FILE> is passed, the file $HOME/.bookmarks will be used by
-## default. The bookmarks file uses TOML and must follow the following format:
+## default. The bookmarks file uses a simple configuration format:
 ##
-##   ['<folder 1>']
-##   '<bookmark 1>' = '<bookmark 1 url>'
+##   # <group 1 title>
+##   <bookmark 1 title>=<bookmark 1 url>
 ##   # This is a comment
-##   '<bookmark 2>' = '<bookmark 2 url>'
+##   <bookmark 2 title>=<bookmark 2 url>'
 ##
-##   ['<folder 2>']
-##   '<bookmark 3>' = '<bookmark 3 url>'
+##   # <group 2 title>
+##   <bookmark 3 title>=<bookmark 3 url>
+##   # End of file :D
+## 
+## There must be at least one empty/comment line at the end of the file so that
+## last bookmark is read properly.
+## 
+## The script will display the following entries in rofi:
 ##
-## This way, the script will display the following entries in rofi:
-##
-##   +-------------------------------+
-##   | ['<folder 1>'] - <bookmark 1> |
-##   +-------------------------------+
-##   | ['<folder 1>'] - <bookmark 2> |
-##   +-------------------------------+
-##   | ['<folder 2>'] - <bookmark 3> |
-##   +-------------------------------+
+##   +------------------------------------------+
+##   | ['<group 1 title>'] - <bookmark 1 title> |
+##   +------------------------------------------+
+##   | ['<group 1 title>'] - <bookmark 2 title> |
+##   +------------------------------------------+
+##   | ['<group 2 title>'] - <bookmark 3 title> |
+##   +------------------------------------------+
 
 BOOMKARK_TMP_FILE="/tmp/bookmarks_temp"
 trap 'rm -f $BOOMKARK_TMP_FILE' INT EXIT
 
+err() {
+    printf '%s.\n' "$1"
+    exit 1
+}
+
 main() {
     bookmark_file_path="${1:-$HOME/.bookmarks}"
 
-    [ ! -f "$bookmark_file_path" ] && {
-        printf 'File <%s> not found\n' "$bookmark_file_path"
-        exit 1
-    }
+    [ ! -f "$bookmark_file_path" ] && err "File $bookmark_file_path not found"
 
-    # shellcheck disable=SC2016
-    tomlq -c '[
-        keys[] as $k |
-        .[$k]  |
-        to_entries |
-        map({"[\($k)] - \(.key)": .value}) |
-        add
-    ] | add' "$bookmark_file_path" > $BOOMKARK_TMP_FILE
+    while IFS='=' read -r title url; do
+        [ "$title" ] || continue
+        case "$title" in
+            \#*)
+                group_name="${title#\# }"
+                ;;
+            *)
+                bookmark_idx=$((bookmark_idx+1))
+                full_title="[$group_name] - $title"
+                title_list="$title_list${title_list:+\n}$full_title" 
+                export "bookmark${bookmark_idx}=$url" 2>/dev/null
+                ;;
+        esac
+    done < "$bookmark_file_path"
 
-    selection="$(
-        jq -r 'keys | .[]' $BOOMKARK_TMP_FILE | rofi -dmenu -i -p Bookmarks
+    # shellcheck disable=SC2059
+    sel_bookmark_idx="$(
+        printf "$title_list" | rofi -dmenu -i -format d -p Bookmarks
     )"
-    bookmark_url="$(jq -r .\""$selection"\" $BOOMKARK_TMP_FILE)"
+    [ -z "$sel_bookmark_idx" ] && exit 0
+    [ "$sel_bookmark_idx" -eq "0" ] && exit 1
 
-    [ "$bookmark_url" != "null" ] && xdg-open "$bookmark_url" || exit 1
+    eval "bookmark_url=\${bookmark$sel_bookmark_idx}"
+
+    echo "$bookmark_url"
+    # shellcheck disable=SC2154
+    xdg-open "$bookmark_url" \
+        || err "Could not open the provided url: $bookmark_url";
 }
 
 ## @usage bookmarks [-h] [FILE]
