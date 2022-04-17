@@ -116,10 +116,16 @@
   ".local/bin/xr_wrapper_reloader.sh": {
     "description": "Reload xrdb with custom script."
   },
-  ".config/nvim/init.vim": {
+  ".config/nvim/init.lua": {
     "description": "Nvim configuration file.",
     "packages": [
-      "neovim"
+      "neovim", "nvim-packer-git"
+    ]
+  },
+  ".config/nvim/lua/plugins.lua": {
+    "description": "Nvim plugin manager: packer",
+    "packages": [
+      "nvim-packer-git"
     ]
   },
   ".vimrc": {
