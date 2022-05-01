@@ -122,6 +122,12 @@
       "neovim", "nvim-packer-git"
     ]
   },
+  ".config/nvim/stylua.toml": {
+    "description": "Nvim lua style configuration.",
+    "packages": [
+      "stylua"
+    ]
+  },
   ".config/nvim/lua/plugins.lua": {
     "description": "Nvim plugin manager: packer",
     "packages": [

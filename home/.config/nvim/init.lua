@@ -12,37 +12,30 @@ local g = vim.g
 -- ##        #######  ##    ##  ######         #######     ##    #### ########  ######
 
 function map(mode, shortcut, command)
-    vim.api.nvim_set_keymap(mode, shortcut, command, { noremap = true, silent = true })
+    vim.api.nvim_set_keymap(mode, shortcut, command,
+                            {noremap = true, silent = true})
 end
 
-function nmap(shortcut, command)
-    map("n", shortcut, command)
-end
+function nmap(shortcut, command) map("n", shortcut, command) end
 
 function command(name, command)
-    vim.api.nvim_add_user_command(name, command, {})
+    vim.api.nvim_create_user_command(name, command, {})
 end
 
-function autocmd(group_name, event, pattern)
-    vim.cmd(string.format(
-        [[
-        augroup %s
-            autocmd!
-            autocmd %s %s
-        augroup end
-        ]],
-        group_name,
-        event,
-        pattern
-    ))
+function autocmd(group_name, event, pattern, callback)
+    vim.api.nvim_create_autocmd(event, {
+        group = group,
+        pattern = pattern,
+        callback = callback
+    })
 end
 
 function highlight(group, color)
-    local fg = color.fg and "ctermfg = " .. color.fg or "ctermfg = NONE"
-    local bg = color.bg and "ctermbg = " .. color.bg or "ctermbg = NONE"
-    local style = color.style and "cterm = " .. color.style or "cterm = NONE"
-
-    vim.cmd("highlight " .. group .. " " .. style .. " " .. fg .. " " .. bg)
+    vim.api.nvim_set_hl(0, group, {
+        cterm = color.style or "NONE",
+        ctermbg = color.bg or "NONE",
+        ctermfg = color.fg or "NONE"
+    })
 end
 
 --    ###    ##     ## ########  #######  ##     ##    ###    ######## ####  ######
@@ -53,8 +46,11 @@ end
 -- ##     ## ##     ##    ##    ##     ## ##     ## ##     ##    ##     ##  ##    ##
 -- ##     ##  #######     ##     #######  ##     ## ##     ##    ##    ####  ######
 
-autocmd("packer_user_config", "BufWritePost", "plugins.lua source <afile> | PackerCompile")
-autocmd("nvim_user_config", "BufWritePost", "init.lua source <afile>")
+autocmd("packer_user_config", "BufWritePost", "plugins.lua", function(args)
+    nvim_exec(":source " .. args.file .. " | PackerCompile")
+end)
+autocmd("nvim_user_config", "BufWritePost", "init.lua",
+        function(args) nvim_exec(":source " .. args.file) end)
 
 --  ######   #######  ##     ## ##     ##    ###    ##    ## ########   ######
 -- ##    ## ##     ## ###   ### ###   ###   ## ##   ###   ## ##     ## ##    ##
@@ -114,7 +110,7 @@ set.smartindent = true
 set.textwidth = 100
 
 set.colorcolumn = "80,100"
-highlight("ColorColumn", { style = "reverse" })
+highlight("ColorColumn", {style = "reverse"})
 
 -- Statusline
 set.laststatus = 2
@@ -125,14 +121,11 @@ set.laststatus = 2
 -- %l - line number
 -- %P - line percentage
 -- %c - column number
-set.statusline = string.format(
-    "%s%%1* %%= %%*%s",
-    "%2* %F %*",
-    "%3* w-%{wordcount().words} :: l-%l (%P), c-%c %*"
-)
-highlight("User1", { fg = "1", bg = "0" })
-highlight("User2", { fg = "Black", bg = "LightYellow" })
-highlight("User3", { fg = "Black", bg = "LightBlue" })
+set.statusline = string.format("%s%%1* %%= %%*%s", "%2* %F %*",
+                               "%3* w-%{wordcount().words} :: l-%l (%P), c-%c %*")
+highlight("User1", {fg = "1", bg = "0"})
+highlight("User2", {fg = "Black", bg = "LightYellow"})
+highlight("User3", {fg = "Black", bg = "LightBlue"})
 
 -- Builtins
 g.loaded_gzip = false
