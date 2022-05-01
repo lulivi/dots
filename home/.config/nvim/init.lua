@@ -32,7 +32,7 @@ end
 
 function highlight(group, color)
     vim.api.nvim_set_hl(0, group, {
-        cterm = color.style or "NONE",
+        cterm = color.style or {},
         ctermbg = color.bg or "NONE",
         ctermfg = color.fg or "NONE"
     })
@@ -47,10 +47,10 @@ end
 -- ##     ##  #######     ##     #######  ##     ## ##     ##    ##    ####  ######
 
 autocmd("packer_user_config", "BufWritePost", "plugins.lua", function(args)
-    nvim_exec(":source " .. args.file .. " | PackerCompile")
+    vim.api.nvim_command(":source " .. args.file .. " | PackerCompile")
 end)
 autocmd("nvim_user_config", "BufWritePost", "init.lua",
-        function(args) nvim_exec(":source " .. args.file) end)
+        function(args) vim.api.nvim_command(":source " .. args.file) end)
 
 --  ######   #######  ##     ## ##     ##    ###    ##    ## ########   ######
 -- ##    ## ##     ## ###   ### ###   ###   ## ##   ###   ## ##     ## ##    ##
@@ -110,7 +110,7 @@ set.smartindent = true
 set.textwidth = 100
 
 set.colorcolumn = "80,100"
-highlight("ColorColumn", {style = "reverse"})
+highlight("ColorColumn", {style = {reverse = 1}})
 
 -- Statusline
 set.laststatus = 2
@@ -123,7 +123,7 @@ set.laststatus = 2
 -- %c - column number
 set.statusline = string.format("%s%%1* %%= %%*%s", "%2* %F %*",
                                "%3* w-%{wordcount().words} :: l-%l (%P), c-%c %*")
-highlight("User1", {fg = "1", bg = "0"})
+highlight("User1", {fg = 1, bg = 0})
 highlight("User2", {fg = "Black", bg = "LightYellow"})
 highlight("User3", {fg = "Black", bg = "LightBlue"})
 
