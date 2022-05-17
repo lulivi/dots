@@ -116,6 +116,12 @@
   ".local/bin/xr_wrapper_reloader.sh": {
     "description": "Reload xrdb with custom script."
   },
+  ".screenlayout/brightness.sh": {
+    "description": "xrandr brightness script.",
+    "packages": [
+      "xorg-xrandr", "libxrandr"
+    ]
+  },
   ".config/nvim/init.lua": {
     "description": "Nvim configuration file.",
     "packages": [
