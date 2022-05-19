@@ -100,4 +100,7 @@ eval "$(dircolors -b ${dircolors_file})"
 unset dircolors_file
 
 # Theming
-[ -f "$HOME/.cache/wal/sequences" ] && (cat "$HOME/.cache/wal/sequences" &)
+if [ -f "$HOME/.cache/wal/sequences" ]; then
+    (cat "$HOME/.cache/wal/sequences" &)
+fi
+
