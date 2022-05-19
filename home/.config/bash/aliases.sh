@@ -25,6 +25,7 @@ alias spotify="cht Spotify; ncspot"
 alias sp="spotify"
 alias gitlab_run_job="gitlab-runner exec docker"
 alias plantuml_render="java -jar $HOME/.local/bin/plantuml.jar"
+alias docker_clean="docker system prune -a"
 
 # Entertainment
 alias matrix="cmatrix -b -a -u 2 -C yellow"
