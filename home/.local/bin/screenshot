@@ -23,14 +23,12 @@
 # 
 # Dependencies: maim, xclip
 
-[[ "$(command -v maim)" && "$(command -v xclip)" ]] || {
-    printf 'Could not find "maim" or "xclip". Exiting.\n' 
-    exit 1
-}
+! [ "$(type maim 2>/dev/null)" ] && { printf 'Could not find maim\n'; exit 1; }
+! [ "$(type xclip 2>/dev/null)" ] && { printf 'Could not find xclip\n'; exit 1; }
 
 cmd="maim"
 
-[ "$1" = "-w" ] || cmd="maim -s"
+[ "$1" = "screen" ] || cmd="maim -s"
 
 $cmd | xclip -sel c -t image/png
-xclip -sel c -t image/png -o > /tmp/screenshot_$(date +%Y_%m_%d_%H_%M).png
+xclip -sel c -t image/png -o > /tmp/screenshot_"$(date +%Y_%m_%d_%H_%M)".png
