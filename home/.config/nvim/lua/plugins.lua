@@ -1,4 +1,8 @@
 return require("packer").startup(function()
+    use({
+        'wbthomason/packer.nvim',
+        config = function() require 'plugins' end,
+    })
     -- Zen mode for undisrupted work environment
     use({
         "folke/zen-mode.nvim",
@@ -42,7 +46,9 @@ return require("packer").startup(function()
     use({
         "kyazdani42/nvim-tree.lua",
         config = function()
-            require("nvim-tree").setup({})
+            require("nvim-tree").setup({
+                view = { side = "left", width = 30 },
+            })
         end,
     })
 end)

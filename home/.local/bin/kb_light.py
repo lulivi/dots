@@ -12,8 +12,10 @@ import dbus
 
 def kb_light_set(delta):
     bus = dbus.SystemBus()
-    kbd_backlight_proxy = bus.get_object('org.freedesktop.UPower', '/org/freedesktop/UPower/KbdBacklight')
-    kbd_backlight = dbus.Interface(kbd_backlight_proxy, 'org.freedesktop.UPower.KbdBacklight')
+    kbd_backlight_proxy = bus.get_object(
+        "org.freedesktop.UPower", "/org/freedesktop/UPower/KbdBacklight"
+    )
+    kbd_backlight = dbus.Interface(kbd_backlight_proxy, "org.freedesktop.UPower.KbdBacklight")
 
     current = kbd_backlight.GetBrightness()
     maximum = kbd_backlight.GetMaxBrightness()
@@ -26,7 +28,8 @@ def kb_light_set(delta):
     # Return current backlight level percentage
     return 100 * current / maximum
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     if len(argv[1:]) == 1:
         if argv[1] == "--up" or argv[1] == "+":
             # ./kb-light.py (+|--up) to increment

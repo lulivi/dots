@@ -116,7 +116,7 @@
   ".local/bin/xr_wrapper_reloader.sh": {
     "description": "Reload xrdb with custom script."
   },
-  ".screenlayout/brightness.sh": {
+  ".screenlayout/brightness.py": {
     "description": "xrandr brightness script.",
     "packages": [
       "xorg-xrandr", "libxrandr"
