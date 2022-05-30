@@ -54,10 +54,10 @@
     separator_height = 2
 
     # Padding between text and separator.
-    padding = 8
+    padding = 15
 
     # Horizontal padding.
-    horizontal_padding = 8
+    horizontal_padding = 15
 
     # Defines width in pixels of frame around the notification window.
     # Set to 0 to disable.
@@ -427,5 +427,5 @@
 #
 [mastodon]
     summary = "*favourited*"
-    format = "<small>%s</small>
+    format = "<small>%s</small>"
 # vim: ft=cfg
