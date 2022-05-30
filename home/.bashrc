@@ -76,7 +76,8 @@ add_paths_to_variable "PATH" \
   "$HOME/.gem/ruby/2.7.0/bin" \
   "$HOME/.luarocks/bin/" \
   "$HOME/.cargo/bin/" \
-  "$HOME/.screenlayout/"
+  "$HOME/.screenlayout/" \
+  "$HOME/bin/"
 
 # Load util shell scripts
 for shell_script in "$HOME/.config/bash/"*.sh; do
