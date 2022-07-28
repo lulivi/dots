@@ -46,28 +46,13 @@ del_paths_from_variable() {
     local path_variable_name="$1"
     eval path_variable_contents="\$$path_variable_name"
     shift 1
-    local del_paths="$*"
-    local path_to_remove=""
 
-    for del_path in $del_paths; do
-        scaped_del_path="${del_path//\//\\\/}"
-        cleaned_del_path="${scaped_del_path//\./\\\.}"
-        case "$path_variable_contents" in
-            ${cleaned_del_path}:*)
-                path_to_remove="${cleaned_del_path}:"
-                ;;
-            *:${cleaned_del_path}*)
-                path_to_remove=":${cleaned_del_path}"
-                ;;
-            *)
-                printf '[WARNING] "%s" is not in "$%s"\n' "$del_path" "$path_variable_name"
-                continue
-                ;;
-        esac
-        path_variable_contents="${path_variable_contents/${path_to_remove}}"
+    for del_path in $*; do
+        path_variable_contents="$(echo "$path_variable_contents" | sed -r "s#${del_path%/}/?:?##")"
     done
 
-    export "$path_variable_name"="$path_variable_contents"
+    # Export the cleaned variable
+    export "$path_variable_name"="${path_variable_contents%:}"
 }
 
 # Define the common paths

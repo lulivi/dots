@@ -4,7 +4,7 @@
 
 # System
 alias please='sudo $(history -p !!)'
-alias restart_nm="systemctl restart NetworkManager.service"
+alias restart_nm="sudo systemctl restart NetworkManager.service"
 alias reload_bspwm="~/.config/bspwm/bspwmrc 2>&1 1>/dev/null"
 alias open="xdg-open &>/dev/null"
 alias o="xdg-open·&>/dev/null"

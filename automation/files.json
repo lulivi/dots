@@ -152,6 +152,9 @@
       "pcmanfm"
     ]
   },
+  ".config/kitty/kitty.conf": {
+    "description": "Kitty terminal emulator."
+  },
   ".config/ranger/commands.py": {},
   ".config/ranger/rc.conf": {},
   ".config/ranger/rifle.conf": {},
