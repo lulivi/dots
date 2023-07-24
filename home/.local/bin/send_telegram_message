@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 # send_telegram_message - send a telegram message to TG_MY_ID with a bot
 # ussage: send_telegram_message "<message_to_send>"
 message="$1"

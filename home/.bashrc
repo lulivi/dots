@@ -10,6 +10,7 @@
 shopt -s checkwinsize
 shopt -s expand_aliases
 shopt -s histappend
+shopt -s direxpand
 
 # Shell options
 set -o ignoreeof
@@ -57,12 +58,18 @@ del_paths_from_variable() {
 
 # Define the common paths
 add_paths_to_variable "PATH" \
-  "$HOME/.local/bin/" \
-  "$HOME/.gem/ruby/2.7.0/bin" \
-  "$HOME/.luarocks/bin/" \
-  "$HOME/.cargo/bin/" \
-  "$HOME/.screenlayout/" \
-  "$HOME/bin/"
+    "$HOME/.local/bin/" \
+    "$HOME/.gem/ruby/2.7.0/bin" \
+    "$HOME/.luarocks/bin/" \
+    "$HOME/.cargo/bin/" \
+    "$HOME/.codon/bin" \
+    "$HOME/.screenlayout/" \
+    "$HOME/bin/" \
+    "/opt/tools/python/3.11/bin" \
+    "/opt/tools/python/3.9/bin" \
+    "/opt/tools/python/3.8/bin" \
+    "/opt/tools/python/3.7/bin" \
+    "/opt/tools/python/3.6/bin"
 
 # Load util shell scripts
 for shell_script in "$HOME/.config/bash/"*.sh; do

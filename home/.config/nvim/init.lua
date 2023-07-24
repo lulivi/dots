@@ -107,7 +107,9 @@ set.expandtab = true
 set.tabstop = 4
 set.shiftwidth = 4
 set.smartindent = true
-set.textwidth = 100
+-- set.textwidth = 100
+set.textwidth = 0
+set.clipboard="unnamedplus"
 
 set.colorcolumn = "80,100"
 highlight("ColorColumn", {style = {reverse = 1}})

@@ -9,6 +9,7 @@ alias reload_bspwm="~/.config/bspwm/bspwmrc 2>&1 1>/dev/null"
 alias open="xdg-open &>/dev/null"
 alias o="xdg-open·&>/dev/null"
 alias abspath="readlink -f"
+alias du_sort="du -sh * 2>/dev/null | sort -rh"
 
 ## Misc
 alias t="tmux"
