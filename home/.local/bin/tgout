@@ -39,6 +39,12 @@ command:
 
     {prog} -s ping -c 3 google.com
 
+You can keep the stdout and stderr files with ``-k`` to check the files later:
+
+.. code-block:: shell
+
+    {prog} -k ping -c 3 google.com
+
 In any case, the help can be shown running:
 
 .. code-blcok: shell
@@ -147,18 +153,24 @@ async def send_telegram_message(
         )
 
 
-def create_temp_files() -> Tuple[Path, Path]:
+def create_temp_files(verbose: bool) -> Tuple[Path, Path, Path]:
     """Create temporary files for stdout and stderr.
 
+    :param verbose: Whether to log to stdout the temporary files and directory.
     :returns: A tuple containing the temporary directory created, and the stdout and stderr files.
 
     """
     temporary_dir = Path(tempfile.mkdtemp())
-    return (
-        temporary_dir,
-        temporary_dir.joinpath("stdout.log"),
-        temporary_dir.joinpath("stderr.log"),
-    )
+    stdout_file = temporary_dir.joinpath("stdout.log")
+    stderr_file = temporary_dir.joinpath("stderr.log")
+
+    if verbose:
+        print(
+            f"Temporary directory: {temporary_dir}\n\tStdout file: {stdout_file}\n\tStderr file:"
+            f" {stderr_file}"
+        )
+
+    return (temporary_dir, stdout_file, stderr_file)
 
 
 class CommandAction(argparse.Action):
@@ -192,8 +204,15 @@ def parse_args():
         epilog=__doc__.format(prog=Path(__file__).name),
         formatter_class=argparse.RawTextHelpFormatter,
     )
-    parser.add_argument(
+    me_parser_group = parser.add_mutually_exclusive_group()
+    me_parser_group.add_argument(
         "-s", "--silent", action="store_true", help="Don't capture stdout nor stderr"
+    )
+    me_parser_group.add_argument(
+        "-k",
+        "--keep",
+        action="store_true",
+        help="Don't remove the stdout and stderr files after finishing the program",
     )
     parser.add_argument("command", nargs=argparse.REMAINDER, action=CommandAction)
     return parser.parse_args()
@@ -206,11 +225,11 @@ def main():
         sys.exit("Please, initialise 'TG_BOT_TOKEN' and 'TG_MY_ID' environment variables")
 
     args = parse_args()
-    base_dir, stdout_file, stderr_file = create_temp_files()
     return_code: int = 1
-    print(f"Running command {args.command!r}")
+    base_dir, stdout_file, stderr_file = create_temp_files(verbose=args.keep)
 
     with stdout_file.open("wb") as stdout_fd, stderr_file.open("wb") as stderr_fd:
+        print(f"Running command {args.command!r}")
         try:
             start_time = time.time()
             return_code = subprocess.run(
@@ -236,7 +255,7 @@ def main():
         )
     )
 
-    if base_dir.is_dir():
+    if base_dir.is_dir() and not args.keep:
         shutil.rmtree(base_dir)
 
 
