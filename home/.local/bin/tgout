@@ -153,17 +153,11 @@ def create_temp_files() -> Tuple[Path, Path]:
     :returns: A tuple containing the temporary directory created, and the stdout and stderr files.
 
     """
-
-    def _create_temp_file(temp_dir: Path, file_name: str) -> Path:
-        new_file = temp_dir.joinpath(f"{file_name}.log")
-        print(f"{file_name} file: {new_file}")
-        return new_file
-
     temporary_dir = Path(tempfile.mkdtemp())
     return (
         temporary_dir,
-        _create_temp_file(temp_dir=temporary_dir, file_name="stdout"),
-        _create_temp_file(temp_dir=temporary_dir, file_name="stderr"),
+        temporary_dir.joinpath("stdout.log"),
+        temporary_dir.joinpath("stderr.log"),
     )
 
 
@@ -181,8 +175,6 @@ class CommandAction(argparse.Action):
                     for command_part in values
                 ]
             )
-
-        print(values)
 
         if not values:
             raise argparse.ArgumentError(self, "A command is necessary")
@@ -214,7 +206,6 @@ def main():
         sys.exit("Please, initialise 'TG_BOT_TOKEN' and 'TG_MY_ID' environment variables")
 
     args = parse_args()
-    print(args)
     base_dir, stdout_file, stderr_file = create_temp_files()
     return_code: int = 1
     print(f"Running command {args.command!r}")
