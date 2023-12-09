@@ -98,6 +98,9 @@
   ".local/bin/telret": {
     "description": "Send the return code of the previous command to your telegram user."
   },
+  ".local/bin/tgout": {
+    "description": "Run a command with arguments and send the return code and output to telegram."
+  },
   ".local/bin/tput_color_base16.sh": {
     "description": "Show base16 fg/bg color combinations."
   },

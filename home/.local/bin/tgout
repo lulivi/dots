@@ -1,0 +1,244 @@
+#!/usr/bin/env python3
+# Copyright (c) 2023 Luis Liñán
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+"""Execute a command and send the return code, time, stdout and stderr to a telegram user.
+
+You can run any command preceding it with {prog}.
+
+.. code-block:: shell
+
+    {prog} ping -c 3 google.com
+
+In order to run shell-specific command like pipes or redirections, the command must be quoted.
+
+.. code-block:: shell
+
+    {prog} 'echo "example text" | tee /tmp/example.log'
+
+If in any case only the return code and execution time, the option ``-s`` can be passed before the
+command:
+
+.. code-block:: shell
+
+    {prog} -s ping -c 3 google.com
+
+In any case, the help can be shown running:
+
+.. code-blcok: shell
+
+    {prog} --help
+
+"""
+import sys
+
+if sys.version_info.minor <= 6:
+    sys.exit("Only available for Python versions > 3.6")
+
+import argparse
+import asyncio
+import datetime
+import os
+import shlex
+import shutil
+import subprocess
+import tempfile
+import time
+
+from pathlib import Path
+from typing import Tuple
+
+try:
+    import telegram
+except ModuleNotFoundError:
+    if input(
+        "The 'python-telegram-bot' package is required but not installed. Do you want to install"
+        " it? (yes/no): "
+    ) not in ("y", "yes"):
+        sys.exit("Please, install it manually to continue")
+
+    if subprocess.run([sys.executable, "-m", "pip", "install", "python-telegram-bot"]).returncode:
+        sys.exit("There was an error installing the package")
+
+    print("Please, re-run the program")
+    sys.exit()
+
+
+async def send_telegram_message(
+    bot_token: str,
+    chat_id: str,
+    command: str,
+    command_time: datetime.timedelta,
+    return_code: int,
+    stdout_file: Path,
+    stderr_file: Path,
+) -> None:
+    """Format and send the completed command information.
+
+    Firstly a description message will be sent having the following information:
+
+    * The command run.
+    * The return code of the command.
+    * The command execution elapsed time.
+
+    Depending on the length of the stdout and stderr the following will happend:
+
+    * A message for each stdout and/or stderr if not empty.
+    * A file for each stdout and/or stderr if not empty.
+
+    The limits used are:
+
+    * Maximum message size: ``4096``.
+    * Maximum file size: ``~= 50MB`` (actually ``49MB`` for limit reasons).
+
+    :param bot_token: The bot token for the messages to be sent.
+    :param chat_id: The chat to which the messages will be sent.
+    :param command: The command that has been run.
+    :param command_time: Elapsed time of the command.
+    :param return_code: The Command return code.
+    :param stdout_file: The stdout of the program.
+    :param stderr_file: The stderr of the program.
+
+    """
+    bot = telegram.Bot(token=bot_token)
+    await bot.send_message(
+        chat_id=chat_id,
+        text=f"*Command:* `{command}`\n*Return code:* `{return_code}`\n*Time:* `{command_time}`",
+        parse_mode="Markdown",
+    )
+
+    non_empty_file_generator = filter(lambda file: file.stat().st_size, (stdout_file, stderr_file))
+    max_message_size = 4090 - len("*Program stdxxx:*\n```shell\n```")
+
+    if (
+        stdout_file.stat().st_size < max_message_size
+        and stderr_file.stat().st_size < max_message_size
+    ):
+        for file in non_empty_file_generator:
+            await bot.send_message(
+                chat_id=chat_id,
+                text=f"*Program {file.stem}:*\n```shell\n{file.read_text()}```",
+                parse_mode="Markdown",
+            )
+        return
+
+    file_max_size = 49 * 1024 * 1024
+
+    for file in non_empty_file_generator:
+        await bot.send_document(
+            chat_id=chat_id,
+            document=file.open("rb").read(file_max_size),
+            filename=file.name,
+        )
+
+
+def create_temp_files() -> Tuple[Path, Path]:
+    """Create temporary files for stdout and stderr.
+
+    :returns: A tuple containing the temporary directory created, and the stdout and stderr files.
+
+    """
+    def _create_temp_file(temp_dir: Path, file_name: str) -> Path:
+        new_file = temp_dir.joinpath(f"{file_name}.log")
+        print(f"{file_name} file: {new_file}")
+        return new_file
+
+    temporary_dir = Path(tempfile.mkdtemp())
+    return (
+        temporary_dir,
+        _create_temp_file(temp_dir=temporary_dir, file_name="stdout"),
+        _create_temp_file(temp_dir=temporary_dir, file_name="stderr"),
+    )
+
+
+class CommandAction(argparse.Action):
+    """Parse the output and build the command necessary depending on if it is quoted or not."""
+    def __call__(self, _, namespace, values, __=None):
+        def _get_command():
+            if len(values) == 1:
+                return values[0]
+            return shlex.join(values)
+
+        if not values:
+            raise argparse.ArgumentError(self, "A command is necessary")
+
+        setattr(namespace, self.dest, _get_command())
+
+
+def parse_args():
+    """Parse the command from stdin.
+
+    :returns: The parsed arguments.
+
+    """
+    parser = argparse.ArgumentParser(
+        epilog=__doc__.format(prog=Path(__file__).name),
+        formatter_class=argparse.RawTextHelpFormatter,
+    )
+    parser.add_argument(
+        "-s", "--silent", action="store_true", help="Don't capture stdout nor stderr"
+    )
+    parser.add_argument("command", nargs=argparse.REMAINDER, action=CommandAction)
+    return parser.parse_args()
+
+
+def main():
+    token, chat_id = os.environ.get("TG_BOT_TOKEN"), os.environ.get("TG_MY_ID")
+
+    if not token or not chat_id:
+        sys.exit("Please, initialise 'TG_BOT_TOKEN' and 'TG_MY_ID' environment variables")
+
+    args = parse_args()
+    print(args)
+    base_dir, stdout_file, stderr_file = create_temp_files()
+    return_code: int = 1
+    print(f"Running command {args.command!r}")
+
+    with stdout_file.open("wb") as stdout_fd, stderr_file.open("wb") as stderr_fd:
+        try:
+            start_time = time.time()
+            return_code = subprocess.run(
+                args=[args.command],
+                stdout=subprocess.DEVNULL if args.silent else stdout_fd,
+                stderr=subprocess.DEVNULL if args.silent else stderr_fd,
+                shell=True,
+            ).returncode
+        except KeyboardInterrupt:
+            print("The proces was killed by Ctrl+C")
+        finally:
+            total_time = time.time() - start_time
+
+    asyncio.run(
+        send_telegram_message(
+            bot_token=token,
+            chat_id=chat_id,
+            command=args.command,
+            command_time=datetime.timedelta(seconds=round(total_time)),
+            return_code=return_code,
+            stdout_file=stdout_file,
+            stderr_file=stderr_file,
+        )
+    )
+
+    if base_dir.is_dir():
+        shutil.rmtree(base_dir)
+
+
+if __name__ == "__main__":
+    main()
