@@ -55,7 +55,6 @@ import argparse
 import asyncio
 import datetime
 import os
-import shlex
 import shutil
 import subprocess
 import tempfile
@@ -154,6 +153,7 @@ def create_temp_files() -> Tuple[Path, Path]:
     :returns: A tuple containing the temporary directory created, and the stdout and stderr files.
 
     """
+
     def _create_temp_file(temp_dir: Path, file_name: str) -> Path:
         new_file = temp_dir.joinpath(f"{file_name}.log")
         print(f"{file_name} file: {new_file}")
@@ -169,11 +169,20 @@ def create_temp_files() -> Tuple[Path, Path]:
 
 class CommandAction(argparse.Action):
     """Parse the output and build the command necessary depending on if it is quoted or not."""
+
     def __call__(self, _, namespace, values, __=None):
         def _get_command():
             if len(values) == 1:
                 return values[0]
-            return shlex.join(values)
+
+            return " ".join(
+                [
+                    f'"{command_part}"' if " " in command_part else command_part
+                    for command_part in values
+                ]
+            )
+
+        print(values)
 
         if not values:
             raise argparse.ArgumentError(self, "A command is necessary")
