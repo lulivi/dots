@@ -58,25 +58,11 @@ In any case, the help can be shown running:
 
 """
 
+import subprocess
 import sys
 
 if sys.version_info.minor <= 6:
     sys.exit("Only available for Python versions > 3.6")
-
-import argparse
-import asyncio
-import datetime
-import enum
-import os
-import subprocess
-import tempfile
-import time
-import uuid
-
-from pathlib import Path
-from typing import List, Optional, TextIO
-
-from typing_extensions import Self
 
 try:
     import telegram
@@ -90,8 +76,21 @@ except ModuleNotFoundError:
     if subprocess.run([sys.executable, "-m", "pip", "install", "python-telegram-bot"]).returncode:
         sys.exit("There was an error installing the package")
 
-    print("Please, re-run the program")
-    sys.exit()
+    import telegram
+
+import argparse
+import asyncio
+import datetime
+import enum
+import os
+import tempfile
+import time
+import uuid
+
+from pathlib import Path
+from typing import List, Optional, TextIO
+
+from typing_extensions import Self
 
 
 class CommandAction(argparse.Action):
