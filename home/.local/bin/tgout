@@ -32,14 +32,19 @@ In order to run shell-specific command like pipes or redirections, the command m
 
     {prog} 'echo "example text" | tee /tmp/example.log'
 
-If in any case only the return code and execution time, the option ``-s`` can be passed before the
-command:
+By default the STDOUT and a temporary file are written with the program output. Once the command
+finishes, if the ``-ns`` and ``-k`` arguments are not specified, the program output will be sent to
+Telegram and then the temporary file will be deleted.
+
+If only the return code and execution time are wanted, the option ``-o null`` can be passed before
+the command and will send the output to /dev/null:
 
 .. code-block:: shell
 
-    {prog} -s ping -c 3 google.com
+    {prog} -o null ping -c 3 google.com
 
-You can keep the stdout and stderr files with ``-k`` to check the files later:
+You can keep the output file with ``-k`` to check the files later. With this option, the program
+will print the temporary file name used:
 
 .. code-block:: shell
 
@@ -52,6 +57,7 @@ In any case, the help can be shown running:
     {prog} --help
 
 """
+
 import sys
 
 if sys.version_info.minor <= 6:
@@ -60,14 +66,17 @@ if sys.version_info.minor <= 6:
 import argparse
 import asyncio
 import datetime
+import enum
 import os
-import shutil
 import subprocess
 import tempfile
 import time
+import uuid
 
 from pathlib import Path
-from typing import Tuple
+from typing import List, Optional, TextIO
+
+from typing_extensions import Self
 
 try:
     import telegram
@@ -85,14 +94,53 @@ except ModuleNotFoundError:
     sys.exit()
 
 
+class CommandAction(argparse.Action):
+    """Parse the output and build the command necessary depending on if it is quoted or not."""
+
+    def __call__(self, _, namespace, values, __=None):
+        def _get_command():
+            if len(values) == 1:
+                return values[0]
+
+            return " ".join(
+                [
+                    f'"{command_part}"' if " " in command_part else command_part
+                    for command_part in values
+                ]
+            )
+
+        if not values:
+            raise argparse.ArgumentError(self, "A command is necessary")
+
+        setattr(namespace, self.dest, _get_command())
+
+
+class OutputArgumentChoice(enum.Enum):
+    """Argument ``output`` possible choices."""
+
+    file = enum.auto()
+    stdout = enum.auto()
+    both = enum.auto()
+    null = enum.auto()
+
+    def __str__(self):
+        return self.name
+
+    @staticmethod
+    def from_string(string_choice: str) -> Self:
+        try:
+            return OutputArgumentChoice[string_choice]
+        except KeyError:
+            raise ValueError(f"The string '{string_choice}' is no member of {Self}")
+
+
 async def send_telegram_message(
     bot_token: str,
     chat_id: str,
     command: str,
     command_time: datetime.timedelta,
     return_code: int,
-    stdout_file: Path,
-    stderr_file: Path,
+    output_file: Optional[Path],
 ) -> None:
     """Format and send the completed command information.
 
@@ -117,8 +165,7 @@ async def send_telegram_message(
     :param command: The command that has been run.
     :param command_time: Elapsed time of the command.
     :param return_code: The Command return code.
-    :param stdout_file: The stdout of the program.
-    :param stderr_file: The stderr of the program.
+    :param output_file: The output of the program.
 
     """
     bot = telegram.Bot(token=bot_token)
@@ -128,70 +175,38 @@ async def send_telegram_message(
         parse_mode="Markdown",
     )
 
-    non_empty_file_generator = filter(lambda file: file.stat().st_size, (stdout_file, stderr_file))
-    max_message_size = 4090 - len("*Program stdxxx:*\n```shell\n```")
-
-    if (
-        stdout_file.stat().st_size < max_message_size
-        and stderr_file.stat().st_size < max_message_size
-    ):
-        for file in non_empty_file_generator:
-            await bot.send_message(
-                chat_id=chat_id,
-                text=f"*Program {file.stem}:*\n```shell\n{file.read_text()}```",
-                parse_mode="Markdown",
-            )
+    if output_file is None or not output_file.stat().st_size:
         return
 
-    file_max_size = 49 * 1024 * 1024
+    output_file_size = output_file.stat().st_size
+    message_template = "*Program output:*\n```shell{}\n```"
+    max_send_message_size = 4090 - len(message_template) - 2
 
-    for file in non_empty_file_generator:
-        await bot.send_document(
+    if output_file_size < max_send_message_size:
+        await bot.send_message(
             chat_id=chat_id,
-            document=file.open("rb").read(file_max_size),
-            filename=file.name,
+            text=message_template.format(output_file.read_text()),
+            parse_mode="Markdown",
+        )
+        return
+
+    max_send_file_size = 49 * 1024 * 1024
+
+    if output_file_size > max_send_file_size:
+        await bot.send_message(
+            chat_id=chat_id,
+            text=(
+                f"The output file size is too large (`{output_file_size / 1024 / 1024}MB`)."
+                " Trimming it to 49MB..."
+            ),
+            parse_mode="Markdown",
         )
 
-
-def create_temp_files(verbose: bool) -> Tuple[Path, Path, Path]:
-    """Create temporary files for stdout and stderr.
-
-    :param verbose: Whether to log to stdout the temporary files and directory.
-    :returns: A tuple containing the temporary directory created, and the stdout and stderr files.
-
-    """
-    temporary_dir = Path(tempfile.mkdtemp())
-    stdout_file = temporary_dir.joinpath("stdout.log")
-    stderr_file = temporary_dir.joinpath("stderr.log")
-
-    if verbose:
-        print(
-            f"Temporary directory: {temporary_dir}\n\tStdout file: {stdout_file}\n\tStderr file:"
-            f" {stderr_file}"
-        )
-
-    return (temporary_dir, stdout_file, stderr_file)
-
-
-class CommandAction(argparse.Action):
-    """Parse the output and build the command necessary depending on if it is quoted or not."""
-
-    def __call__(self, _, namespace, values, __=None):
-        def _get_command():
-            if len(values) == 1:
-                return values[0]
-
-            return " ".join(
-                [
-                    f'"{command_part}"' if " " in command_part else command_part
-                    for command_part in values
-                ]
-            )
-
-        if not values:
-            raise argparse.ArgumentError(self, "A command is necessary")
-
-        setattr(namespace, self.dest, _get_command())
+    await bot.send_document(
+        chat_id=chat_id,
+        document=output_file.open("rb").read(max_send_file_size),
+        filename=f"output.log",
+    )
 
 
 def parse_args():
@@ -204,18 +219,44 @@ def parse_args():
         epilog=__doc__.format(prog=Path(__file__).name),
         formatter_class=argparse.RawTextHelpFormatter,
     )
-    me_parser_group = parser.add_mutually_exclusive_group()
-    me_parser_group.add_argument(
-        "-s", "--silent", action="store_true", help="Don't capture stdout nor stderr"
+    parser.add_argument(
+        "-ns",
+        "--no-send",
+        dest="send",
+        action="store_false",
+        help="Don't send the output to Telegram",
     )
-    me_parser_group.add_argument(
+    parser.add_argument(
+        "-o",
+        "--output",
+        type=OutputArgumentChoice.from_string,
+        choices=list(OutputArgumentChoice),
+        default=OutputArgumentChoice.both,
+        help=f"Choose the output to use. Default: '{OutputArgumentChoice.both}'",
+    )
+    parser.add_argument(
         "-k",
         "--keep",
         action="store_true",
-        help="Don't remove the stdout and stderr files after finishing the program",
+        help="Don't remove the output file after finishing the program",
     )
     parser.add_argument("command", nargs=argparse.REMAINDER, action=CommandAction)
-    return parser.parse_args()
+    args = parser.parse_args()
+
+    args.writing_to_file: bool = args.output in (
+        OutputArgumentChoice.file,
+        OutputArgumentChoice.both,
+    )
+    args.writing_to_stdout: bool = args.output in (
+        OutputArgumentChoice.stdout,
+        OutputArgumentChoice.both,
+    )
+
+    if not args.writing_to_file:
+        args.keep = False
+        args.send = False
+
+    return args
 
 
 def main():
@@ -224,24 +265,42 @@ def main():
     if not token or not chat_id:
         sys.exit("Please, initialise 'TG_BOT_TOKEN' and 'TG_MY_ID' environment variables")
 
+    run_environment = os.environ.copy()
+    run_environment.pop("TG_BOT_TOKEN", None)
+    run_environment.pop("TG_MY_ID", None)
+
     args = parse_args()
     return_code: int = 1
-    base_dir, stdout_file, stderr_file = create_temp_files(verbose=args.keep)
+    output_file_descriptors: List[TextIO] = []
+    output_file = Path(tempfile.gettempdir(), str(uuid.uuid4()))
 
-    with stdout_file.open("wb") as stdout_fd, stderr_file.open("wb") as stderr_fd:
-        print(f"Running command {args.command!r}")
-        try:
-            start_time = time.time()
-            return_code = subprocess.run(
-                args=[args.command],
-                stdout=subprocess.DEVNULL if args.silent else stdout_fd,
-                stderr=subprocess.DEVNULL if args.silent else stderr_fd,
-                shell=True,
-            ).returncode
-        except KeyboardInterrupt:
-            print("The proces was killed by Ctrl+C")
-        finally:
-            total_time = time.time() - start_time
+    if args.keep:
+        print(f"Temporary output file: {output_file}")
+
+    if args.writing_to_stdout:
+        output_file_descriptors.append(sys.stdout)
+
+    start_time = time.time()
+    try:
+        with output_file.open("w") as stdout_fd, subprocess.Popen(
+            args=(args.command,),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            shell=True,
+            env=run_environment,
+        ) as process:
+            if args.writing_to_file:
+                output_file_descriptors.append(stdout_fd)
+
+            for chunk in process.stdout:
+                list(map(lambda f: f.write(chunk), output_file_descriptors))
+
+        return_code = process.wait()
+    except KeyboardInterrupt:
+        print("The proces was killed by Ctrl+C")
+    finally:
+        total_time = time.time() - start_time
 
     asyncio.run(
         send_telegram_message(
@@ -250,13 +309,12 @@ def main():
             command=args.command,
             command_time=datetime.timedelta(seconds=round(total_time)),
             return_code=return_code,
-            stdout_file=stdout_file,
-            stderr_file=stderr_file,
+            output_file=output_file if args.writing_to_file else None,
         )
     )
 
-    if base_dir.is_dir() and not args.keep:
-        shutil.rmtree(base_dir)
+    if output_file.exists() and not args.keep:
+        output_file.unlink()
 
 
 if __name__ == "__main__":
