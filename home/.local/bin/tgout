@@ -90,8 +90,6 @@ import uuid
 from pathlib import Path
 from typing import List, Optional, TextIO
 
-from typing_extensions import Self
-
 
 class CommandAction(argparse.Action):
     """Parse the output and build the command necessary depending on if it is quoted or not."""
@@ -126,11 +124,11 @@ class OutputArgumentChoice(enum.Enum):
         return self.name
 
     @staticmethod
-    def from_string(string_choice: str) -> Self:
+    def from_string(string_choice: str) -> "OutputArgumentChoice":
         try:
             return OutputArgumentChoice[string_choice]
         except KeyError:
-            raise ValueError(f"The string '{string_choice}' is no member of {Self}")
+            raise ValueError(f"The string '{string_choice}' is not member of {__class__.__name__}")
 
 
 async def send_telegram_message(
@@ -271,7 +269,7 @@ def main():
     args = parse_args()
     return_code: int = 1
     output_file_descriptors: List[TextIO] = []
-    output_file = Path(tempfile.gettempdir(), str(uuid.uuid4()))
+    output_file = Path(tempfile.gettempdir(), f"tgout_{str(uuid.uuid4())}")
 
     if args.keep:
         print(f"Temporary output file: {output_file}")
@@ -298,6 +296,7 @@ def main():
         return_code = process.wait()
     except KeyboardInterrupt:
         print("The proces was killed by Ctrl+C")
+        return_code = 130
     finally:
         total_time = time.time() - start_time
 
@@ -314,6 +313,8 @@ def main():
 
     if output_file.exists() and not args.keep:
         output_file.unlink()
+
+    sys.exit(return_code)
 
 
 if __name__ == "__main__":
