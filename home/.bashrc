@@ -67,9 +67,9 @@ add_paths_to_variable "PATH" \
     "$HOME/bin/" \
     "/opt/tools/python/3.11/bin" \
     "/opt/tools/python/3.9/bin" \
-    "/opt/tools/python/3.8/bin" \
     "/opt/tools/python/3.7/bin" \
-    "/opt/tools/python/3.6/bin"
+    "/opt/tools/python/3.6/bin" \
+    "/opt/tools/python/3.8/bin"
 
 # Load util shell scripts
 for shell_script in "$HOME/.config/bash/"*.sh; do
@@ -96,4 +96,3 @@ unset dircolors_file
 if [ -f "$HOME/.cache/wal/sequences" ]; then
     (cat "$HOME/.cache/wal/sequences" &)
 fi
-
