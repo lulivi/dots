@@ -22,6 +22,11 @@ activate() {
     }
     local venv_name="$1"
 
+    if [ -f "./pyproject.toml" ]; then
+        poetry shell
+        return
+    fi
+
     shopt -s dotglob
     if [ -z "$venv_name" ]; then
        venv_name=$(_select_venv ./*venv*)
