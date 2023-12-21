@@ -211,6 +211,9 @@
   ".config/procps/toprc": {
     "description": "Top configuration file."
   },
+  ".config/qtile": {
+    "description": "Qtile tiling manager configuration."
+  },
   ".config/bspwm/autostart.sh": {
     "description": "bspwm app-autostart script."
   },
