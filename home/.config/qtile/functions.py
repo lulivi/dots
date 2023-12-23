@@ -29,7 +29,7 @@ from typing import Dict, List, Union
 from libqtile.config import Key, KeyChord
 from libqtile.lazy import lazy
 from libqtile.utils import send_notification
-from settings import KEYBINDINGS_FILE
+from settings import HOME_DIR, KEYBINDINGS_FILE
 
 
 @lazy.function
@@ -45,7 +45,7 @@ def darken_until_mouse_movement(*args, **kwargs) -> None:
     CURRENT_BRIGHTNESS = BASE_DIR.joinpath("brightness")
     CURRENT_BRIGHTNESS.write_text("0")
     subprocess.run(
-        ["/home/luis/.screenlayout/brightness.py", "0.01"],
+        [str(HOME_DIR.joinpath(".screenlayout", "brightness.py")), "0.01"],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
     )
@@ -55,7 +55,7 @@ def darken_until_mouse_movement(*args, **kwargs) -> None:
         stderr=subprocess.DEVNULL,
     )
     subprocess.run(
-        ["/home/luis/.screenlayout/brightness.py", "1"],
+        [str(HOME_DIR.joinpath(".screenlayout", "brightness.py")), "1"],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
     )
@@ -84,9 +84,14 @@ def toggle_audio_device(*args, **kwargs) -> None:
 def show_keybindings(_) -> None:
     def _show_keybindings():
         root = tk.Tk()
+        inner_frame = tk.Frame(root)
+        inner_frame.pack(padx=20, pady=20)
 
         for index, line in enumerate(KEYBINDINGS_FILE.read_text().splitlines()):
-            tk.Label(root, text=line, font=("Fira Code", 11)).grid(row=index, column=0, sticky="w")
+            tk.Label(inner_frame, text=line, font=("Fira Code", 11)).grid(
+                row=index, column=0, sticky="w"
+            )
+
         root.mainloop()
 
     t = Thread(target=_show_keybindings)

@@ -45,6 +45,6 @@ floating_layout: Layout = layout.Floating(
         Match(wm_class="Arandr"),
         Match(wm_class="Pop"),
         Match(wm_class="Pavucontrol"),
-        Match(wm_class="KeyBindings"),
+        Match(wm_class="Tk"),
     ]
 )
