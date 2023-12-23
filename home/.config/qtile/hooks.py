@@ -1,4 +1,3 @@
-#!/opt/tools/python/3.9/python3
 # vim:fileencoding=utf-8:foldmethod=marker
 # Copyright (c) 2023 Luis Liñán
 #
@@ -19,31 +18,39 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import shutil
+import subprocess
 
-# Pip dependencies:
-# - qtile
-# - cairocff (keybinding images)
-# - dbus-next (python-dbus interaction)
-# - mypy (qtile check)
-# - iwlib (wifi widget)
-# - psutil (multiple widget)
+from pathlib import Path
 
-import hooks  # NOQA
+from functions import save_keybindings
+from keys import key_groups
+from libqtile import hook
+from libqtile.utils import send_notification
 
-from groups import groups  # NOQA
-from keys import keys, mouse  # NOQA
-from layouts import floating_layout, layouts  # NOQA
-from screens import screens  # NOQA
 
-# Qtile config {{{
-dgroups_key_binder = None
-dgroups_app_rules: list = []
-follow_mouse_focus: bool = True
-bring_front_click: bool = False
-cursor_warp: bool = False
-auto_fullscreen = True
-focus_on_window_activation = "smart"
-reconfigure_screens = True
-auto_minimize = True
-wmname = "LG3D"
-# }}}
+@hook.subscribe.startup_once
+def when_startup_once():
+    def _kill_and_run_executable(command: str) -> None:
+        subprocess.run(["pkill", command])
+        executable = shutil.which(command)
+
+        if executable is not None:
+            subprocess.Popen([executable])
+
+    _kill_and_run_executable("dunst")
+    _kill_and_run_executable("compton")
+    _kill_and_run_executable("xscreensaver")
+    subprocess.Popen(["eval $(ssh-agent)"], shell=True)
+
+
+@hook.subscribe.startup
+def when_startup():
+    subprocess.Popen([str(Path.home().joinpath(".fehbg"))])
+    save_keybindings(key_groups)
+    send_notification("Wellcome, Luis!", "Enjoy c:")
+
+
+@hook.subscribe.screen_change
+def when_screen_change(*args, **kwargs):
+    subprocess.Popen([str(Path.home().joinpath(".fehbg"))])

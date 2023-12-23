@@ -1,4 +1,3 @@
-#!/opt/tools/python/3.9/python3
 # vim:fileencoding=utf-8:foldmethod=marker
 # Copyright (c) 2023 Luis Liñán
 #
@@ -19,31 +18,26 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+from typing import List
 
-# Pip dependencies:
-# - qtile
-# - cairocff (keybinding images)
-# - dbus-next (python-dbus interaction)
-# - mypy (qtile check)
-# - iwlib (wifi widget)
-# - psutil (multiple widget)
+from libqtile.config import Group, Match
 
-import hooks  # NOQA
-
-from groups import groups  # NOQA
-from keys import keys, mouse  # NOQA
-from layouts import floating_layout, layouts  # NOQA
-from screens import screens  # NOQA
-
-# Qtile config {{{
-dgroups_key_binder = None
-dgroups_app_rules: list = []
-follow_mouse_focus: bool = True
-bring_front_click: bool = False
-cursor_warp: bool = False
-auto_fullscreen = True
-focus_on_window_activation = "smart"
-reconfigure_screens = True
-auto_minimize = True
-wmname = "LG3D"
-# }}}
+groups: List[Group] = [
+    Group(**group_info)
+    for group_info in (
+        {"name": "Shell"},
+        {"name": "WWW", "matches": [Match(wm_class="Navigator")]},
+        {"name": "Code", "matches": [Match(wm_class="Code")]},
+        {
+            "name": "Chat",
+            "matches": [
+                Match(wm_class="Slack"),
+                Match(wm_class="TelegramDesktop"),
+                Match(wm_class="Pop"),
+            ],
+        },
+        {"name": "x"},
+        {"name": "y"},
+        {"name": "z"},
+    )
+]

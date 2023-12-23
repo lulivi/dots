@@ -1,4 +1,3 @@
-#!/opt/tools/python/3.9/python3
 # vim:fileencoding=utf-8:foldmethod=marker
 # Copyright (c) 2023 Luis Liñán
 #
@@ -19,31 +18,33 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+from typing import List
 
-# Pip dependencies:
-# - qtile
-# - cairocff (keybinding images)
-# - dbus-next (python-dbus interaction)
-# - mypy (qtile check)
-# - iwlib (wifi widget)
-# - psutil (multiple widget)
+from libqtile import layout
+from libqtile.config import Match
+from libqtile.layout.base import Layout
 
-import hooks  # NOQA
+layouts_defaults = {
+    "border_width": 2,
+    "border_focus": "#0000ff",
+    "border_normal": "#000000",
+    "border_on_single": True,
+}
 
-from groups import groups  # NOQA
-from keys import keys, mouse  # NOQA
-from layouts import floating_layout, layouts  # NOQA
-from screens import screens  # NOQA
+layouts: List[Layout] = [
+    layout.Columns(**layouts_defaults, margin=10),
+    layout.Tile(**layouts_defaults, margin=10),
+    layout.Max(**layouts_defaults),
+]
 
-# Qtile config {{{
-dgroups_key_binder = None
-dgroups_app_rules: list = []
-follow_mouse_focus: bool = True
-bring_front_click: bool = False
-cursor_warp: bool = False
-auto_fullscreen = True
-focus_on_window_activation = "smart"
-reconfigure_screens = True
-auto_minimize = True
-wmname = "LG3D"
-# }}}
+floating_layout: Layout = layout.Floating(
+    float_rules=[
+        *layout.Floating.default_float_rules,
+        Match(wm_class="ssh-askpass"),  # ssh-askpass
+        Match(title="pinentry"),  # GPG key password entry
+        Match(wm_class="Arandr"),
+        Match(wm_class="Pop"),
+        Match(wm_class="Pavucontrol"),
+        Match(wm_class="KeyBindings"),
+    ]
+)

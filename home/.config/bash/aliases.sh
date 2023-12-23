@@ -41,6 +41,7 @@ alias tree='tree --dirsfirst -C'
 alias dmesg='dmesg --color=auto --reltime --human --nopager --decode'
 alias free='free -mht'
 alias pacman='pacman --color=auto'
+alias bar='lemonbar -b -g x20 -p'
 
 ## Playerctl
 alias pp="playerctl play-pause; exit"
