@@ -24,7 +24,7 @@ import tkinter as tk
 from dataclasses import dataclass
 from pathlib import Path
 from threading import Thread
-from typing import Dict, List, Union
+from typing import Dict, List, Tuple, Union
 
 from libqtile.config import Key, KeyChord
 from libqtile.lazy import lazy

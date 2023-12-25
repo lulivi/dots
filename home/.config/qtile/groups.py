@@ -23,21 +23,18 @@ from typing import List
 from libqtile.config import Group, Match
 
 groups: List[Group] = [
-    Group(**group_info)
-    for group_info in (
-        {"name": "Shell"},
-        {"name": "WWW", "matches": [Match(wm_class="Navigator")]},
-        {"name": "Code", "matches": [Match(wm_class="Code")]},
-        {
-            "name": "Chat",
-            "matches": [
-                Match(wm_class="Slack"),
-                Match(wm_class="TelegramDesktop"),
-                Match(wm_class="Pop"),
-            ],
-        },
-        {"name": "x"},
-        {"name": "y"},
-        {"name": "z"},
-    )
+    Group(name="Shell"),
+    Group(name="WWW", matches=[Match(wm_class="Navigator")]),
+    Group(name="Code", matches=[Match(wm_class="Code")]),
+    Group(
+        name="Chat",
+        matches=[
+            Match(wm_class="Slack"),
+            Match(wm_class="TelegramDesktop"),
+            Match(wm_class="Pop"),
+        ],
+    ),
+    Group(name="x"),
+    Group(name="y"),
+    Group(name="z"),
 ]

@@ -71,12 +71,6 @@ add_paths_to_variable "PATH" \
     "/opt/tools/python/3.6/bin" \
     "/opt/tools/python/3.8/bin"
 
-# Load util shell scripts
-for shell_script in "$HOME/.config/bash/"*.sh; do
-    # shellcheck source=/dev/null
-    [ -r "$shell_script" ] && . "$shell_script"
-done
-
 # Bash completions
 [ -r /usr/share/bash-completion/bash_completion ] && {
     # shellcheck source=/dev/null
@@ -96,3 +90,13 @@ unset dircolors_file
 if [ -f "$HOME/.cache/wal/sequences" ]; then
     (cat "$HOME/.cache/wal/sequences" &)
 fi
+
+# SSH
+eval $(ssh-agent)
+
+# Load util shell scripts
+for shell_script in "$HOME/.config/bash/"*.sh; do
+    # shellcheck source=/dev/null
+    [ -r "$shell_script" ] && . "$shell_script"
+done
+

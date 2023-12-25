@@ -22,6 +22,7 @@ import shutil
 import subprocess
 
 from pathlib import Path
+from typing import List
 
 from functions import save_keybindings
 from keys import key_groups
@@ -31,17 +32,16 @@ from libqtile.utils import send_notification
 
 @hook.subscribe.startup_once
 def when_startup_once():
-    def _kill_and_run_executable(command: str) -> None:
+    def _kill_and_run_executable(command: str, *args: List[str]) -> None:
         subprocess.run(["pkill", command])
         executable = shutil.which(command)
 
         if executable is not None:
-            subprocess.Popen([executable])
+            subprocess.Popen([executable, *args])
 
     _kill_and_run_executable("dunst")
     _kill_and_run_executable("compton")
-    _kill_and_run_executable("xscreensaver")
-    subprocess.Popen(["eval $(ssh-agent)"], shell=True)
+    _kill_and_run_executable("xscreensaver", "-no-splash")
 
 
 @hook.subscribe.startup

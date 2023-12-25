@@ -28,12 +28,12 @@
 # - iwlib (wifi widget)
 # - psutil (multiple widget)
 
-import hooks  # NOQA
+import hooks
 
-from groups import groups  # NOQA
-from keys import keys, mouse  # NOQA
-from layouts import floating_layout, layouts  # NOQA
-from screens import screens  # NOQA
+from groups import groups
+from keys import keys, mouse
+from layouts import floating_layout, layouts
+from screens import screens
 
 # Qtile config {{{
 dgroups_key_binder = None
