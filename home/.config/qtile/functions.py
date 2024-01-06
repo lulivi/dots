@@ -27,13 +27,14 @@ from threading import Thread
 from typing import Dict, List, Tuple, Union
 
 from libqtile.config import Key, KeyChord
+from libqtile.core.manager import Qtile
 from libqtile.lazy import lazy
 from libqtile.utils import send_notification
 from settings import HOME_DIR, KEYBINDINGS_FILE
 
 
 @lazy.function
-def darken_until_mouse_movement(*args, **kwargs) -> None:
+def darken_until_mouse_movement(_: Qtile) -> None:
     """Turn off the screen until mouse move.
 
     Note that this only fully work for the laptop screen. The external screens will not be totally
@@ -63,7 +64,7 @@ def darken_until_mouse_movement(*args, **kwargs) -> None:
 
 
 @lazy.function
-def toggle_audio_device(*args, **kwargs) -> None:
+def toggle_audio_device(_: Qtile) -> None:
     """Swap the devices from Headphones to Speakers and vice versa."""
     amixer_speaker_info = subprocess.run(
         ["amixer", "get", "Speaker"], stdout=subprocess.PIPE, text=True

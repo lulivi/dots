@@ -23,7 +23,7 @@ import itertools
 from pathlib import Path
 from typing import Dict, List, Union
 
-from functions import darken_until_mouse_movement, show_keybindings, toggle_audio_device
+from functions import darken_until_mouse_movement, show_keybindings, testing, toggle_audio_device
 from groups import groups
 from libqtile.config import Drag, Key, KeyChord, Mouse
 from libqtile.lazy import lazy
@@ -38,6 +38,8 @@ _CTRL_KEY = "control"
 _SPACE_KEY = "space"
 _PRINT_KEY = "Print"
 _RET_KEY = "Return"
+_MINUS_KEY = "minus"
+_PLUS_KEY = "plus"
 
 key_groups: Dict[str, List[Union[Key, KeyChord]]] = {
     "Windows": [
@@ -81,6 +83,38 @@ key_groups: Dict[str, List[Union[Key, KeyChord]]] = {
             lazy.window.toggle_floating(),
             desc="Toggle window floating mode",
         ),
+        KeyChord(
+            [_WIN_KEY],
+            "m",
+            [
+                Key(
+                    [],
+                    "t",
+                    lazy.window.move_to_top(),
+                    desc="Bring window to the top",
+                ),
+                Key(
+                    [],
+                    "u",
+                    lazy.window.move_up(),
+                    desc="Bring window up",
+                ),
+                Key(
+                    [],
+                    "d",
+                    lazy.window.move_down(),
+                    desc="Bring window down",
+                ),
+                Key(
+                    [],
+                    "b",
+                    lazy.window.move_to_bottom(),
+                    desc="Bring window to the bottom",
+                ),
+            ],
+            name="Window move",
+        ),
+        Key([_WIN_KEY], "p", testing),
     ],
     "Layouts": [
         # Toggle between split and unsplit sides of stack.
@@ -105,7 +139,8 @@ key_groups: Dict[str, List[Union[Key, KeyChord]]] = {
         Key(
             [_WIN_KEY],
             "s",
-            toggle_audio_device,
+            # toggle_audio_device,
+            lazy.spawn(str(HOME_DIR.joinpath("bin", "toggle_audio_device"))),
             desc="Change output audio device",
         ),
         Key(
@@ -142,6 +177,7 @@ key_groups: Dict[str, List[Union[Key, KeyChord]]] = {
                     desc="Darken the screen until mouse movement",
                 ),
             ],
+            name="Lock",
         ),
         KeyChord(
             [_WIN_KEY],
@@ -152,8 +188,18 @@ key_groups: Dict[str, List[Union[Key, KeyChord]]] = {
                     "d",
                     lazy.spawn(f'code {HOME_DIR.joinpath("git", "dots")}'),
                     desc="Open dots",
-                )
+                ),
+                Key(
+                    [],
+                    "q",
+                    lazy.spawn(
+                        "code"
+                        f" {HOME_DIR.joinpath('.local', 'lib', 'python3.10', 'site-packages', 'libqtile')}"
+                    ),
+                    desc="Open dots",
+                ),
             ],
+            name="Open",
         ),
         Key(
             [],

@@ -27,6 +27,7 @@ from typing import List
 from functions import save_keybindings
 from keys import key_groups
 from libqtile import hook
+from libqtile.backend.base.window import WindowType
 from libqtile.utils import send_notification
 
 
@@ -54,3 +55,29 @@ def when_startup():
 @hook.subscribe.screen_change
 def when_screen_change(*args, **kwargs):
     subprocess.Popen([str(Path.home().joinpath(".fehbg"))])
+
+
+@hook.subscribe.client_name_updated
+def when_client_name_is_changed(client: WindowType):
+    if client.name == "ncspot":
+        client.togroup("Music", switch_group=True)
+
+
+@hook.subscribe.client_managed
+def when_client_is_managed(client: WindowType):
+    if client.get_wm_class() == "Pop":
+        client.enable_floating()
+        client.keep_above(True)
+        client.move_to_top()
+        return
+
+
+@hook.subscribe.enter_chord
+def enter_chord(chord_name):
+    send_notification("qtile", f"Started {chord_name!r} key chord.")
+
+
+@hook.subscribe.leave_chord
+def leave_chord():
+    send_notification("qtile", "Key chord exited")
+

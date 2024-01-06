@@ -24,8 +24,8 @@ from libqtile.config import Group, Match
 
 groups: List[Group] = [
     Group(name="Shell"),
-    Group(name="WWW", matches=[Match(wm_class="Navigator")]),
-    Group(name="Code", matches=[Match(wm_class="Code")]),
+    Group(name="WWW", matches=[Match(wm_class=r"Navigator|Chromium")], layout="max"),
+    Group(name="Code", matches=[Match(wm_class="Code")], layout="max"),
     Group(
         name="Chat",
         matches=[
@@ -34,7 +34,7 @@ groups: List[Group] = [
             Match(wm_class="Pop"),
         ],
     ),
-    Group(name="x"),
+    Group(name="Music", matches=[Match(wm_class="Spotify")]),
     Group(name="y"),
     Group(name="z"),
 ]

@@ -24,7 +24,7 @@ from libqtile import layout
 from libqtile.config import Match
 from libqtile.layout.base import Layout
 
-layouts_defaults = {
+_layouts_defaults = {
     "border_width": 2,
     "border_focus": "#0000ff",
     "border_normal": "#000000",
@@ -32,9 +32,9 @@ layouts_defaults = {
 }
 
 layouts: List[Layout] = [
-    layout.Columns(**layouts_defaults, margin=10),
-    layout.Tile(**layouts_defaults, margin=10),
-    layout.Max(**layouts_defaults),
+    layout.Columns(**_layouts_defaults, margin=10),
+    layout.Max(**_layouts_defaults),
+    layout.Bsp(**_layouts_defaults),
 ]
 
 floating_layout: Layout = layout.Floating(
@@ -43,8 +43,9 @@ floating_layout: Layout = layout.Floating(
         Match(wm_class="ssh-askpass"),  # ssh-askpass
         Match(title="pinentry"),  # GPG key password entry
         Match(wm_class="Arandr"),
-        Match(wm_class="Pop"),
         Match(wm_class="Pavucontrol"),
         Match(wm_class="Tk"),
     ]
 )
+
+del _layouts_defaults

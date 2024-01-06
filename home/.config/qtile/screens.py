@@ -18,19 +18,42 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from typing import Callable, List
+from typing import List
 
 from libqtile import bar, widget
 from libqtile.config import Screen
 from libqtile.lazy import lazy
-from libqtile.widget import base
+from libqtile.widget import base, tasklist
 from libqtile.widget.base import _Widget
+
+
+class ClossableTaskList(tasklist.TaskList):
+    def __init__(self, **config) -> None:
+        super().__init__(**config)
+        self.add_callbacks({"Button2": self.close_window})
+
+    def close_window(self):
+        if self.clicked:
+            self.clicked.kill()
 
 
 class ReloadConfig(base._TextBox):
     def __init__(self, **config):
         super().__init__("[ Reload config ]", **config)
         self.add_callbacks({"Button1": lazy.reload_config()})
+
+
+def _default_widgets() -> List[_Widget]:
+    return [
+        widget.CurrentLayoutIcon(),
+        _custom_separator_widget,
+        widget.GroupBox(highlight_method="line", inactive="#888888"),
+        _custom_separator_widget,
+        widget.Prompt(),
+        widget.Spacer(),
+        ClossableTaskList(margin=5, highlight_method="block"),
+        widget.Spacer(),
+    ]
 
 
 widget_defaults = {
@@ -40,17 +63,6 @@ widget_defaults = {
 }
 extension_defaults = widget_defaults.copy()
 _custom_separator_widget = widget.Sep(padding=5)
-_default_widgets: Callable[[], List[_Widget]] = lambda: [
-    widget.CurrentLayoutIcon(),
-    _custom_separator_widget,
-    widget.GroupBox(highlight_method="line", inactive="#888888"),
-    _custom_separator_widget,
-    widget.Prompt(),
-    widget.Spacer(),
-    widget.TaskList(),
-    widget.Spacer(),
-]
-
 screens: List[Screen] = [
     Screen(
         bottom=bar.Bar(
@@ -105,3 +117,5 @@ screens: List[Screen] = [
         ),
     ),
 ]
+
+del _default_widgets
