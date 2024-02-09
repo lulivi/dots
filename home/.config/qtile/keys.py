@@ -22,7 +22,13 @@ import itertools
 
 from typing import Dict, List, Union
 
-from functions import darken_until_mouse_movement, show_keybindings, testing
+from functions import (
+    darken_until_mouse_movement,
+    run_bin_script,
+    run_local_script,
+    show_keybindings,
+    testing,
+)
 from groups import groups
 from libqtile.config import Drag, Key, KeyChord, Mouse
 from libqtile.lazy import lazy
@@ -37,8 +43,6 @@ _CTRL_KEY = "control"
 _SPACE_KEY = "space"
 _PRINT_KEY = "Print"
 _RET_KEY = "Return"
-_MINUS_KEY = "minus"
-_PLUS_KEY = "plus"
 
 key_groups: Dict[str, List[Union[Key, KeyChord]]] = {
     "Windows": [
@@ -138,24 +142,37 @@ key_groups: Dict[str, List[Union[Key, KeyChord]]] = {
     ],
     "Apps": [
         Key(
-            [_WIN_KEY],
-            "s",
-            # toggle_audio_device,
-            lazy.spawn(str(HOME_DIR.joinpath("bin", "toggle_audio_device"))),
-            desc="Change output audio device",
-        ),
-        Key(
-            [_WIN_KEY],
+            [_WIN_KEY, _SHIFT_KEY],
             "t",
             lazy.spawn(
-                f'LOG_LEVEL=DEBUG {str(HOME_DIR.joinpath("git", "qtile", "scripts", "xephyr"))}'
+                "env LOG_LEVEL=DEBUG LOG_PATH=/tmp/qtile.log"
+                f' {str(HOME_DIR.joinpath("git", "qtile", "scripts", "xephyr"))}'
             ),
         ),
         Key(
             [_WIN_KEY, _SHIFT_KEY],
             _SPACE_KEY,
-            lazy.spawn(str(LOCAL_BIN_DIR.joinpath("bookmarks"))),
+            run_local_script("bookmarks"),
             desc="Show link bookmarks",
+        ),
+        KeyChord(
+            [_WIN_KEY],
+            "t",
+            [
+                Key(
+                    [],
+                    "a",
+                    run_bin_script("toggle_audio_device"),
+                    desc="Toggle audio device",
+                ),
+                Key(
+                    [],
+                    "k",
+                    run_local_script("toggle_laptop_keyboard"),
+                    desc="Toggle keyboard",
+                ),
+            ],
+            name="Toggle",
         ),
         KeyChord(
             [_WIN_KEY],
@@ -164,7 +181,7 @@ key_groups: Dict[str, List[Union[Key, KeyChord]]] = {
                 Key(
                     [],
                     "p",
-                    lazy.spawn(str(LOCAL_BIN_DIR.joinpath("lock.sh"))),
+                    run_local_script("lock.sh"),
                     desc="Lock the screen pixelating it",
                 ),
                 Key(
@@ -207,7 +224,7 @@ key_groups: Dict[str, List[Union[Key, KeyChord]]] = {
         Key(
             [],
             _PRINT_KEY,
-            lazy.spawn(str(LOCAL_BIN_DIR.joinpath("screenshot"))),
+            run_local_script("screenshot"),
             desc="Take a screenshot",
         ),
         Key(
