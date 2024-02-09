@@ -1,0 +1,81 @@
+#!/usr/bin/env python3
+# Copyright (c) 2024 Luis Liñán
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+"""Check current xrandr information and reconfigure the screens in accordingly."""
+import re
+import subprocess
+import sys
+
+from enum import Enum
+from pathlib import Path
+from typing import NamedTuple
+
+SCREEN_LAYOUT_DIR = Path().home().joinpath(".screenlayout")
+LOG_PREFIX = "[Reconfigure Screens]"
+
+
+class ScreenState(NamedTuple):
+    resolution: str
+    in_use: bool
+
+
+class ScreenConfig(Enum):
+    ONE = "1.sh"
+    HOME = "home.sh"
+    OFFICE_2 = "office2.sh"
+    OFFICE_3 = "office3.sh"
+
+
+def run_and_exit(config: ScreenConfig) -> None:
+    print(f"{LOG_PREFIX} Reconfiguring the screen layout with `{config.value}` configuration")
+    subprocess.run([str(SCREEN_LAYOUT_DIR.joinpath(config.value))])
+    sys.exit(0)
+
+
+def main():
+    xrandr_output = subprocess.run(
+        ["xrandr"], stdout=subprocess.PIPE, universal_newlines=True
+    ).stdout
+    screens = {
+        match[0]: ScreenState(match[1], bool(match[2]))
+        for match in re.findall(
+            pattern=r"^(\w+) connected.*\n.\s+(\d+x\d+)\s+\d+.\d+\s*(\*)?\+",
+            string=xrandr_output,
+            flags=re.MULTILINE,
+        )
+    }
+    if all((screen_state.in_use for screen_state in screens.values())):
+        print(f"{LOG_PREFIX} Nothing to re-configure")
+        return
+
+    if len(screens) == 1:
+        run_and_exit(ScreenConfig.ONE)
+
+    if len(screens) == 3:
+        run_and_exit(ScreenConfig.OFFICE_3)
+
+    if "2560x1440" in (screen_state.resolution for screen_state in screens.values()):
+        run_and_exit(ScreenConfig.HOME)
+
+    run_and_exit(ScreenConfig.OFFICE_2)
+
+
+if __name__ == "__main__":
+    main()

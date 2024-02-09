@@ -20,10 +20,11 @@
 # SOFTWARE.
 from typing import List
 
+from keys import terminal
 from libqtile import bar, widget
 from libqtile.config import Screen
 from libqtile.lazy import lazy
-from libqtile.widget import base, tasklist
+from libqtile.widget import base, tasklist, wlan
 from libqtile.widget.base import _Widget
 
 
@@ -43,6 +44,12 @@ class ReloadConfig(base._TextBox):
         self.add_callbacks({"Button1": lazy.reload_config()})
 
 
+class ClickableWifi(wlan.Wlan):
+    def __init__(self, **config):
+        super().__init__(interface="wlp0s20f3", format="🛜 {essid} {percent:2.0%}", **config)
+        self.add_callbacks({"Button1": lazy.spawn(f"{terminal} nmtui")})
+
+
 def _default_widgets() -> List[_Widget]:
     return [
         widget.CurrentLayoutIcon(),
@@ -50,9 +57,9 @@ def _default_widgets() -> List[_Widget]:
         widget.GroupBox(highlight_method="line", inactive="#888888"),
         _custom_separator_widget,
         widget.Prompt(),
-        widget.Spacer(),
-        ClossableTaskList(margin=5, highlight_method="block"),
-        widget.Spacer(),
+        ClossableTaskList(
+            unfocused_border="333333", highlight_method="block", title_width_method="uniform"
+        ),
     ]
 
 
@@ -79,10 +86,7 @@ screens: List[Screen] = [
                     fmt="💡 {}",
                 ),
                 _custom_separator_widget,
-                widget.Wlan(
-                    interface="wlp0s20f3",
-                    format="🛜 {essid} {percent:2.0%}",
-                ),
+                ClickableWifi(),
                 _custom_separator_widget,
                 widget.Battery(format="🔋 {percent:2.0%} {char}", show_short_text=False),
                 _custom_separator_widget,
@@ -106,14 +110,14 @@ screens: List[Screen] = [
                 _custom_separator_widget,
                 widget.QuickExit(default_text="[ Log out ]"),
             ],
-            size=20,
+            size=25,
             background="#00000055",
         ),
     ),
     Screen(
         bottom=bar.Bar(
             widgets=_default_widgets(),
-            size=20,
+            size=25,
         ),
     ),
 ]

@@ -50,6 +50,11 @@
   ".local/bin/pomodoro.py": {
     "description": "Run the Pomodoro technique and send notifications to Telegram."
   },
+  {
+    ".local/bin/reconfigure_screens": {
+      "description": ""
+    }
+  },
   ".local/bin/screenshot": {
     "description": "Select a square in your screen and save the capture in your clipboard.",
     "packages": [
@@ -122,13 +127,15 @@
   ".screenlayout/brightness.py": {
     "description": "xrandr brightness script.",
     "packages": [
-      "xorg-xrandr", "libxrandr"
+      "xorg-xrandr",
+      "libxrandr"
     ]
   },
   ".config/nvim/init.lua": {
     "description": "Nvim configuration file.",
     "packages": [
-      "neovim", "nvim-packer-git"
+      "neovim",
+      "nvim-packer-git"
     ]
   },
   ".config/nvim/stylua.toml": {

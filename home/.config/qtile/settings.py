@@ -23,3 +23,5 @@ from pathlib import Path
 
 HOME_DIR = Path.home()
 KEYBINDINGS_FILE = Path(tempfile.gettempdir(), "keys.txt")
+SCREEN_LAYOUT_DIR = HOME_DIR.joinpath(".screenlayout")
+LOCAL_BIN_DIR = HOME_DIR.joinpath(".local", "bin")

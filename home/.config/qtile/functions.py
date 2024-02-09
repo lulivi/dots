@@ -18,6 +18,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 import subprocess
 import tkinter as tk
 
@@ -29,38 +30,33 @@ from typing import Dict, List, Tuple, Union
 from libqtile.config import Key, KeyChord
 from libqtile.core.manager import Qtile
 from libqtile.lazy import lazy
-from libqtile.utils import send_notification
-from settings import HOME_DIR, KEYBINDINGS_FILE
+from libqtile.utils import send_notification as qtile_notification
+from settings import KEYBINDINGS_FILE, SCREEN_LAYOUT_DIR, LOCAL_BIN_DIR
+
+
+def send_notification(title: str, message: str = "") -> None:
+    qtile_notification(title=title, message=message)
+
+
+def quiet_run(*args: str) -> str:
+    return subprocess.run(
+        list(args),
+        stdout=subprocess.PIPE,
+        encoding="utf-8",
+    ).stdout
 
 
 @lazy.function
-def darken_until_mouse_movement(_: Qtile) -> None:
-    """Turn off the screen until mouse move.
+def testing(_: Qtile) -> None:
+    send_notification("Testiiiing")
 
-    Note that this only fully work for the laptop screen. The external screens will not be totally
-    turned off.
 
-    """
-    BASE_DIR = Path("/sys/class/backlight/intel_backlight")
-    MAX_BRIGHTNESS = BASE_DIR.joinpath("max_brightness")
-    CURRENT_BRIGHTNESS = BASE_DIR.joinpath("brightness")
-    CURRENT_BRIGHTNESS.write_text("0")
-    subprocess.run(
-        [str(HOME_DIR.joinpath(".screenlayout", "brightness.py")), "0.01"],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
-    subprocess.run(
-        ["cnee", "--record", "--mouse", "--events-to-record", "1"],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
-    subprocess.run(
-        [str(HOME_DIR.joinpath(".screenlayout", "brightness.py")), "1"],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
-    CURRENT_BRIGHTNESS.write_text(MAX_BRIGHTNESS.read_text())
+@lazy.function
+def darken_until_mouse_movement(qtile: Qtile) -> None:
+    """Turn off the screen until mouse move."""
+    quiet_run(str(SCREEN_LAYOUT_DIR.joinpath("screens_off.sh")))
+    quiet_run("cnee", "--record", "--mouse", "--keyboard", "--events-to-record", "1")
+    quiet_run(str(LOCAL_BIN_DIR.joinpath("reconfigure_screens")))
 
 
 @lazy.function

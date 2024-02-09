@@ -34,7 +34,6 @@ _layouts_defaults = {
 layouts: List[Layout] = [
     layout.Columns(**_layouts_defaults, margin=10),
     layout.Max(**_layouts_defaults),
-    layout.Bsp(**_layouts_defaults),
 ]
 
 floating_layout: Layout = layout.Floating(

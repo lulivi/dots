@@ -25,18 +25,27 @@
 
 playerctl pause &>/dev/null
 
-# Obtain the screen resolution with xdpyinfo
-res=""$(xdpyinfo | awk '/dimensions:/ {print $2}')"!"
+lock_screen_image="$1"
 
-# Compute default sample value
-sample="$((${res%%x*} / 8))"
+_f() {
+    if [ -f "$lock_screen_image" ]; then return; fi
 
-# Capture screenshot and pixelize it with imagemagik script
-/usr/bin/maim | \
-    /usr/bin/convert - \
-    -sample "${1:-$sample}" \
-    -scale "$res" \
-    "/tmp/screenshotblur.png"
+    # Take a screenshot if no file is provided
+    lock_screen_image="/tmp/screenshotblur.png"
+    local screenshot_image="/tmp/screenshot"
+    maim "$screenshot_image"
 
-# Lock screen with the pixelized image
-/usr/bin/i3lock -e -i "/tmp/screenshotblur.png"
+    # Obtain the screen resolution with xdpyinfo and compute the sample value
+    res=""$(xdpyinfo | awk '/dimensions:/ {print $2}')"!"
+    sample="$((${res%%x*} / 8))"
+
+    # Pixelize the screenshot with imagemagik script
+    /usr/bin/convert \
+        $screenshot_image \
+        -sample "$sample" \
+        -scale "$res" \
+        "$lock_screen_image"
+}; _f
+
+# Lock screen
+/usr/bin/i3lock -e -p default -i "$lock_screen_image"

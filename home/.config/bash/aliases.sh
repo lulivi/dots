@@ -10,6 +10,8 @@ alias open="xdg-open &>/dev/null"
 alias o="xdg-open·&>/dev/null"
 alias abspath="readlink -f"
 alias du_sort="du -sh * 2>/dev/null | sort -rh"
+alias reload_qtile="qtile cmd-obj -o cmd -f reload_config"
+alias restart_qtile="qtile cmd-obj -o cmd -f restart"
 
 ## Misc
 alias t="tmux"

@@ -20,14 +20,13 @@
 # SOFTWARE.
 import itertools
 
-from pathlib import Path
 from typing import Dict, List, Union
 
-from functions import darken_until_mouse_movement, show_keybindings, testing, toggle_audio_device
+from functions import darken_until_mouse_movement, show_keybindings, testing
 from groups import groups
 from libqtile.config import Drag, Key, KeyChord, Mouse
 from libqtile.lazy import lazy
-from settings import HOME_DIR
+from settings import HOME_DIR, LOCAL_BIN_DIR, SCREEN_LAYOUT_DIR
 
 terminal = "kitty"
 
@@ -129,6 +128,8 @@ key_groups: Dict[str, List[Union[Key, KeyChord]]] = {
         ),
         # Toggle between different layouts as defined below
         Key([_WIN_KEY], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
+        Key([_WIN_KEY, _ALT_KEY], "F1", lazy.spawn(str(SCREEN_LAYOUT_DIR.joinpath("1.sh")))),
+        Key([_WIN_KEY, _ALT_KEY], "F2", lazy.spawn(str(SCREEN_LAYOUT_DIR.joinpath("home.sh")))),
     ],
     "Qtile": [
         Key([_WIN_KEY, _CTRL_KEY], "r", lazy.reload_config(), desc="Reload the config"),
@@ -146,12 +147,14 @@ key_groups: Dict[str, List[Union[Key, KeyChord]]] = {
         Key(
             [_WIN_KEY],
             "t",
-            lazy.spawn(str(HOME_DIR.joinpath("git", "qtile", "scripts", "xephyr"))),
+            lazy.spawn(
+                f'LOG_LEVEL=DEBUG {str(HOME_DIR.joinpath("git", "qtile", "scripts", "xephyr"))}'
+            ),
         ),
         Key(
             [_WIN_KEY, _SHIFT_KEY],
             _SPACE_KEY,
-            lazy.spawn(str(HOME_DIR.joinpath(".local", "bin", "bookmarks"))),
+            lazy.spawn(str(LOCAL_BIN_DIR.joinpath("bookmarks"))),
             desc="Show link bookmarks",
         ),
         KeyChord(
@@ -161,7 +164,7 @@ key_groups: Dict[str, List[Union[Key, KeyChord]]] = {
                 Key(
                     [],
                     "p",
-                    lazy.spawn(str(HOME_DIR.joinpath(".local", "bin", "lock.sh"))),
+                    lazy.spawn(str(LOCAL_BIN_DIR.joinpath("lock.sh"))),
                     desc="Lock the screen pixelating it",
                 ),
                 Key(
@@ -204,13 +207,13 @@ key_groups: Dict[str, List[Union[Key, KeyChord]]] = {
         Key(
             [],
             _PRINT_KEY,
-            lazy.spawn(str(HOME_DIR.joinpath(".local", "bin", "screenshot"))),
+            lazy.spawn(str(LOCAL_BIN_DIR.joinpath("screenshot"))),
             desc="Take a screenshot",
         ),
         Key(
             [_SHIFT_KEY],
             _PRINT_KEY,
-            lazy.spawn(f'{HOME_DIR.joinpath(".local", "bin", "screenshot")} screen'),
+            lazy.spawn(f'{str(LOCAL_BIN_DIR.joinpath("screenshot"))} screen'),
             desc="Take a screenshot of the full screen",
         ),
         Key([_WIN_KEY], "e", lazy.spawn("thunar"), desc="Open the file manager"),
@@ -221,29 +224,48 @@ key_groups: Dict[str, List[Union[Key, KeyChord]]] = {
             lazy.spawn("/usr/bin/rofi -modi combi -combi-modi window,drun,run -show"),
             desc="Open rofi",
         ),
+        Key([], "XF86AudioPlay", lazy.spawn("playerctl play-pause"), desc="Pause music"),
+        Key([], "XF86AudioPrev", lazy.spawn("playerctl previous"), desc="Previous song"),
+        Key([], "XF86AudioNext", lazy.spawn("playerctl next"), desc="Next song"),
     ],
 }
 
-for index, group in enumerate(groups):
-    index_key: str = str(index + 1)
+
+def _create_group_keys(alt_prefix: bool, key_index: int, group_name: str) -> List[Key]:
+    key_index_str: str = str(key_index + 1)
+    prefix_keys = [_WIN_KEY]
+
+    if alt_prefix:
+        prefix_keys.append(_ALT_KEY)
+
+    return [
+        # Alt + index of group = switch to group
+        Key(
+            prefix_keys,
+            key_index_str,
+            lazy.group[group_name].toscreen(),
+            desc=f"Switch to group {group_name}",
+        ),
+        # Win + shift + index of group = move focused window to group
+        Key(
+            [*prefix_keys, _SHIFT_KEY],
+            key_index_str,
+            lazy.window.togroup(group_name, switch_group=False),
+            desc=f"Move focused window to group {group_name}",
+        ),
+    ]
+
+
+for index, group in list(enumerate(groups[:4])):
     key_groups["Windows"].extend(
-        [
-            # Alt + index of group = switch to group
-            Key(
-                [_WIN_KEY],
-                index_key,
-                lazy.group[group.name].toscreen(),
-                desc=f"Switch to group {group.name}",
-            ),
-            # Win + shift + index of group = move focused window to group
-            Key(
-                [_WIN_KEY, _SHIFT_KEY],
-                index_key,
-                lazy.window.togroup(group.name, switch_group=False),
-                desc=f"Move focused window to group {group.name}",
-            ),
-        ]
+        _create_group_keys(alt_prefix=False, key_index=index, group_name=group.name)
     )
+
+for index, group in list(enumerate(groups[4:])):
+    key_groups["Windows"].extend(
+        _create_group_keys(alt_prefix=True, key_index=index, group_name=group.name)
+    )
+
 
 keys: List[Union[Key, KeyChord]] = list(itertools.chain(*key_groups.values()))
 

@@ -27,8 +27,11 @@
 ! [ "$(type xclip 2>/dev/null)" ] && { printf 'Could not find xclip\n'; exit 1; }
 
 cmd="maim"
+image_path="/tmp/screenshot_$(date +%y%m%d_%H%M%S).png"
 
 [ "$1" = "screen" ] || cmd="maim -s"
 
-$cmd | xclip -sel c -t image/png
-xclip -sel c -t image/png -o > /tmp/screenshot_"$(date +%Y_%m_%d_%H_%M)".png
+$cmd $image_path
+xclip -sel c -t image/png -i $image_path > /dev/null
+
+printf '%s' "$image_path"

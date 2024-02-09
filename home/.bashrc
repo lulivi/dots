@@ -92,7 +92,7 @@ if [ -f "$HOME/.cache/wal/sequences" ]; then
 fi
 
 # SSH
-eval $(ssh-agent)
+eval "$(ssh-agent)"
 
 # Load util shell scripts
 for shell_script in "$HOME/.config/bash/"*.sh; do
