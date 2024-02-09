@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+# Copyright (c) 2024 Luis Liñán
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+"""Disable or enable laptop keyboard."""
+import re
+import subprocess
+
+from typing import Optional
+
+LOG_PREFIX = "[Reconfigure Screens]"
+
+
+class KeyboardState:
+    def __init__(self, id: str, is_floating: Optional[str] = None) -> None:
+        self.id: str = id
+        self.action: str = is_floating and "enable" or "disable"
+
+
+def main():
+    xrandr_output = subprocess.run(
+        ["xinput", "list"], stdout=subprocess.PIPE, universal_newlines=True
+    ).stdout
+    match = re.search(
+        pattern=(
+            r"AT Translated Set 2 keyboard\s+id=(?P<id>\d+)\s\[(?P<is_floating>floating slave)?"
+        ),
+        string=xrandr_output,
+    )
+    if match is None:
+        print(f"{LOG_PREFIX} the keyboard was not found.")
+
+    keyboard_state = KeyboardState(**match.groupdict())
+
+    print(f"{LOG_PREFIX} Setting the keyboard to `{keyboard_state.action}`")
+    subprocess.run(["xinput", keyboard_state.action, keyboard_state.id])
+
+
+if __name__ == "__main__":
+    main()

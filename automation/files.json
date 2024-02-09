@@ -50,10 +50,8 @@
   ".local/bin/pomodoro.py": {
     "description": "Run the Pomodoro technique and send notifications to Telegram."
   },
-  {
-    ".local/bin/reconfigure_screens": {
-      "description": ""
-    }
+  ".local/bin/reconfigure_screens": {
+    "description": ""
   },
   ".local/bin/screenshot": {
     "description": "Select a square in your screen and save the capture in your clipboard.",
@@ -105,6 +103,9 @@
   },
   ".local/bin/tgout": {
     "description": "Run a command with arguments and send the return code and output to telegram."
+  },
+  ".local/bin/toggle_laptop_keyboard": {
+    "description": "Toggle the laptop keyboard"
   },
   ".local/bin/tput_color_base16.sh": {
     "description": "Show base16 fg/bg color combinations."
