@@ -18,8 +18,9 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from typing import List
+from typing import Callable, List
 
+from functions import run_local_script
 from keys import terminal
 from libqtile import bar, widget
 from libqtile.config import Screen
@@ -38,10 +39,10 @@ class ClossableTaskList(tasklist.TaskList):
             self.clicked.kill()
 
 
-class ReloadConfig(base._TextBox):
-    def __init__(self, **config):
-        super().__init__("[ Reload config ]", **config)
-        self.add_callbacks({"Button1": lazy.reload_config()})
+class ClickableText(base._TextBox):
+    def __init__(self, text: str, function: Callable, **config):
+        super().__init__(text=text, **config)
+        self.add_callbacks({"Button1": function})
 
 
 class ClickableWifi(wlan.Wlan):
@@ -106,7 +107,10 @@ screens: List[Screen] = [
                     timezone="America/Los_Angeles",
                 ),
                 _custom_separator_widget,
-                ReloadConfig(),
+                ClickableText(
+                    text="[ Toggle keyboard ]", function=run_local_script("toggle_laptop_keyboard")
+                ),
+                ClickableText(text="[ Reload config ]", function=lazy.reload_config()),
                 _custom_separator_widget,
                 widget.QuickExit(default_text="[ Log out ]"),
             ],
