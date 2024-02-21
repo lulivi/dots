@@ -31,6 +31,8 @@ alias plantuml_render="java -jar $HOME/.local/bin/plantuml.jar"
 alias docker_clean="docker system prune -a"
 alias d="docker"
 alias p="podman"
+alias pi="podman image"
+alias pc="podman container"
 
 # Entertainment
 alias matrix="cmatrix -b -a -u 2 -C yellow"

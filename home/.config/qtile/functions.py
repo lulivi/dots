@@ -31,19 +31,35 @@ from libqtile.config import Key, KeyChord
 from libqtile.core.manager import Qtile
 from libqtile.lazy import lazy
 from libqtile.utils import send_notification as qtile_notification
-from settings import KEYBINDINGS_FILE, SCREEN_LAYOUT_DIR, LOCAL_BIN_DIR
+from settings import BIN_DIR, KEYBINDINGS_FILE, LOCAL_BIN_DIR, SCREEN_LAYOUT_DIR
 
 
 def send_notification(title: str, message: str = "") -> None:
     qtile_notification(title=title, message=message)
 
 
-def quiet_run(*args: str) -> str:
+def quiet_run(*args: str, print_stdout: bool = False) -> str:
     return subprocess.run(
         list(args),
         stdout=subprocess.PIPE,
         encoding="utf-8",
     ).stdout
+
+
+def run_script(script_path: Path) -> None:
+    stdout = quiet_run(str(script_path))
+    if stdout:
+        send_notification(script_path.name, stdout)
+
+
+@lazy.function
+def run_local_bin_script(_: Qtile, script_name: str) -> None:
+    run_script(LOCAL_BIN_DIR.joinpath(script_name))
+
+
+@lazy.function
+def run_bin_script(_: Qtile, script_name: str) -> None:
+    run_script(BIN_DIR.joinpath(script_name))
 
 
 @lazy.function

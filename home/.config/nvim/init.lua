@@ -79,7 +79,7 @@ nmap("<C-R><C-P>", ":silent !black %<CR>")
 
 -- Numbers
 nmap("<C-S><C-S>", ":set invlist<CR>")
-nmap("<C-N><C-N>", ":set invrnu<CR>:set invnu<CR>")
+nmap("<C-N><C-N>", ":set invnu<CR>")
 
 -- nvim-tree
 nmap("<C-T><C-T>", ":NvimTreeToggle<CR>")
@@ -99,7 +99,6 @@ set.listchars = "eol:$,tab:<->,extends:>,precedes:<,nbsp:%,trail:·,space:·"
 set.list = true
 
 -- Line numbers
-set.rnu = true
 set.nu = true
 
 -- Tabs vs Spaces

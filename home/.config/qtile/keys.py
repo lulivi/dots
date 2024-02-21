@@ -25,7 +25,7 @@ from typing import Dict, List, Union
 from functions import (
     darken_until_mouse_movement,
     run_bin_script,
-    run_local_script,
+    run_local_bin_script,
     show_keybindings,
     testing,
 )
@@ -152,7 +152,7 @@ key_groups: Dict[str, List[Union[Key, KeyChord]]] = {
         Key(
             [_WIN_KEY, _SHIFT_KEY],
             _SPACE_KEY,
-            run_local_script("bookmarks"),
+            run_local_bin_script("bookmarks"),
             desc="Show link bookmarks",
         ),
         KeyChord(
@@ -168,7 +168,7 @@ key_groups: Dict[str, List[Union[Key, KeyChord]]] = {
                 Key(
                     [],
                     "k",
-                    run_local_script("toggle_laptop_keyboard"),
+                    run_local_bin_script("toggle_laptop_keyboard"),
                     desc="Toggle keyboard",
                 ),
             ],
@@ -181,7 +181,7 @@ key_groups: Dict[str, List[Union[Key, KeyChord]]] = {
                 Key(
                     [],
                     "p",
-                    run_local_script("lock.sh"),
+                    run_local_bin_script("lock.sh"),
                     desc="Lock the screen pixelating it",
                 ),
                 Key(
@@ -224,7 +224,7 @@ key_groups: Dict[str, List[Union[Key, KeyChord]]] = {
         Key(
             [],
             _PRINT_KEY,
-            run_local_script("screenshot"),
+            run_local_bin_script("screenshot"),
             desc="Take a screenshot",
         ),
         Key(

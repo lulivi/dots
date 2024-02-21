@@ -20,7 +20,7 @@
 # SOFTWARE.
 from typing import Callable, List
 
-from functions import run_local_script
+from functions import run_local_bin_script
 from keys import terminal
 from libqtile import bar, widget
 from libqtile.config import Screen
@@ -89,7 +89,9 @@ screens: List[Screen] = [
                 _custom_separator_widget,
                 ClickableWifi(),
                 _custom_separator_widget,
-                widget.Battery(format="🔋 {percent:2.0%} {char}", show_short_text=False),
+                widget.Battery(
+                    format="🔋 {percent:2.0%} {char}", show_short_text=False, notify_below=15
+                ),
                 _custom_separator_widget,
                 widget.Clock(
                     fmt="📅 {}",
@@ -108,7 +110,12 @@ screens: List[Screen] = [
                 ),
                 _custom_separator_widget,
                 ClickableText(
-                    text="[ Toggle keyboard ]", function=run_local_script("toggle_laptop_keyboard")
+                    text="[ Reconfig screens ]",
+                    function=run_local_bin_script("reconfigure_screens"),
+                ),
+                ClickableText(
+                    text="[ Toggle keyboard ]",
+                    function=run_local_bin_script("toggle_laptop_keyboard"),
                 ),
                 ClickableText(text="[ Reload config ]", function=lazy.reload_config()),
                 _custom_separator_widget,
