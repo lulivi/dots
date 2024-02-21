@@ -112,5 +112,74 @@ def show_keybindings(_) -> None:
 
 
 def save_keybindings(key_groups: Dict[str, List[Union[Key, KeyChord]]]) -> None:
-    pass
+    @dataclass
+    class FlattenKey:
+        bindings: List[str]
+        description: str
 
+        @property
+        def str_binding(self) -> str:
+            return f"<{'> + <'.join(self.bindings)}>".replace("mod4", "Win").replace("mod1", "Alt")
+
+    def key_binding_string(key: Union[Key, KeyChord]) -> str:
+        key_binding = ""
+        if key.modifiers:
+            key_binding = f"{' + '.join(key.modifiers)} + "
+        return f"{key_binding}{key.key}"
+
+    def flatten_key(key: Union[KeyChord, Key], key_prefix: str = "") -> List[FlattenKey]:
+        if isinstance(key, Key):
+            bindings = []
+            if key.key == "Escape":
+                return []
+            if key_prefix:
+                bindings.append(key_prefix)
+            bindings.append(key_binding_string(key))
+            return [FlattenKey(bindings, key.desc)]
+
+        flattened_keys = []
+        parent_key_prefix = key_binding_string(key)
+        for subkey in key.submappings:
+            flattened_keys.extend(flatten_key(subkey, parent_key_prefix))
+
+        return flattened_keys
+
+    def flatten_keys(keys: List[Union[KeyChord, Key]]) -> List[FlattenKey]:
+        flattened_keys = []
+        for key in keys:
+            flattened_keys.extend(flatten_key(key))
+        return flattened_keys
+
+    bindings: List[str] = []
+    descriptions: List[str] = []
+    flattened_key_groups: List[Tuple[str, List[FlattenKey]]] = [
+        (group_name, flatten_keys(keys)) for group_name, keys in key_groups.items()
+    ]
+    for group_name, flattened_keys in flattened_key_groups:
+        bindings.append("")
+        bindings.append(group_name)
+        descriptions.append("")
+        descriptions.append("")
+        for key in flattened_keys:
+            bindings.append(key.str_binding)
+            descriptions.append(key.description)
+
+    max_len = max(map(len, bindings))
+
+    def print_key(binding, description):
+        current_key = binding
+        if description:
+            current_key = f"{current_key}  {'-'* (max_len - len(binding) + 2)} {description}"
+        return current_key
+
+    keys_strs = [
+        print_key(binding, description)
+        for binding, description in zip(bindings[1:], descriptions[1:])
+    ]
+    half_list = len(keys_strs) // 2
+    left_part, right_part = keys_strs[:half_list], keys_strs[half_list:]
+    max_len = max(map(len, left_part))
+    final_keys_strs = [
+        f"{left:<{max_len + 5}}{right}" for left, right in zip(left_part, right_part)
+    ]
+    KEYBINDINGS_FILE.write_text("\n".join(final_keys_strs))
