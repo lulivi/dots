@@ -50,6 +50,9 @@
   ".local/bin/pomodoro.py": {
     "description": "Run the Pomodoro technique and send notifications to Telegram."
   },
+  ".local/bin/qtile_test.sh" : {
+    "description": "Create a window running qtile for testing"
+  },
   ".local/bin/reconfigure_screens": {
     "description": ""
   },

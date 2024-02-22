@@ -146,7 +146,7 @@ key_groups: Dict[str, List[Union[Key, KeyChord]]] = {
             "t",
             lazy.spawn(
                 "env LOG_LEVEL=DEBUG LOG_PATH=/tmp/qtile.log"
-                f' {str(HOME_DIR.joinpath("git", "qtile", "scripts", "xephyr"))}'
+                f' {str(LOCAL_BIN_DIR.joinpath("qtile_test.sh"))}'
             ),
         ),
         Key(
