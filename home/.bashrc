@@ -22,9 +22,9 @@ stty -ixon -ixoff
 complete -cf sudo
 xhost +local:root >/dev/null 2>&1
 
-# add_paths_to_variable - Add items to a path-like variable
-# Usage: add_paths_to_variable <path_var_name> <path_1> [<path_2> [...]]
-add_paths_to_variable() {
+# prepend_paths_to_variable - Add items to a path-like variable
+# Usage: prepend_paths_to_variable <path_var_name> <path_1> [<path_2> [...]]
+prepend_paths_to_variable() {
     local path_variable_name="$1"
     eval path_variable_contents="\$$path_variable_name"
     shift 1
@@ -57,19 +57,13 @@ del_paths_from_variable() {
 }
 
 # Define the common paths
-add_paths_to_variable "PATH" \
+prepend_paths_to_variable "PATH" \
     "$HOME/.local/bin/" \
-    "$HOME/.gem/ruby/2.7.0/bin" \
-    "$HOME/.luarocks/bin/" \
     "$HOME/.cargo/bin/" \
-    "$HOME/.codon/bin" \
     "$HOME/.screenlayout/" \
-    "$HOME/bin/" \
-    "/opt/tools/python/3.11/bin" \
-    "/opt/tools/python/3.9/bin" \
-    "/opt/tools/python/3.7/bin" \
-    "/opt/tools/python/3.6/bin" \
-    "/opt/tools/python/3.8/bin"
+    "$HOME/bin/"
+
+export PATH=$PATH:/opt/tools/python/3.6/bin
 
 # Bash completions
 [ -r /usr/share/bash-completion/bash_completion ] && {
@@ -97,6 +91,5 @@ eval "$(ssh-agent)"
 # Load util shell scripts
 for shell_script in "$HOME/.config/bash/"*.sh; do
     # shellcheck source=/dev/null
-    [ -r "$shell_script" ] && . "$shell_script"
+    [ -r "$shell_script" ] && . "$shell_script" && printf 'Loading `%s`...\n' "$shell_script" || echo "Error $shell_script"
 done
-

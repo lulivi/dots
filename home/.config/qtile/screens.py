@@ -25,11 +25,12 @@ from keys import terminal
 from libqtile import bar, widget
 from libqtile.config import Screen
 from libqtile.lazy import lazy
-from libqtile.widget import base, tasklist, wlan
-from libqtile.widget.base import _Widget
+from libqtile.widget.base import _TextBox, _Widget
+from libqtile.widget.tasklist import TaskList
+from libqtile.widget.wlan import Wlan
 
 
-class ClossableTaskList(tasklist.TaskList):
+class ClossableTaskList(TaskList):
     def __init__(self, **config) -> None:
         super().__init__(**config)
         self.add_callbacks({"Button2": self.close_window})
@@ -39,13 +40,13 @@ class ClossableTaskList(tasklist.TaskList):
             self.clicked.kill()
 
 
-class ClickableText(base._TextBox):
+class ClickableText(_TextBox):
     def __init__(self, text: str, function: Callable, **config):
         super().__init__(text=text, **config)
         self.add_callbacks({"Button1": function})
 
 
-class ClickableWifi(wlan.Wlan):
+class ClickableWifi(Wlan):
     def __init__(self, **config):
         super().__init__(interface="wlp0s20f3", format="🛜 {essid} {percent:2.0%}", **config)
         self.add_callbacks({"Button1": lazy.spawn(f"{terminal} nmtui")})
@@ -111,7 +112,7 @@ screens: List[Screen] = [
                 _custom_separator_widget,
                 ClickableText(
                     text="[ Reconfig screens ]",
-                    function=run_local_bin_script("reconfigure_screens"),
+                    function=run_local_bin_script("reconfigure_screens", "force"),
                 ),
                 ClickableText(
                     text="[ Toggle keyboard ]",

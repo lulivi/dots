@@ -46,20 +46,20 @@ def quiet_run(*args: str, print_stdout: bool = False) -> str:
     ).stdout
 
 
-def run_script(script_path: Path) -> None:
-    stdout = quiet_run(str(script_path))
+def run_script(script_path: Path, *args) -> None:
+    stdout = quiet_run(*[str(script_path), *args])
     if stdout:
         send_notification(script_path.name, stdout)
 
 
 @lazy.function
-def run_local_bin_script(_: Qtile, script_name: str) -> None:
-    run_script(LOCAL_BIN_DIR.joinpath(script_name))
+def run_local_bin_script(_: Qtile, script_name: str, *args) -> None:
+    run_script(LOCAL_BIN_DIR.joinpath(script_name), *args)
 
 
 @lazy.function
-def run_bin_script(_: Qtile, script_name: str) -> None:
-    run_script(BIN_DIR.joinpath(script_name))
+def run_bin_script(_: Qtile, script_name: str, *args) -> None:
+    run_script(BIN_DIR.joinpath(script_name), *args)
 
 
 @lazy.function
@@ -68,7 +68,7 @@ def testing(_: Qtile) -> None:
 
 
 @lazy.function
-def darken_until_mouse_movement(qtile: Qtile) -> None:
+def darken_until_mouse_movement(_: Qtile) -> None:
     """Turn off the screen until mouse move."""
     quiet_run(str(SCREEN_LAYOUT_DIR.joinpath("screens_off.sh")))
     quiet_run("cnee", "--record", "--mouse", "--keyboard", "--events-to-record", "1")

@@ -21,12 +21,15 @@
 # SOFTWARE.
 
 # Pip dependencies:
-# - qtile
-# - cairocff (keybinding images)
-# - dbus-next (python-dbus interaction)
+# - qtile[widgets] (or the git version .[widgets])
+# - cffi, cairocffi, xcffib
 # - mypy (qtile check)
 # - iwlib (wifi widget)
 # - psutil (multiple widget)
+# python -m pip install cffi cairocffi xcffib mypy iwlib psutil <path_to_qtile_git>[widgets]
+# APT dependencies:
+# - libpangocairo-1.0-0, libiw-dev, python3-tk
+# sudo apt install libpangocairo-1.0-0, libiw-dev, python3-tk
 
 from typing import Union
 

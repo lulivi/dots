@@ -20,7 +20,10 @@
 # SOFTWARE.
 import itertools
 
+from pathlib import Path
 from typing import Dict, List, Union
+
+import libqtile
 
 from functions import (
     darken_until_mouse_movement,
@@ -117,7 +120,7 @@ key_groups: Dict[str, List[Union[Key, KeyChord]]] = {
             ],
             name="Window move",
         ),
-        Key([_WIN_KEY], "p", testing),
+        Key([_WIN_KEY], "p", lazy.spawn("/tmp/antonio")),
     ],
     "Layouts": [
         # Toggle between split and unsplit sides of stack.
@@ -145,7 +148,7 @@ key_groups: Dict[str, List[Union[Key, KeyChord]]] = {
             [_WIN_KEY, _SHIFT_KEY],
             "t",
             lazy.spawn(
-                "env LOG_LEVEL=DEBUG LOG_PATH=/tmp/qtile.log"
+                f"{terminal} --hold env LOG_LEVEL=DEBUG LOG_PATH=/tmp/qtile.log"
                 f' {str(LOCAL_BIN_DIR.joinpath("qtile_test.sh"))}'
             ),
         ),
@@ -206,16 +209,13 @@ key_groups: Dict[str, List[Union[Key, KeyChord]]] = {
                 Key(
                     [],
                     "d",
-                    lazy.spawn(f'code {HOME_DIR.joinpath("git", "dots")}'),
+                    lazy.spawn(f'code {HOME_DIR.joinpath("g", "dots")}'),
                     desc="Open dots",
                 ),
                 Key(
                     [],
                     "q",
-                    lazy.spawn(
-                        "code"
-                        f" {HOME_DIR.joinpath('.local', 'lib', 'python3.10', 'site-packages', 'libqtile')}"
-                    ),
+                    lazy.spawn(f"code {str(Path(libqtile.__file__).resolve().parent)}"),
                     desc="Open dots",
                 ),
             ],
@@ -233,7 +233,7 @@ key_groups: Dict[str, List[Union[Key, KeyChord]]] = {
             lazy.spawn(f'{str(LOCAL_BIN_DIR.joinpath("screenshot"))} screen'),
             desc="Take a screenshot of the full screen",
         ),
-        Key([_WIN_KEY], "e", lazy.spawn("thunar"), desc="Open the file manager"),
+        Key([_WIN_KEY], "e", lazy.spawn("pcmanfm"), desc="Open the file manager"),
         Key([_WIN_KEY], _RET_KEY, lazy.spawn(terminal), desc="Launch terminal"),
         Key(
             [_WIN_KEY],

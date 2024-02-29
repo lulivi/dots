@@ -31,7 +31,7 @@ from libqtile import hook
 
 @hook.subscribe.startup_once
 def when_startup_once():
-    def _kill_and_run_executable(command: str, *args: List[str]) -> None:
+    def _kill_and_run_executable(command: str, *args: str) -> None:
         subprocess.run(["pkill", command])
         executable = shutil.which(command)
 

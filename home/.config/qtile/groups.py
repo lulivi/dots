@@ -18,13 +18,15 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import re
+
 from typing import List
 
 from libqtile.config import Group, Match
 
 groups: List[Group] = [
     Group(name="Shell"),
-    Group(name="WWW", matches=[Match(wm_class=r"Navigator|Chromium")], layout="max"),
+    Group(name="WWW", matches=[Match(wm_class=re.compile(r"Navigator|Chromium"))], layout="max"),
     Group(name="Code", matches=[Match(wm_class="Code")], layout="max"),
     Group(
         name="Chat",

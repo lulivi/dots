@@ -53,7 +53,10 @@ __prompt_set_virtualenv() {
 
 # Set the working directory _WORKING_DIR
 __prompt_set_working_dir() {
-  _WORKING_DIR="$_C_FG_CYAN[ \w ]$_C_STYLE_RESET"
+  if [ -n "$DISTROBOX_ENTER_PATH" ]; then
+    _distrobox="${_C_FG_RED}DistroBox:${_C_FG_CYAN}"
+  fi
+  _WORKING_DIR="$_C_FG_CYAN[ ${_distrobox}\w ]$_C_STYLE_RESET"
 }
 
 # Set the git prompt in _GIT_PROMPT

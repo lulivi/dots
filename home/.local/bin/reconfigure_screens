@@ -56,12 +56,15 @@ def main():
     screens = {
         match[0]: ScreenState(match[1], bool(match[2]))
         for match in re.findall(
-            pattern=r"^(\w+) connected.*\n.\s+(\d+x\d+)\s+\d+.\d+\s*(\*)?\+",
+            pattern=r"^([\w-]+) connected.*\n.\s+(\d+x\d+)\s+\d+.\d+\s*(\*)?\+",
             string=xrandr_output,
             flags=re.MULTILINE,
         )
     }
-    if all((screen_state.in_use for screen_state in screens.values())):
+    if not screens:
+        sys.exit(f"{LOG_PREFIX} ERROR: No screens found")
+
+    if all((screen_state.in_use for screen_state in screens.values())) and not "force" in sys.argv:
         print(f"{LOG_PREFIX} Nothing to re-configure")
         return
 

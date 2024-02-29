@@ -225,6 +225,12 @@
   ".config/qtile": {
     "description": "Qtile tiling manager configuration."
   },
+  ".config/tmux/tmux.conf.local": {
+    "description": "Tmux personalization using oh my tmux config.",
+    "packages": [
+      "tmux"
+    ]
+  },
   ".config/bspwm/autostart.sh": {
     "description": "bspwm app-autostart script."
   },
@@ -281,12 +287,6 @@
   },
   ".Xresources.src": {
     "description": "Xresources brother."
-  },
-  ".tmux.conf.local": {
-    "description": "Tmux personalization using oh my tmux config.",
-    "packages": [
-      "tmux"
-    ]
   },
   ".config/ncspot/config.toml": {
     "description": "NCurses Spotify client.",
