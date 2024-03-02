@@ -96,7 +96,7 @@ screens: List[Screen] = [
                 _custom_separator_widget,
                 widget.Clock(
                     fmt="📅 {}",
-                    format="%y/%m/%d",
+                    format="%d/%b(%m)",
                     timezone="Europe/Madrid",
                 ),
                 widget.Clock(

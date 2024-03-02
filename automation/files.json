@@ -223,7 +223,8 @@
     "description": "Top configuration file."
   },
   ".config/qtile": {
-    "description": "Qtile tiling manager configuration."
+    "description": "Qtile tiling manager configuration.",
+    "packages": ["libpangocairo-1.0-0", "libiw-dev", "python3-tk"]
   },
   ".config/tmux/tmux.conf.local": {
     "description": "Tmux personalization using oh my tmux config.",

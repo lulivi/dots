@@ -45,7 +45,7 @@ import sys
 from argparse import Namespace
 from enum import Enum
 from pathlib import Path
-from typing import List, NamedTuple
+from typing import List, NamedTuple, Set
 
 HOME_PATH: Path = Path.home()
 AUTOMATION_PATH: Path = Path(__file__).resolve().parent
@@ -93,7 +93,7 @@ def print_style(text: str, style: str) -> None:
     :param text: text that will be styled.
 
     """
-    print(apply_style(text, style))
+    print(apply_style(text, style), flush=True)
 
 
 class HomeFile(NamedTuple):
@@ -108,7 +108,7 @@ class HomeFile(NamedTuple):
 
     relpath: Path
     description: str = ""
-    packages: List[str] = []
+    packages: Set[str] = set()
 
 
 def print_selected_files(selected_files: List[HomeFile]) -> None:
@@ -158,13 +158,36 @@ def print_selected_files(selected_files: List[HomeFile]) -> None:
     list(map(print_file, selected_files))
 
 
-def link_selected_files(selected_files: List[HomeFile], force: bool = False) -> None:
+def link_selected_files(
+    selected_files: List[HomeFile], force: bool = False, install: bool = False
+) -> None:
     """Link selected files.
 
     :param selected_files: list of selected files.
     :param force: whether to always delete the link or not.
 
     """
+
+    def get_installed_packages() -> List[str]:
+        """Obtain the list of installed APT packages.
+
+        :returns: The installed packages with the APT package manager.
+
+        """
+        return set(
+            map(
+                lambda package: package.split("/", 1)[0],
+                subprocess.run(
+                    ["apt", "list", "--installed"],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.DEVNULL,
+                    universal_newlines=True,
+                ).stdout.splitlines(),
+            )
+        )
+
+    def not_installed_dependencies(dependencies: List[str], installed_packages: Set[str]) -> bool:
+        return set(dependencies) - installed_packages
 
     def skip_link(key: str, target_path: Path, link_name_path: Path) -> bool:
         """Check whether we should skip linking this current file.
@@ -205,7 +228,7 @@ def link_selected_files(selected_files: List[HomeFile], force: bool = False) -> 
 
         return skip
 
-    def link_file(file: HomeFile, force: bool = False) -> None:
+    def link_file(file: HomeFile, installed_packages: List[str], force: bool = False) -> None:
         """Create a link of the file.
 
         :param file: file to link.
@@ -215,6 +238,13 @@ def link_selected_files(selected_files: List[HomeFile], force: bool = False) -> 
         key = apply_style(file.relpath, colour.bold)
         target_path = REPO_HOME_PATH / (file.relpath)
         link_name_path = HOME_PATH / (file.relpath)
+
+        not_installed_package_deps = not_installed_dependencies(file.packages, installed_packages)
+        if not_installed_package_deps:
+            print_style(
+                f"{key}: Missing some dependencies for the selected file: {not_installed_package_deps}",
+                colour.fg_yellow,
+            )
 
         if force:
             try:
@@ -230,7 +260,16 @@ def link_selected_files(selected_files: List[HomeFile], force: bool = False) -> 
             colour.fg_green,
         )
 
-    list(map(functools.partial(link_file, force=force), selected_files))
+    list(
+        map(
+            functools.partial(
+                link_file,
+                installed_packages=get_installed_packages(),
+                force=force,
+            ),
+            selected_files,
+        )
+    )
 
 
 def delete_selected_links(selected_files: List[HomeFile], force: bool = False) -> None:
