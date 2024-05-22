@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+while true; do
+    printf 'W%s%%\n' "$(nmcli -f IN-USE,SSID,SIGNAL dev wifi list | grep '*' | tr -s ' ' | cut -d ' ' -f2,3)" 
+    sleep 15
+done

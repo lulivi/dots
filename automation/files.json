@@ -11,6 +11,9 @@
   ".local/bin/cht": {
     "description": "Change terminal title."
   },
+  ".local/bin/darken_until_mouse_movement": {
+    "description": "Dim screens."
+  },
   ".local/bin/docker_run": {
     "description": "Run a docker image.",
     "packages": [
@@ -70,18 +73,14 @@
       "curl"
     ]
   },
-  ".local/bin/send_telegram_message": {
-    "description": "Send a message to the telegram bot setted up.",
-    "packages": [
-      "jq",
-      "curl"
-    ]
-  },
   ".local/share/applications/screenshot.desktop": {
     "description": "Desktop entry for screenshot script."
   },
   ".local/bin/session.sh": {
     "description": "Simple terminal GUI to suspend, restart or poweroff the system."
+  },
+  ".local/bin/shortcuts": {
+    "description": "Execute command for your shortcuts."
   },
   ".local/bin/show_keypress.sh": {
     "description": "Show key press.",
@@ -98,11 +97,15 @@
       "git"
     ]
   },
-  ".local/bin/telpipe": {
-    "description": "Send the output of the piped command to your telegram user."
-  },
   ".local/bin/telret": {
     "description": "Send the return code of the previous command to your telegram user."
+  },
+  ".local/bin/tgn": {
+    "description": "Send a notification to telegram.",
+    "packages": [
+      "jq",
+      "curl"
+    ]
   },
   ".local/bin/tgout": {
     "description": "Run a command with arguments and send the return code and output to telegram."
@@ -168,6 +171,9 @@
   },
   ".config/kitty/kitty.conf": {
     "description": "Kitty terminal emulator."
+  },
+  ".config/leftwm": {
+    "description": "Leftwm configuration"
   },
   ".config/ranger/commands.py": {},
   ".config/ranger/rc.conf": {},

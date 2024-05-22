@@ -5,7 +5,7 @@
     autocrlf = input
 
 [interactive]
-    diffFilter = delta --color-only --side-by-side
+    diffFilter = delta
 
 [commit]
     template = ~/.gitcommit
@@ -34,8 +34,12 @@
     superclean = clean -dfx
 
 [delta]
+    side-by-side = true
     line-numbers = true
     plus-style = green
     plus-emph-style = green bold 22
     minus-style = red
     minus-emph-style = red bold 52
+
+[diff]
+    tool = vimdiff

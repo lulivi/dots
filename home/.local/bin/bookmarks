@@ -1,82 +1,41 @@
-#!/bin/sh
+#!/home/luis/.venvs/rofi/bin/python
 
-## @brief Open bookmarks with the default web browser
+import subprocess
+import tomllib
 
-## @desc If no <FILE> is passed, the file $HOME/.bookmarks will be used by
-## default. The bookmarks file uses a simple configuration format:
-##
-##   # <group 1 title>
-##   <bookmark 1 title>=<bookmark 1 url>
-##   # This is a comment
-##   <bookmark 2 title>=<bookmark 2 url>'
-##
-##   # <group 2 title>
-##   <bookmark 3 title>=<bookmark 3 url>
-##   # End of file :D
-## 
-## There must be at least one empty/comment line at the end of the file so that
-## last bookmark is read properly.
-## 
-## The script will display the following entries in rofi:
-##
-##   +------------------------------------------+
-##   | ['<group 1 title>'] - <bookmark 1 title> |
-##   +------------------------------------------+
-##   | ['<group 1 title>'] - <bookmark 2 title> |
-##   +------------------------------------------+
-##   | ['<group 2 title>'] - <bookmark 3 title> |
-##   +------------------------------------------+
+from pathlib import Path
 
-BOOMKARK_TMP_FILE="/tmp/bookmarks_temp"
-trap 'rm -f $BOOMKARK_TMP_FILE' INT EXIT
+from rofiwrapper import exit_with_error, select_option
 
-err() {
-    printf '%s.\n' "$1"
-    exit 1
-}
+BOOKMARKS_FILE: Path = Path.home().joinpath(".bookmarks").resolve()
 
-main() {
-    bookmark_file_path="${1:-$HOME/.bookmarks}"
 
-    [ ! -f "$bookmark_file_path" ] && err "File $bookmark_file_path not found"
+def main():
+    if not BOOKMARKS_FILE.exists():
+        exit_with_error(f"No known bookmark was found. Add them to the {BOOKMARKS_FILE} file")
 
-    while IFS='=' read -r title url; do
-        [ "$title" ] || continue
-        case "$title" in
-            \#*)
-                group_name="${title#\# }"
-                ;;
-            *)
-                bookmark_idx=$((bookmark_idx+1))
-                full_title="[$group_name] - $title"
-                title_list="$title_list${title_list:+\n}$full_title" 
-                export "bookmark${bookmark_idx}=$url" 2>/dev/null
-                ;;
-        esac
-    done < "$bookmark_file_path"
+    bookmarks: dict
+    with BOOKMARKS_FILE.open("rb") as bookmarks_file:
+        bookmarks = tomllib.load(bookmarks_file)
 
-    # shellcheck disable=SC2059
-    sel_bookmark_idx="$(
-        printf "$title_list" | rofi -dmenu -i -format d -p Bookmarks
-    )"
-    [ -z "$sel_bookmark_idx" ] && exit 0
-    [ "$sel_bookmark_idx" -eq "0" ] && exit 1
+    parsed_bookmarks = {}
+    for section, items in bookmarks.items():
+        for name, bookmark in items.items():
+            parsed_bookmarks[f"{section}: {name}"] = bookmark
 
-    eval "bookmark_url=\${bookmark$sel_bookmark_idx}"
+    bookmark_keys = list(parsed_bookmarks)
 
-    echo "$bookmark_url"
-    # shellcheck disable=SC2154
-    xdg-open "$bookmark_url" \
-        || err "Could not open the provided url: $bookmark_url";
-}
+    index = select_option(prompt="Bookmark", options=bookmark_keys)
 
-## @usage bookmarks [-h] [FILE]
-while getopts ":" o; do case "${o}" in
-    ## @option -h
-    ## Print this help and exit.
-    *) shellman "$0"; exit 1 ;;
-esac done
+    if index is None:
+        return
 
-shift $((OPTIND - 1))
+    open_bookmark(parsed_bookmarks[bookmark_keys[index]])
 
-main "$@"
+
+def open_bookmark(bookmark_url: str) -> None:
+    subprocess.Popen(["xdg-open", bookmark_url])
+
+
+if __name__ == "__main__":
+    main()

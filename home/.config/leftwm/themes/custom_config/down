@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+. "$( cd "$(dirname "$0")" ; pwd -P )/variables.sh"
+
+leftwm-command 'UnloadTheme'
+
+[[ -p "$LEMONBAR_MAIN_PIPE" ]] && rm "$LEMONBAR_MAIN_PIPE"
+
+# Remove background
+feh --bg-scale "$CURRENT_THEME_STATIC_DIR/down.jpg"
+
+echo "----------------------- down" >> $LEFTWM_THEME_LOG_FILE
+
+pkill 'picom'
+
+for lpid in $(pgrep lemonbar); do
+    echo "pids before: $(pgrep lemonbar | tr '\n' ' ')" >> $LEFTWM_THEME_LOG_FILE
+    echo "killing $lpid" >> $LEFTWM_THEME_LOG_FILE
+    kill -9 "$lpid"
+    echo "pids after: $(pgrep lemonbar | tr '\n' ' ')" >> $LEFTWM_THEME_LOG_FILE
+done
+
+echo "killing modules" >> $LEFTWM_THEME_LOG_FILE
+echo "$(tree "$CURRENT_THEME_MODULES_DIR")" >> $LEFTWM_THEME_LOG_FILE
+for module in "$CURRENT_THEME_MODULES_DIR"/*; do
+    echo "killing module $module" >>  $LEFTWM_THEME_LOG_FILE
+    pkill "$(basename "$module")"
+    echo "pgrep "$(basename "$module")": $(pgrep "$module")" >>  $LEFTWM_THEME_LOG_FILE
+done

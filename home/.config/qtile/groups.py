@@ -36,7 +36,8 @@ groups: List[Group] = [
             Match(wm_class="Pop"),
         ],
     ),
-    Group(name="Music", matches=[Match(wm_class="Spotify")]),
+    Group(name="x"),
     Group(name="y"),
     Group(name="z"),
+    Group(name="t"),
 ]

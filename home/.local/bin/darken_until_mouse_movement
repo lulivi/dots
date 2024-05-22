@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+$HOME/.screenlayout/screens_off.sh
+cnee --record --mouse --keyboard --events-to-record 1
+/home/luis/.screenlayout/1.sh
+$HOME/.local/bin/lock.sh

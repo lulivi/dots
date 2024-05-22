@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+
+# Dependencies:
+# - lemonbar
+# - feh
+# - uname
+# - sed
+# - pkill
+
+. "$( cd "$(dirname "$0")" ; pwd -P )/variables.sh"
+
+# Down the last running theme
+if [[ -f '/tmp/leftwm-theme-down' ]]; then
+    /tmp/leftwm-theme-down
+    rm '/tmp/leftwm-theme-down'
+fi
+ln -s "$CURRENT_THEME_DIR/down" '/tmp/leftwm-theme-down'
+
+if [ -x "$(command -v picom)" ]; then
+    picom &> /dev/null &
+fi
+
+# Set the theme.ron config
+leftwm-command "LoadTheme $CURRENT_THEME_DIR/theme.ron"
+
+# Set background
+feh --bg-max "$CURRENT_THEME_STATIC_DIR/background.png"
+
+# Lemonbar(s) ------------------------------------------------------------------
+
+# Workspace size(s)
+sizes=( $(leftwm-state -qn -t "$CURRENT_THEME_TEMPLATES_DIR/sizes.liquid" | sed -r '/^\s*$/d') )
+
+background_color='#1E1E28'
+sep_bar='%{F#6e6c7e}|%{F-}'
+workspace_idx_modules=0
+bar_font='Fira Code:size=10'
+if [ "${#sizes[@]}" -ne "1" ]; then
+    workspace_idx_modules=1
+fi
+
+main_bar() {
+    # $1 = window geometry (widthxheight+x+y)
+    local desktop="$1"
+    local size="$2"
+
+    [[ -p "$LEMONBAR_MAIN_PIPE" ]] || mkfifo "$LEMONBAR_MAIN_PIPE"
+
+    # Send status text into named pipe
+    leftwm-state -w "$workspace_idx_modules" \
+        -t "$CURRENT_THEME_TEMPLATES_DIR/template.liquid" \
+        1> "$LEMONBAR_MAIN_PIPE" 2>>$LEFTWM_THEME_LOG_FILE &
+    "$CURRENT_THEME_MODULES_DIR/clock_module"\
+         1> "$LEMONBAR_MAIN_PIPE" 2>>$LEFTWM_THEME_LOG_FILE &
+    "$CURRENT_THEME_MODULES_DIR/battery_module" \
+        1> "$LEMONBAR_MAIN_PIPE" 2>>$LEFTWM_THEME_LOG_FILE &
+    "$CURRENT_THEME_MODULES_DIR/wifi_module" \
+        1> "$LEMONBAR_MAIN_PIPE" 2>>$LEFTWM_THEME_LOG_FILE &
+    "$CURRENT_THEME_MODULES_DIR/volume_module" \
+        1> "$LEMONBAR_MAIN_PIPE" 2>>$LEFTWM_THEME_LOG_FILE &
+    "$CURRENT_THEME_MODULES_DIR/music_module" \
+        1> "$LEMONBAR_MAIN_PIPE" 2>>$LEFTWM_THEME_LOG_FILE &
+    # "$CURRENT_THEME_MODULES_DIR/tag_active_windows_module" \
+    #     1> "$LEMONBAR_MAIN_PIPE" 2>>$LEFTWM_THEME_LOG_FILE &
+    # "$CURRENT_THEME_MODULES_DIR/tag_windows_module" "$desktop" \
+    #     1> "$LEMONBAR_MAIN_PIPE" 2>>$LEFTWM_THEME_LOG_FILE &
+
+    # Process named pipe and give the status text to lemonbar
+    # Sorted based on their first letter
+    while read -r; do
+        case "$REPLY" in
+            C*) local clock="${REPLY#?}" ;;
+            B*) local battery="${REPLY#?}" ;;
+            W*) local wifi="${REPLY#?}" ;;
+            V*) local volume="${REPLY#?}" ;;
+            M*) local music="${REPLY#?}" ;;
+            T*) local tag_windows="${REPLY#?}" ;;
+            *) local wm="$REPLY" ;;
+        esac
+
+        printf '%s\n' "$wm $tag_windows%{r} $music $sep_bar $volume $sep_bar $wifi $sep_bar $battery $sep_bar $clock "
+    done < "$LEMONBAR_MAIN_PIPE" | /usr/bin/lemonbar -p -f "$bar_font" -g "$size" -B "$background_color" | sh
+}
+
+echo "sizes: ${sizes[@]}" >> $LEFTWM_THEME_LOG_FILE
+
+idx=0
+for size in "${sizes[@]}"; do
+    debug_log "Configuring screen $idx: '$size'"
+    if [[ "$idx" -eq "$workspace_idx_modules" ]]; then
+        main_bar "$idx" "$size" &
+    else
+        # Instance(s) without modules
+        leftwm-state -w "$idx" -t "$CURRENT_THEME_TEMPLATES_DIR/template.liquid" | /usr/bin/lemonbar -p \
+            -g "$size" -f "$bar_font" -B "$background_color" | sh &
+    fi
+
+    (( idx++ ))
+done

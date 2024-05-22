@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+while true; do
+    output="$(playerctl metadata --format "{{ artist }} - {{ title }} ({{ duration(position) }}/{{ duration(mpris:length) }})" 2>&1)"
+    printf 'M%s\n' "$output"
+    [ "$output" != "No players found" ] && sleep 1 || sleep 30
+done

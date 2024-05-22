@@ -1,0 +1,87 @@
+#!/usr/bin/env python3
+
+try:
+    import wmctrl
+except ImportError:
+    import subprocess
+    import sys
+
+    response: str = input(f"Do you want to install `wmctrl` for {sys.executable}? (y/n): ")
+    if response != "y":
+        sys.exit("Skipping installation. This script cannot work without that module.")
+    subprocess.run([sys.executable, "-m", "pip", "install", "--no-input", "wmctrl"])
+    print("Please run again the script.")
+    sys.exit()
+
+
+import argparse
+import subprocess
+
+from pathlib import Path
+
+MODULES_DIR: Path = Path(__file__).resolve().parent
+CURRENT_THEME_DIR: Path = MODULES_DIR.parent.joinpath("templates")
+MAX_WINDOW_NAME_SIZE: int = 15
+
+
+def main():
+    workspace_id = get_workspace_id()
+    cmd = [
+        "leftwm-state",
+        "-w",
+        str(workspace_id),
+        "-t",
+        str(CURRENT_THEME_DIR.joinpath("desktop_active_tag.liquid")),
+    ]
+    with subprocess.Popen(
+        cmd,
+        stdout=subprocess.PIPE,
+        universal_newlines=True,
+    ) as state:
+        for active_tag in state.stdout:
+            print(get_tag_windows(int(active_tag)), flush=True)
+
+
+def get_workspace_id():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("workspace_id", type=int)
+    return parser.parse_args().workspace_id
+
+
+def get_tag_windows(tag_id: int) -> str:
+    output_string: str = "T"
+    window: wmctrl.Window
+
+    for window in filter(
+        lambda window: window.desktop == tag_id and window.wm_class != "lemonbar.Bar",
+        wmctrl.Window.list(),
+    ):
+        background_color = "37394b"
+        if wmctrl.Window.get_active() == window:
+            background_color = "616587"
+
+        window_name = window.wm_name
+        if len(window_name) > MAX_WINDOW_NAME_SIZE:
+            window_name = f"{window_name[:MAX_WINDOW_NAME_SIZE - 3]}..."
+
+        formatted_window = color_text(
+            f" {window.wm_class.split('.')[1]} : {window_name} ", "", background_color
+        )
+        output_string = f"{output_string}{formatted_window} "
+
+    return output_string
+
+
+def color_text(text: str, foreground: str = "", background: str = "") -> str:
+    foreground_start = foreground_end = background_start = background_end = ""
+    if foreground:
+        foreground_start = f"%{{F#{foreground}}}"
+        foreground_end = r"%{F-}"
+    if background:
+        background_start = f"%{{B#{background}}}"
+        background_end = r"%{B-}"
+    return f"{foreground_start}{background_start}{text}{background_end}{foreground_end}"
+
+
+if __name__ == "__main__":
+    main()

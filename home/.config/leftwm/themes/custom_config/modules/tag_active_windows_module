@@ -1,0 +1,59 @@
+#!/usr/bin/env python3
+
+import time
+
+try:
+    import wmctrl
+except ImportError:
+    import subprocess
+    import sys
+
+    response: str = input(f"Do you want to install `wmctrl` for {sys.executable}? (y/n): ")
+    if response != "y":
+        sys.exit("Skipping installation. This script cannot work without that module.")
+    subprocess.run([sys.executable, "-m", "pip", "install", "--no-input", "wmctrl"])
+    print("Please run again the script.")
+    sys.exit()
+
+
+def main():
+    while True:
+        print(get_current_tag_windows(), flush=True)
+        time.sleep(0.1)
+
+
+def color_text(text: str, foreground: str = "", background: str = "") -> str:
+    foreground_start = foreground_end = background_start = background_end = ""
+    if foreground:
+        foreground_start = f"%{{F#{foreground}}}"
+        foreground_end = r"%{F-}"
+    if background:
+        background_start = f"%{{B#{background}}}"
+        background_end = r"%{B-}"
+    return f"{foreground_start}{background_start}{text}{background_end}{foreground_end}"
+
+
+def get_current_tag_windows() -> str:
+    current_desktop = wmctrl.Desktop.get_active().num
+    output_string: str = "T"
+
+    window: wmctrl.Window
+
+    for window in filter(
+        lambda window: window.desktop == current_desktop and window.wm_class != "lemonbar.Bar",
+        wmctrl.Window.list(),
+    ):
+        background_color = "37394b"
+        if wmctrl.Window.get_active() == window:
+            background_color = "616587"
+
+        formatted_window = color_text(
+            f" {window.wm_class.split('.')[1]} : {window.wm_name[:50]} ", "", background_color
+        )
+        output_string = f"{output_string}{formatted_window} "
+
+    return output_string
+
+
+if __name__ == "__main__":
+    main()

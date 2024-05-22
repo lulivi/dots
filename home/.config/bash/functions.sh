@@ -22,11 +22,6 @@ activate() {
     }
     local venv_name="$1"
 
-    if [ -f "./pyproject.toml" ]; then
-        poetry shell
-        return
-    fi
-
     shopt -s dotglob
     if [ -z "$venv_name" ]; then
        venv_name=$(_select_venv ./*venv*)
@@ -37,6 +32,8 @@ activate() {
 
     if [[ -f "$activate_script" ]]; then
         source "$activate_script"
+    elif [ -f "./pyproject.toml" ]; then
+        poetry shell
     else
         printf '"%s" virtualenv does not exist.\n' "$venv_name" >&2
         return 127

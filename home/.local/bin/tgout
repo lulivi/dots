@@ -99,12 +99,10 @@ class CommandAction(argparse.Action):
             if len(values) == 1:
                 return values[0]
 
-            return " ".join(
-                [
-                    f'"{command_part}"' if " " in command_part else command_part
-                    for command_part in values
-                ]
-            )
+            return " ".join([
+                f'"{command_part}"' if " " in command_part else command_part
+                for command_part in values
+            ])
 
         if not values:
             raise argparse.ArgumentError(self, "A command is necessary")
@@ -217,13 +215,6 @@ def parse_args():
         formatter_class=argparse.RawTextHelpFormatter,
     )
     parser.add_argument(
-        "-ns",
-        "--no-send",
-        dest="send",
-        action="store_false",
-        help="Don't send the output to Telegram",
-    )
-    parser.add_argument(
         "-o",
         "--output",
         type=OutputArgumentChoice.from_string,
@@ -237,7 +228,11 @@ def parse_args():
         action="store_true",
         help="Don't remove the output file after finishing the program",
     )
-    parser.add_argument("command", nargs=argparse.REMAINDER, action=CommandAction)
+    parser.add_argument(
+        "command",
+        nargs=argparse.REMAINDER,
+        action=CommandAction,
+    )
     args = parser.parse_args()
 
     args.writing_to_file: bool = args.output in (
@@ -251,7 +246,6 @@ def parse_args():
 
     if not args.writing_to_file:
         args.keep = False
-        args.send = False
 
     return args
 

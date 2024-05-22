@@ -3,25 +3,6 @@
 # ~/.bashrc
 #
 
-# Check if running in interactive mode, if not, GTFO
-[[ $- != *i* ]] && return
-
-# Bash options
-shopt -s checkwinsize
-shopt -s expand_aliases
-shopt -s histappend
-shopt -s direxpand
-
-# Shell options
-set -o ignoreeof
-set -o vi
-
-# Unbind Ctrl+s and Ctrl+q
-stty -ixon -ixoff
-
-complete -cf sudo
-xhost +local:root >/dev/null 2>&1
-
 # prepend_paths_to_variable - Add items to a path-like variable
 # Usage: prepend_paths_to_variable <path_var_name> <path_1> [<path_2> [...]]
 prepend_paths_to_variable() {
@@ -58,12 +39,40 @@ del_paths_from_variable() {
 
 # Define the common paths
 prepend_paths_to_variable "PATH" \
-    "$HOME/.local/bin/" \
-    "$HOME/.cargo/bin/" \
-    "$HOME/.screenlayout/" \
-    "$HOME/bin/"
+    "$HOME/.local/bin" \
+    "$HOME/.cargo/bin" \
+    "$HOME/.screenlayout" \
+    "$HOME/bin"
 
 export PATH=$PATH:/opt/tools/python/3.6/bin
+
+# Load util shell scripts
+for shell_script in "$HOME/.config/bash/"*.sh; do
+    # shellcheck source=/dev/null
+    [ -r "$shell_script" ] && . "$shell_script" && printf 'Loading `%s`...\n' "$shell_script" || echo "Error $shell_script"
+done
+
+#
+# Check if running in interactive mode, if not, GTFO
+#
+[[ $- != *i* ]] && return
+
+# Bash options
+shopt -s checkwinsize
+shopt -s expand_aliases
+shopt -s histappend
+shopt -s direxpand
+
+# Shell options
+set -o ignoreeof
+set -o vi
+
+# Unbind Ctrl+s and Ctrl+q
+stty -ixon -ixoff
+
+complete -cf sudo
+xhost +local:root >/dev/null 2>&1
+
 
 # Bash completions
 [ -r /usr/share/bash-completion/bash_completion ] && {
@@ -88,8 +97,3 @@ fi
 # SSH
 eval "$(ssh-agent)"
 
-# Load util shell scripts
-for shell_script in "$HOME/.config/bash/"*.sh; do
-    # shellcheck source=/dev/null
-    [ -r "$shell_script" ] && . "$shell_script" && printf 'Loading `%s`...\n' "$shell_script" || echo "Error $shell_script"
-done

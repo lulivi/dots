@@ -110,6 +110,15 @@ screens: List[Screen] = [
                     timezone="America/Los_Angeles",
                 ),
                 _custom_separator_widget,
+                widget.CheckUpdates(
+                    distro="Ubuntu",
+                    display_format="🔄 {updates}",
+                    custom_command="apt list --upgradable",
+                    custom_command_modify=lambda x: x - 1,
+                    no_update_string="🔄 0",
+                    colour_have_updates="ff0000",
+                ),
+                _custom_separator_widget,
                 ClickableText(
                     text="[ Reconfig screens ]",
                     function=run_local_bin_script("reconfigure_screens", "force"),

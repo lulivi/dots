@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/home/luis/.venvs/rofi/bin/python
 # Copyright (c) 2024 Luis Liñán
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,59 +25,53 @@ import sys
 
 from enum import Enum
 from pathlib import Path
-from typing import NamedTuple
+from typing import List, NamedTuple
+
+from rofiwrapper import select_option
 
 SCREEN_LAYOUT_DIR = Path().home().joinpath(".screenlayout")
 LOG_PREFIX = "[Reconfigure Screens]"
 
 
 class ScreenState(NamedTuple):
+    name: str
     resolution: str
     in_use: bool
-
-
-class ScreenConfig(Enum):
-    ONE = "1.sh"
-    HOME = "home.sh"
-    OFFICE_2 = "office2.sh"
-    OFFICE_3 = "office3.sh"
-
-
-def run_and_exit(config: ScreenConfig) -> None:
-    print(f"{LOG_PREFIX} Reconfiguring the screen layout with `{config.value}` configuration")
-    subprocess.run([str(SCREEN_LAYOUT_DIR.joinpath(config.value))])
-    sys.exit(0)
 
 
 def main():
     xrandr_output = subprocess.run(
         ["xrandr"], stdout=subprocess.PIPE, universal_newlines=True
     ).stdout
-    screens = {
-        match[0]: ScreenState(match[1], bool(match[2]))
+    screens = [
+        ScreenState(match[0], match[1], bool(match[2]))
         for match in re.findall(
             pattern=r"^([\w-]+) connected.*\n.\s+(\d+x\d+)\s+\d+.\d+\s*(\*)?\+",
             string=xrandr_output,
             flags=re.MULTILINE,
         )
-    }
+    ]
     if not screens:
         sys.exit(f"{LOG_PREFIX} ERROR: No screens found")
 
-    if all((screen_state.in_use for screen_state in screens.values())) and not "force" in sys.argv:
-        print(f"{LOG_PREFIX} Nothing to re-configure")
-        return
+    connected_displays = ", ".join(f"{screen.name}:{screen.resolution}" for screen in screens)
+    configurations: List[str] = [
+        "1",
+        "home",
+        "office2",
+        "office3",
+    ]
 
-    if len(screens) == 1:
-        run_and_exit(ScreenConfig.ONE)
+    select_display("1")
+    selected_configuration: int = select_option(
+        prompt="Select configuration", options=configurations, message=connected_displays
+    )
+    select_display(configurations[selected_configuration])
 
-    if len(screens) == 3:
-        run_and_exit(ScreenConfig.OFFICE_3)
 
-    if "2560x1440" in (screen_state.resolution for screen_state in screens.values()):
-        run_and_exit(ScreenConfig.HOME)
-
-    run_and_exit(ScreenConfig.OFFICE_2)
+def select_display(script: str):
+    subprocess.run([str(SCREEN_LAYOUT_DIR.joinpath(f"{script}.sh"))])
+    subprocess.run(["leftwm-command", "SoftReload"])
 
 
 if __name__ == "__main__":

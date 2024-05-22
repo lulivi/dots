@@ -1,0 +1,419 @@
+//  _        ___                                      ___ _
+// | |      / __)_                                   / __|_)
+// | | ____| |__| |_ _ _ _ ____      ____ ___  ____ | |__ _  ____    ____ ___  ____
+// | |/ _  )  __)  _) | | |    \    / ___) _ \|  _ \|  __) |/ _  |  / ___) _ \|  _ \
+// | ( (/ /| |  | |_| | | | | | |  ( (__| |_| | | | | |  | ( ( | |_| |  | |_| | | | |
+// |_|\____)_|   \___)____|_|_|_|   \____)___/|_| |_|_|  |_|\_|| (_)_|   \___/|_| |_|
+// A WindowManager for Adventurers                         (____/
+// For info about configuration please visit https://github.com/leftwm/leftwm/wiki
+
+#![enable(implicit_some)]
+#![enable(unwrap_newtypes)]
+(
+    modkey: "Mod4",
+    mousekey: "Mod4",
+    workspaces: [],
+    tags: ["Shell", "WWW", "Code", "Chat", "♪ ♫ ♪", "y", "z", "t"],
+    max_window_width: None,
+    layouts: [
+        "Monocle",
+        "Grid",
+        "EvenVertical",
+        "MainAndVertStack",
+        "CenterMainFluid",
+    ],
+    layout_definitions: [
+        (name: "EvenHorizontal",
+            flip: None, rotate: North, reserve: None, columns: (
+                flip: None, rotate: North, main: None, stack: (
+                    flip: None, rotate: North, split: Vertical
+
+            ), second_stack: None
+            )
+        ),
+        (name: "EvenVertical",
+            flip: None, rotate: North, reserve: None, columns: (
+                flip: None, rotate: North, main: None, stack: (
+                    flip: None, rotate: North, split: Horizontal
+
+            ), second_stack: None
+            )
+        ),
+        (name: "Monocle",
+            flip: None, rotate: North, reserve: None, columns: (
+                flip: None, rotate: North, main: None, stack: (
+                    flip: None, rotate: North, split: None
+
+            ), second_stack: None
+            )
+        ),
+        (name: "Grid",
+            flip: None, rotate: North, reserve: None, columns: (
+                flip: None, rotate: North, main: None, stack: (
+                    flip: None, rotate: North, split: Grid
+
+            ), second_stack: None
+            )
+        ),
+        (name: "MainAndVertStack",
+            flip: None, rotate: North, reserve: None, columns: (
+                flip: None, rotate: North, main: (
+                    count: 1, size: 0.5, flip: None, rotate: North, split: Vertical
+                ), stack: (
+                    flip: None, rotate: North, split: Horizontal
+                ), second_stack: None
+            )
+        ),
+        (name: "MainAndHorizontalStack",
+            flip: None, rotate: North, reserve: None, columns: (
+                flip: None, rotate: North, main: (
+                    count: 1, size: 0.5, flip: None, rotate: North, split: Vertical
+                ), stack: (
+                    flip: None, rotate: North, split: Vertical
+                ), second_stack: None
+            )
+        ),
+        (name: "RightMainAndVertStack",
+            flip: None, rotate: North, reserve: None, columns: (
+                flip: None, rotate: South, main: (
+                    count: 1, size: 0.5, flip: None, rotate: North, split: Vertical
+                ), stack: (
+                    flip: None, rotate: North, split: Horizontal
+                ), second_stack: None
+            )
+        ),
+        (name: "Fibonacci",
+            flip: None, rotate: North, reserve: None, columns: (
+                flip: None, rotate: North, main: (
+                    count: 1, size: 0.5, flip: None, rotate: North, split: Vertical
+                ), stack: (
+                    flip: None, rotate: North, split: Fibonacci
+                ), second_stack: None
+            )
+        ),
+        (name: "Dwindle",
+            flip: None, rotate: North, reserve: None, columns: (
+                flip: None, rotate: North, main: (
+                    count: 1, size: 0.5, flip: None, rotate: North, split: Vertical
+                ), stack: (
+                    flip: None, rotate: North, split: Dwindle
+                ), second_stack: None
+            )
+        ),
+        (name: "MainAndDeck",
+            flip: None, rotate: North, reserve: None, columns: (
+                flip: None, rotate: North, main: (
+                    count: 1, size: 0.5, flip: None, rotate: North, split: None
+                ), stack: (
+                    flip: None, rotate: North, split: None
+                ), second_stack: None
+            )
+        ),
+        (name: "CenterMain",
+            flip: None, rotate: North, reserve: None, columns: (
+                flip: None, rotate: North, main: (
+                    count: 1, size: 0.5, flip: None, rotate: North, split: Vertical
+                ), stack: (
+                    flip: None, rotate: North, split: None
+                ), second_stack: (flip: None, rotate: North, split: Horizontal)
+            )
+        ),
+        (name: "CenterMainBalanced",
+            flip: None, rotate: North, reserve: None, columns: (
+                flip: None, rotate: North, main: (
+                    count: 1, size: 0.8, flip: None, rotate: North, split: Vertical
+                ), stack: (
+                    flip: None, rotate: North, split: Dwindle
+                ), second_stack: (flip: None, rotate: North, split: Dwindle)
+            )
+        ),
+        (name: "CenterMainFluid",
+            flip: None, rotate: North, reserve: Reserve, columns: (
+                flip: None, rotate: North, main: (
+                    count: 1, size: 0.8, flip: None, rotate: North, split: Vertical
+                ), stack: (
+                    flip: None, rotate: North, split: None
+                ), second_stack: (flip: None, rotate: North, split: Horizontal)
+            )
+        ),
+    ],
+    layout_mode: Tag,
+    insert_behavior: Bottom,
+    scratchpad: [
+        // (name: "Kitty", value: "kitty", x: 860, y: 390, height: 300, width: 200),
+    ],
+    window_rules: [
+        (window_class: "Navigator|Chromium", spawn_on_tag: 2),
+        (window_class: "Code", spawn_on_tag: 3),
+        (window_class: "Slack", spawn_on_tag: 4),
+        (window_class: "TelegramDesktop", spawn_on_tag: 4),
+        (window_class: "Spotify", spawn_on_tag: 5),
+        // Floating pop-ups
+        (window_class: "Arandr", spawn_floating: true),
+        (window_class: "Pavucontrol", spawn_floating: true),
+        (window_title: "meet.google.com is sharing*", spawn_floating: true),
+        (window_title: "zoom", spawn_floating: true),
+    ],
+    disable_current_tag_swap: true,
+    disable_tile_drag: false,
+    disable_window_snap: true,
+    focus_behaviour: Sloppy,
+    focus_new_windows: true,
+    single_window_border: true,
+    sloppy_mouse_follows_focus: true,
+    create_follows_cursor: true,
+    auto_derive_workspaces: true,
+    disable_cursor_reposition_on_resize: true,
+    keybind: [
+        (
+            command: CloseWindow,
+            modifier: ["modkey"], key: "w",
+            value: "",
+        ),
+        (
+            command: SoftReload,
+            modifier: ["modkey", "Control"], key: "r",
+            value: "",
+        ),
+        (
+            command: ToggleSticky,
+            modifier: ["modkey", "Shift"], key: "s",
+            value: "",
+        ),
+        (
+            modifier: ["Mod1"], key: "space",
+            command: ToggleFloating,
+        ),
+        (
+            command: FocusWorkspaceNext,
+            modifier: ["modkey"], key: "l",
+            value: "",
+        ),
+        (
+            command: FocusWorkspacePrevious,
+            modifier: ["modkey"], key: "h",
+            value: "",
+        ),
+        (
+            command: MoveWindowUp,
+            modifier: ["modkey", "Shift"], key: "k",
+            value: "",
+        ),
+        (
+            command: MoveWindowUp,
+            modifier: ["modkey", "Shift"], key: "Up",
+            value: "",
+        ),
+        (
+            command: MoveWindowDown,
+            modifier: ["modkey", "Shift"], key: "j",
+            value: "",
+        ),
+        (
+            command: MoveWindowDown,
+            modifier: ["modkey", "Shift"], key: "Down",
+            value: "",
+        ),
+        (
+            command: FocusWindowUp,
+            modifier: ["modkey"], key: "k",
+            value: "",
+        ),
+        (
+            command: FocusWindowUp,
+            modifier: ["modkey"], key: "Up",
+            value: "",
+        ),
+        (
+            command: FocusWindowDown,
+            modifier: ["modkey"], key: "j",
+            value: "",
+        ),
+        (
+            command: FocusWindowDown,
+            modifier: ["modkey"], key: "Down",
+            value: "",
+        ),
+        (
+            command: NextLayout,
+            modifier: ["modkey", "Control"], key: "k",
+            value: "",
+        ),
+        (
+            command: NextLayout,
+            modifier: ["modkey", "Control"], key: "Up",
+            value: "",
+        ),
+        (
+            command: PreviousLayout,
+            modifier: ["modkey", "Control"], key: "j",
+            value: "",
+        ),
+        (
+            command: PreviousLayout,
+            modifier: ["modkey", "Control"], key: "Down",
+            value: "",
+        ),
+        (
+            command: IncreaseMainWidth,
+            modifier: ["modkey"], key: "equal",
+            value: "5",
+        ),
+        (
+            command: IncreaseMainWidth,
+            modifier: ["modkey", "Shift"], key: "equal",
+            value: "5",
+        ),
+        (
+            command: DecreaseMainWidth,
+            modifier: ["modkey"], key: "minus",
+            value: "5",
+        ),
+        // Tags
+        (
+            command: GotoTag,
+            modifier: ["modkey"], key: "1",
+            value: "1",
+        ),
+        (
+            command: GotoTag,
+            modifier: ["modkey"], key: "2",
+            value: "2",
+        ),
+        (
+            command: GotoTag,
+            modifier: ["modkey"], key: "3",
+            value: "3",
+        ),
+        (
+            command: GotoTag,
+            modifier: ["modkey"], key: "4",
+            value: "4",
+        ),
+        (
+            command: GotoTag,
+            modifier: ["modkey", "Control"], key: "1",
+            value: "5",
+        ),
+        (
+            command: GotoTag,
+            modifier: ["modkey", "Control"], key: "2",
+            value: "6",
+        ),
+        (
+            command: GotoTag,
+            modifier: ["modkey", "Control"], key: "3",
+            value: "7",
+        ),
+        (
+            command: GotoTag,
+            modifier: ["modkey", "Control"], key: "4",
+            value: "8",
+        ),
+        (
+            command: MoveToTag,
+            modifier: ["modkey", "Shift"], key: "1",
+            value: "1",
+        ),
+        (
+            command: MoveToTag,
+            modifier: ["modkey", "Shift"], key: "2",
+            value: "2",
+        ),
+        (
+            command: MoveToTag,
+            modifier: ["modkey", "Shift"], key: "3",
+            value: "3",
+        ),
+        (
+            command: MoveToTag,
+            modifier: ["modkey", "Shift"], key: "4",
+            value: "4",
+        ),
+        (
+            command: MoveToTag,
+            modifier: ["modkey", "Shift", "Control"], key: "1",
+            value: "5",
+        ),
+        (
+            command: MoveToTag,
+            modifier: ["modkey", "Shift", "Control"], key: "2",
+            value: "6",
+        ),
+        (
+            command: MoveToTag,
+            modifier: ["modkey", "Shift", "Control"], key: "3",
+            value: "7",
+        ),
+        (
+            command: MoveToTag,
+            modifier: ["modkey", "Shift", "Control"], key: "4",
+            value: "8",
+        ),
+        // Utils
+        (
+            command: Execute,
+            modifier: ["modkey"], key: "space",
+            value: "/usr/bin/rofi -modi combi -combi-modi window,drun,run -show",
+        ),
+        (
+            command: Execute,
+            modifier: ["modkey"], key: "Return",
+            value: "kitty",
+        ),
+        (
+            command: Execute,
+            modifier: ["modkey", "Shift"], key: "x",
+            value: "loginctl kill-session $XDG_SESSION_ID",
+        ),
+        (
+            command: Execute,
+            modifier: ["modkey", "Control"], key: "l",
+            value: "~/.local/bin/lock.sh",
+        ),
+        (
+            command: Execute,
+            modifier: ["modkey"], key: "e",
+            value: "pcmanfm",
+
+        ),
+        // Misc
+        (
+            command: Execute,
+            modifier: [], key: "XF86AudioPlay",
+            value: "playerctl play-pause",
+        ),
+        (
+            command: Execute,
+            modifier: [], key: "XF86AudioPrev",
+            value: "playerctl previous",
+        ),
+        (
+            command: Execute,
+            modifier: [], key: "XF86AudioNext",
+            value: "playerctl next",
+        ),
+        // Scripts
+        (
+            command: Execute,
+            modifier: ["modkey", "Shift"], key: "space",
+            value: "~/.local/bin/bookmarks",
+        ),
+        (
+            command: Execute,
+            modifier: ["modkey", "Control"], key: "space",
+            value: "~/.local/bin/shortcuts",
+        ),
+        (
+            command: Execute,
+            modifier: ["modkey", "Control", "Shift"], key: "d",
+            value: "~/.local/bin/darken_until_mouse_movement",
+        ),
+        (
+            command: Execute,
+            modifier: ["modkey", "Shift"], key: "r",
+            value: "~/.local/bin/reconfigure_screens force",
+        ),
+    ],
+    state_path: None,
+)

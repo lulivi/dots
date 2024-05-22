@@ -30,7 +30,6 @@ from functions import (
     run_bin_script,
     run_local_bin_script,
     show_keybindings,
-    testing,
 )
 from groups import groups
 from libqtile.config import Drag, Key, KeyChord, Mouse
@@ -140,7 +139,12 @@ key_groups: Dict[str, List[Union[Key, KeyChord]]] = {
     ],
     "Qtile": [
         Key([_WIN_KEY, _CTRL_KEY], "r", lazy.reload_config(), desc="Reload the config"),
-        Key([_WIN_KEY], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
+        Key(
+            [_WIN_KEY, _SHIFT_KEY],
+            "r",
+            run_local_bin_script("reconfigure_screens", "force"),
+            desc="Spawn a command using a prompt widget",
+        ),
         Key([_WIN_KEY], "k", show_keybindings, desc="Show Qtile keybindings"),
     ],
     "Apps": [
@@ -253,7 +257,7 @@ def _create_group_keys(alt_prefix: bool, key_index: int, group_name: str) -> Lis
     prefix_keys = [_WIN_KEY]
 
     if alt_prefix:
-        prefix_keys.append(_ALT_KEY)
+        prefix_keys.append(_CTRL_KEY)
 
     return [
         # Alt + index of group = switch to group

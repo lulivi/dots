@@ -1,0 +1,41 @@
+#!/home/luis/.venvs/rofi/bin/python
+
+import subprocess
+import tomllib
+
+from pathlib import Path
+
+from rofiwrapper import exit_with_error, select_option
+
+SHORTCUTS_FILE: Path = Path.home().joinpath(".shortcuts").resolve()
+
+
+def main():
+    if not SHORTCUTS_FILE.exists():
+        exit_with_error(f"No known bookmark was found. Add them to the {SHORTCUTS_FILE} file")
+
+    shortcuts: dict
+    with SHORTCUTS_FILE.open("rb") as shortcuts_file:
+        shortcuts = tomllib.load(shortcuts_file)
+
+    parsed_shortcuts = {}
+    for section, items in shortcuts.items():
+        for name, command in items.items():
+            parsed_shortcuts[f"{section}: {name}"] = command
+
+    shortcut_keys = list(parsed_shortcuts)
+
+    index = select_option(prompt="Shortcut", options=shortcut_keys)
+
+    if index is None:
+        return
+
+    run_shortcut(parsed_shortcuts[shortcut_keys[index]])
+
+
+def run_shortcut(shortcut_command: str) -> None:
+    subprocess.Popen(shortcut_command, shell=True)
+
+
+if __name__ == "__main__":
+    main()

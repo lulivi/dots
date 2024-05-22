@@ -1,0 +1,22 @@
+#!/usr/bin/env python3
+
+import argparse
+
+from pathlib import Path
+
+THEME_DIR: Path = Path(__file__).resolve().parent
+
+
+if __name__ == "__main__":
+    parser: argparse.ArgumentParser = argparse.ArgumentParser()
+    parser.add_argument(
+        "theme",
+        choices=[
+            f"{theme.name}/" for theme in THEME_DIR.iterdir() if theme.is_dir() and theme.name != "utils"
+        ],
+    )
+    args = parser.parse_args()
+
+    current_theme_symlink: Path = THEME_DIR.joinpath("current")
+    current_theme_symlink.unlink(missing_ok=True)
+    current_theme_symlink.symlink_to(args.theme.rstrip("/"))
