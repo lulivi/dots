@@ -39,7 +39,7 @@ def main():
         universal_newlines=True,
     ) as state:
         for active_tag in state.stdout:
-            print(f"T{get_tag_windows(int(active_tag))}", flush=True)
+            print(f"{get_tag_windows(int(active_tag))}", flush=True)
 
 
 def get_workspace_id():

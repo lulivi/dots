@@ -10,3 +10,5 @@ export SXHKD_SHELL='/usr/bin/sh'
 if [ "$(command -v bat)" ]; then
     export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 fi
+export UID="$UID" 2>/dev/null
+

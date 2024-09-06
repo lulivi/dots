@@ -33,6 +33,7 @@ alias d="docker"
 alias p="podman"
 alias pi="podman image"
 alias pc="podman container"
+alias pcode="poetry run code ."
 
 # Entertainment
 alias matrix="cmatrix -b -a -u 2 -C yellow"

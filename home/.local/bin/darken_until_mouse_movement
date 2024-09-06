@@ -1,6 +1,15 @@
 #!/usr/bin/env sh
 
 $HOME/.screenlayout/screens_off.sh
+
 cnee --record --mouse --keyboard --events-to-record 1
-/home/luis/.screenlayout/1.sh
+
+$HOME/.local/bin/reconfigure_screens --configuration 1
+
+if [ "$(toggle_laptop_keyboard --check)" == "disabled" ]; then
+    $HOME/.local/bin/toggle_laptop_keyboard
+fi
+
 $HOME/.local/bin/lock.sh
+
+$HOME/.local/bin/reconfigure_screens

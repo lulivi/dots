@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+while true; do
+    printf 'VVol %s\n' "$(amixer sget Master | grep -Eo '[0-9]+%')" 
+    sleep 1
+done

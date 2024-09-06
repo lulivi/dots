@@ -1,0 +1,37 @@
+[bar]
+name = "main-bar"
+blocks = "desktop | windows  test | date"
+height = 24
+areas = 16
+foreground = "#222222"
+background = "#ce7942"
+line-color = "#555555"
+line-width = 2
+
+[default]
+label-foreground = "#dddddd"
+affix-foreground = "#555555"
+margin = 8
+padding-left = 1
+prefix = "[ " 
+suffix = " ]"
+underline = true
+
+[desktop]
+command = "printf 'This are is the desktop tags'"
+label = "WORKSPACE"
+interval = 5
+
+[windows]
+command = "/home/luis/.config/succade/modules/tag_windows_module 1"
+label = "WIN"
+live = true
+
+[test]
+command = "printf 'jejeje'"
+label = "Juanito"
+
+[date]
+command = "/home/luis/.config/succade/modules/clock_module"
+label = "DATE"
+live = true

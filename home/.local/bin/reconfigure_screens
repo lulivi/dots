@@ -19,11 +19,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Check current xrandr information and reconfigure the screens in accordingly."""
+import argparse
 import re
 import subprocess
 import sys
+import tempfile
 
-from enum import Enum
 from pathlib import Path
 from typing import List, NamedTuple
 
@@ -31,6 +32,7 @@ from rofiwrapper import select_option
 
 SCREEN_LAYOUT_DIR = Path().home().joinpath(".screenlayout")
 LOG_PREFIX = "[Reconfigure Screens]"
+MULTI_MONITORCACHE_FILE: Path = Path(tempfile.gettempdir()).joinpath("reconfigure-screens-cache")
 
 
 class ScreenState(NamedTuple):
@@ -40,6 +42,18 @@ class ScreenState(NamedTuple):
 
 
 def main():
+    args = parse_args()
+    configurations: List[str] = [
+        "1",
+        "home",
+        "office2",
+        "office3",
+    ]
+
+    if args.configuration and args.configuration in configurations:
+        select_display(args.configuration)
+        return
+
     xrandr_output = subprocess.run(
         ["xrandr"], stdout=subprocess.PIPE, universal_newlines=True
     ).stdout
@@ -54,24 +68,51 @@ def main():
     if not screens:
         sys.exit(f"{LOG_PREFIX} ERROR: No screens found")
 
-    connected_displays = ", ".join(f"{screen.name}:{screen.resolution}" for screen in screens)
-    configurations: List[str] = [
-        "1",
-        "home",
-        "office2",
-        "office3",
-    ]
-
     select_display("1")
-    selected_configuration: int = select_option(
-        prompt="Select configuration", options=configurations, message=connected_displays
-    )
-    select_display(configurations[selected_configuration])
+
+    if len(screens) == 1:
+        send_notification("Reconfigure screens", "There is only one screen, nothing to do.")
+        return
+
+    if MULTI_MONITORCACHE_FILE.exists():
+        cached_configuration = MULTI_MONITORCACHE_FILE.read_text().strip()
+        if cached_configuration in configurations:
+            select_display(cached_configuration)
+            send_notification(
+                "Reconfigure screens",
+                "Using cached configuration in"
+                f" {MULTI_MONITORCACHE_FILE} ({cached_configuration}). Delete to select a"
+                " different configuration",
+            )
+            return
+
+    connected_displays = ", ".join(f"{screen.name}:{screen.resolution}" for screen in screens)
+
+    selected_configuration: str = configurations[
+        select_option(
+            prompt="Select configuration",
+            options=configurations,
+            message=connected_displays,
+        )
+    ]
+    select_display(selected_configuration)
+    MULTI_MONITORCACHE_FILE.touch()
+    MULTI_MONITORCACHE_FILE.write_text(selected_configuration)
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--configuration")
+    return parser.parse_args()
 
 
 def select_display(script: str):
     subprocess.run([str(SCREEN_LAYOUT_DIR.joinpath(f"{script}.sh"))])
     subprocess.run(["leftwm-command", "SoftReload"])
+
+
+def send_notification(title: str, message: str = ""):
+    subprocess.run(["notify-send", title, message])
 
 
 if __name__ == "__main__":

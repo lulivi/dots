@@ -13,7 +13,7 @@
     modkey: "Mod4",
     mousekey: "Mod4",
     workspaces: [],
-    tags: ["Shell", "WWW", "Code", "Chat", "♪ ♫ ♪", "y", "z", "t"],
+    tags: ["Shell", "WWW", "Code", "Chat", "♫", "y", "z", "t"],
     max_window_width: None,
     layouts: [
         "Monocle",
@@ -412,7 +412,22 @@
         (
             command: Execute,
             modifier: ["modkey", "Shift"], key: "r",
-            value: "~/.local/bin/reconfigure_screens force",
+            value: "~/.local/bin/reconfigure_screens",
+        ),
+        (
+            command: Execute,
+            modifier: ["modkey"], key: "F1",
+            value: "~/.local/bin/reconfigure_screens --configuration 1",
+        ),
+        (
+            command: Execute,
+            modifier: ["modkey"], key: "F2",
+            value: "~/.local/bin/reconfigure_screens --configuration home",
+        ),
+        (
+            command: Execute,
+            modifier: ["modkey"], key: "F3",
+            value: "~/.local/bin/reconfigure_screens --configuration office2",
         ),
     ],
     state_path: None,

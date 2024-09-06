@@ -271,6 +271,12 @@
       "python-pywal"
     ]
   },
+  ".config/succade": {
+    "description": "Succade configuration.",
+    "packages": [
+      "libinih-dev"
+    ]
+  },
   ".config/dunst/dunstrc": {
     "description": "Dunst notification daemon main configuration file.",
     "packages": [

@@ -1,5 +1,6 @@
 #!/home/luis/.venvs/rofi/bin/python
 
+import os
 import subprocess
 import tomllib
 
@@ -8,6 +9,8 @@ from pathlib import Path
 from rofiwrapper import exit_with_error, select_option
 
 SHORTCUTS_FILE: Path = Path.home().joinpath(".shortcuts").resolve()
+DOTS_LOCAL_BIN: Path = Path(__file__).resolve().parent
+HOME_BIN: Path = Path.home().joinpath("bin").resolve()
 
 
 def main():
@@ -23,6 +26,18 @@ def main():
         for name, command in items.items():
             parsed_shortcuts[f"{section}: {name}"] = command
 
+    parsed_shortcuts.update({
+        f"Local script: {script.stem}": str(script)
+        for script in DOTS_LOCAL_BIN.iterdir()
+        if is_executable(script)
+    })
+
+    parsed_shortcuts.update({
+        f"Bin script: {script.stem}": str(script)
+        for script in HOME_BIN.iterdir()
+        if is_executable(script)
+    })
+
     shortcut_keys = list(parsed_shortcuts)
 
     index = select_option(prompt="Shortcut", options=shortcut_keys)
@@ -31,6 +46,10 @@ def main():
         return
 
     run_shortcut(parsed_shortcuts[shortcut_keys[index]])
+
+
+def is_executable(file: Path) -> bool:
+    return file.is_file() and os.access(file, os.X_OK)
 
 
 def run_shortcut(shortcut_command: str) -> None:

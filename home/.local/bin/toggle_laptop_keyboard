@@ -19,6 +19,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Disable or enable laptop keyboard."""
+import argparse
 import re
 import subprocess
 
@@ -30,10 +31,12 @@ LOG_PREFIX = "[Toggle laptop keyboard]"
 class KeyboardState:
     def __init__(self, id: str, is_floating: Optional[str] = None) -> None:
         self.id: str = id
+        self.current_state: str = is_floating and "disabled" or "enabled"
         self.action: str = is_floating and "enable" or "disable"
 
 
 def main():
+    args = parse_arguments()
     xrandr_output = subprocess.run(
         ["xinput", "list"], stdout=subprocess.PIPE, universal_newlines=True
     ).stdout
@@ -48,8 +51,22 @@ def main():
 
     keyboard_state = KeyboardState(**match.groupdict())
 
-    print(f"{LOG_PREFIX} Setting the keyboard to `{keyboard_state.action}`")
+    if args.check:
+        print(keyboard_state.current_state)
+        return
+
+    message = f"{LOG_PREFIX} Setting the keyboard to `{keyboard_state.action.upper()}`"
+    print(message)
+    send_notification(title=message)
     subprocess.run(["xinput", keyboard_state.action, keyboard_state.id])
+
+def parse_arguments() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--check", action="store_true")
+    return parser.parse_args()
+
+def send_notification(title: str, message: str = ""):
+    subprocess.run(["notify-send", title, message])
 
 
 if __name__ == "__main__":
