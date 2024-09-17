@@ -108,7 +108,7 @@ def parse_args() -> argparse.Namespace:
 
 def select_display(script: str):
     subprocess.run([str(SCREEN_LAYOUT_DIR.joinpath(f"{script}.sh"))])
-    subprocess.run(["leftwm-command", "SoftReload"])
+    subprocess.run(["/home/luis/bin/reload_wm.sh"])
 
 
 def send_notification(title: str, message: str = ""):

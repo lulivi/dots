@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 #        d8888 888     888 88888888888 .d88888b.
 #       d88888 888     888     888    d88P" "Y88b
@@ -18,33 +18,30 @@
 # Y88b  d88P    888   d8888888888 888  T88b     888
 #  "Y8888P"     888  d88P     888 888   T88b    888
 
+STEPS_DIR="$(cd "$(dirname "$0")" && pwd)"
+RESOURCES_DIR="$STEPS_DIR/resources/"
 
-# Feh wallpapers
-if [ -d "/mnt/Data/wallpapers" ]; then
-    dir="/mnt/Data/wallpapers/*"
-else
-    dir="$HOME/Pictures/*"
-fi
-feh --no-fehbg --randomize --bg-scale $dir
+"$RESOURCES_DIR/teardown.sh"
 
-# Sxhkd keybindings
-pkill sxhkd
+# Wallpaper
+feh --no-fehbg --randomize --bg-scale $HOME/img/backgrounds
+
+# Compositor
+compton -b --xrender-sync --xrender-sync-fence &
+
+# Key-bindings
 sxhkd &
 
-# Clipman clipboard manager
-pkill clipman
-xfce4-clipman &
+# Notifications
+dunst &
 
-# Dunst notifications
-"$HOME/.config/dunst/launch_dunst.sh" &
+# Bar
+make --directory "$RESOURCES_DIR/wmutils" dist
 
-# Compton compositor
-pkill -x compton
-compton -b \
-        --xrender-sync \
-        --xrender-sync-fence \
-        --config "$HOME/.config/compton/compton.conf" &
-
-# Polybar
-pkill -x polybar
-polybar bar1 &
+polybar --list-monitors | while read monitor ;do
+    bar=secondary
+    case $monitor in
+        *primary*) bar=primary ;;
+    esac
+    POLYBAR_MONITOR="${monitor%%:*}" polybar "$bar" &
+done

@@ -238,11 +238,8 @@
       "tmux"
     ]
   },
-  ".config/bspwm/autostart.sh": {
-    "description": "bspwm app-autostart script."
-  },
-  ".config/bspwm/bspwmrc": {
-    "description": "bspwm configuration file.",
+  ".config/bspwm": {
+    "description": "bspwm configuration files.",
     "packages": [
       "bspwm"
     ]
@@ -289,7 +286,7 @@
       "python-pywall"
     ]
   },
-  ".config/polybar/config": {
+  ".config/polybar": {
     "description": "Polybar main configuration file.",
     "packages": [
       "aur/polybar"

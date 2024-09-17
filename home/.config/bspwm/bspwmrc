@@ -1,77 +1,9 @@
 #!/usr/bin/env sh
 
-base_dir="$(realpath "$(dirname "$0")")"
+STEPS_DIR="$( cd "$( dirname "$0" )" && pwd )/steps"
 
-# 888b     d888 888b    888 88888888888 .d88888b.  8888888b.
-# 8888b   d8888 8888b   888     888    d88P" "Y88b 888   Y88b
-# 88888b.d88888 88888b  888     888    888     888 888    888
-# 888Y88888P888 888Y88b 888     888    888     888 888   d88P
-# 888 Y888P 888 888 Y88b888     888    888     888 8888888P"
-# 888  Y8P  888 888  Y88888     888    888     888 888 T88b
-# 888   "   888 888   Y8888     888    Y88b. .d88P 888  T88b
-# 888       888 888    Y888     888     "Y88888P"  888   T88b
-
-
-bspc monitor -d I II III IV V VI VII # VIII IX X
-
-
-#  .d8888b.   .d88888b.  888b    888 8888888888 8888888 .d8888b.
-# d88P  Y88b d88P" "Y88b 8888b   888 888          888  d88P  Y88b
-# 888    888 888     888 88888b  888 888          888  888    888
-# 888        888     888 888Y88b 888 8888888      888  888
-# 888        888     888 888 Y88b888 888          888  888  88888
-# 888    888 888     888 888  Y88888 888          888  888    888
-# Y88b  d88P Y88b. .d88P 888   Y8888 888          888  Y88b  d88P
-#  "Y8888P"   "Y88888P"  888    Y888 888        8888888 "Y8888P88
-
-
-xrdb_get () {
-    output="$(xrdb -q | grep -e "$1:" | head -n1 | cut -f2)"
-    default="$2"
-    printf '%s' "${output:-$default}"
-}
-
-bspc config normal_border_color   "$(xrdb_get 'color19' '#2b303b')"
-bspc config active_border_color   "$(xrdb_get 'color19' '#2b303b')"
-bspc config focused_border_color  "$(xrdb_get 'color8' '#65737e')"
-bspc config presel_feedback_color "$(xrdb_get 'color3' '#ebcb8b')"
-
-bspc config border_width          "$(xrdb_get 'border_width' '1')"
-bspc config window_gap            "$(xrdb_get 'window_gap' '0')"
-
-bspc config split_ratio           0.52
-bspc config borderless_monocle    false
-bspc config gapless_monocle       true
-bspc config focus_follows_pointer true
-
-
-# 8888888b.  888     888 888      8888888888 .d8888b.
-# 888   Y88b 888     888 888      888       d88P  Y88b
-# 888    888 888     888 888      888       Y88b.
-# 888   d88P 888     888 888      8888888    "Y888b.
-# 8888888P"  888     888 888      888           "Y88b.
-# 888 T88b   888     888 888      888             "888
-# 888  T88b  Y88b. .d88P 888      888       Y88b  d88P
-# 888   T88b  "Y88888P"  88888888 8888888888 "Y8888P"
-
-
-bspc rule -a URxvt desktop='^1' follow=on
-
-bspc rule -a Chromium desktop='^2'
-bspc rule -a Firefox desktop='^2'
-
-bspc rule -a Emacs desktop='^3' state=tiled follow=on
-
-bspc rule -a Evince desktop='^4'
-
-bspc rule -a TelegramDesktop desktop='^5' follo=on
-
-bspc rule -a Gimp desktop='^7' state=tiled follow=on
-
-
-# Autostart
-"$base_dir/autostart.sh" &
-
-# End script
-sleep 1
-notify-send -a Bspwm "Bspwm Started" "Bspwm has started normally"
+# Run steps
+for step_script in $STEPS_DIR/*.sh; do
+    printf 'Running step `%s`...\n' "$step_script"
+    "$step_script"
+done
