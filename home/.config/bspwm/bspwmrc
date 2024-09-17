@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-STEPS_DIR="$( cd "$( dirname "$0" )" && pwd )/steps"
+STEPS_DIR="$(cd "$(dirname "$0")" && pwd)/steps"
 
 # Run steps
 for step_script in $STEPS_DIR/*.sh; do
