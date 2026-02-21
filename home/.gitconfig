@@ -5,7 +5,7 @@
     autocrlf = input
 
 [interactive]
-    diffFilter = delta
+#     diffFilter = delta
 
 [commit]
     template = ~/.gitcommit

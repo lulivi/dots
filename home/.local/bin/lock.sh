@@ -23,6 +23,7 @@
 # 
 # Dependencies: maim, imagemagick, i3lock
 
+old_status="$(playerctl status)"
 playerctl pause &>/dev/null
 
 lock_screen_image="$1"
@@ -48,4 +49,8 @@ _f() {
 }; _f
 
 # Lock screen
-/usr/bin/i3lock -e -p default -i "$lock_screen_image"
+/usr/bin/i3lock --ignore-empty-password --image="$lock_screen_image" --nofork
+
+if [ "Playing" = "$old_status" ]; then
+    playerctl play &>/dev/null
+fi

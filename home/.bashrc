@@ -9,9 +9,8 @@ prepend_paths_to_variable() {
     local path_variable_name="$1"
     eval path_variable_contents="\$$path_variable_name"
     shift 1
-    local new_paths="$*"
 
-    for new_path in $new_paths; do
+    for new_path in $*; do
         [[ $path_variable_contents == *$new_path* ]] && {
             printf '[WARNING] "%s" path already in $%s.\n' "$new_path" "$path_variable_name"
             continue
@@ -97,3 +96,15 @@ fi
 # SSH
 eval "$(ssh-agent)"
 
+bonsai() {
+    local download_dir="$HOME/.cache/bonsai_repo"
+    git clone https://gitlab.com/jallbrit/cbonsai "$download_dir" 2>/dev/null
+    make -C "$download_dir" &>/dev/null
+    "$download_dir/cbonsai" -p
+}; bonsai
+
+
+
+
+# opencode
+export PATH=/home/luis/.opencode/bin:$PATH

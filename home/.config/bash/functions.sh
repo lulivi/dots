@@ -54,3 +54,11 @@ mksrc() {
     local _venv="${2:-.venv}"
     python${_pyver} -m venv ${_venv} && source ${_venv}/bin/activate
 }
+
+# code() {
+# 	nohup code ${1:-.} &> /dev/null &
+# }
+
+cheatsh() {
+    curl cheat.sh/"$1"
+}

@@ -15,7 +15,7 @@ alias restart_qtile="qtile cmd-obj -o cmd -f restart"
 
 ## Misc
 alias t="tmux"
-alias dgit="GIT_PAGER='less' git"
+alias dgit='git -c interactive.diffFilter= -c core.pager=less'
 alias q="exit"
 alias r="reset"
 alias weather="curl wttr.in/~Granada"
@@ -34,6 +34,7 @@ alias p="podman"
 alias pi="podman image"
 alias pc="podman container"
 alias pcode="poetry run code ."
+alias docker_multiarch="docker run --rm --privileged multiarch/qemu-user-static --reset -p yes -c yes"
 
 # Entertainment
 alias matrix="cmatrix -b -a -u 2 -C yellow"
@@ -47,9 +48,13 @@ alias dmesg='dmesg --color=auto --reltime --human --nopager --decode'
 alias free='free -mht'
 alias pacman='pacman --color=auto'
 alias bar='lemonbar -b -g x20 -p'
+alias pr="poetry run"
+alias prf="poetry run tox -e fmt"
+alias gp="git pull"
 
-## Playerctl
-alias pp="playerctl play-pause; exit"
-alias nxt="playerctl next; exit"
-alias prv="playerctl previous; exit"
-alias stp="playerctl stop; exit"
+# ## Playerctl
+# alias pp="playerctl play-pause; exit"
+# alias nxt="playerctl next; exit"
+# alias prv="playerctl previous; exit"
+# alias stp="playerctl stop; exit"
+
