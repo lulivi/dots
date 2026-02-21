@@ -35,21 +35,18 @@ Some usage examples:
 
 """
 import argparse
-import contextlib
 import functools
-import json
-import os
+import tomllib
 import subprocess
 import sys
 
 from argparse import Namespace
-from enum import Enum
 from pathlib import Path
 from typing import List, NamedTuple, Set
 
 HOME_PATH: Path = Path.home()
 AUTOMATION_PATH: Path = Path(__file__).resolve().parent
-ALL_FILES_PATH: Path = (AUTOMATION_PATH / "files.json").resolve()
+ALL_FILES_PATH: Path = (AUTOMATION_PATH / "files.toml").resolve()
 SEL_FILES_PATH: Path = (AUTOMATION_PATH / "selected_files.txt").resolve()
 REPO_HOME_PATH: Path = (AUTOMATION_PATH.parent / "home").resolve()
 
@@ -189,7 +186,7 @@ def link_selected_files(
     def not_installed_dependencies(dependencies: List[str], installed_packages: Set[str]) -> bool:
         return set(dependencies) - installed_packages
 
-    def skip_link(key: str, target_path: Path, link_name_path: Path) -> bool:
+    def should_skip_link(key: str, target_path: Path, link_name_path: Path) -> bool:
         """Check whether we should skip linking this current file.
 
         :param key: file key.
@@ -251,7 +248,7 @@ def link_selected_files(
                 link_name_path.unlink()
             except FileNotFoundError:
                 pass
-        elif skip_link(key, target_path, link_name_path):
+        elif should_skip_link(key, target_path, link_name_path):
             return
 
         link_name_path.symlink_to(target_path, target_path.is_dir())
@@ -358,20 +355,36 @@ def load_files_list(args: Namespace) -> List[HomeFile]:
 
     """
     # Load all files metadata
-    with ALL_FILES_PATH.open() as f:
+    with ALL_FILES_PATH.open("rb") as f:
         try:
-            all_files = json.load(f)
-        except json.JSONDecodeError:
-            sys.exit(f"ERROR: Problem decoding `{str(ALL_FILES_PATH)}` file")
+            all_files = tomllib.load(f)
+        except tomllib.TOMLDecodeError as error:
+            sys.exit(
+                f"ERROR: Problem decoding `{str(ALL_FILES_PATH)}` file.\n"
+                f"TOMLDecodeError: {error}"
+            )
 
-    # Obtain selected keys
+
+    # Expand folder prefixes in selected_files.txt
     if args.all:
         selected_files = list(all_files)
     elif args.only:
         selected_files = [args.only]
     else:
         with SEL_FILES_PATH.open() as f:
-            selected_files = list(map(str.strip, f.read().splitlines()))
+            selected_files_raw = list(map(str.strip, f.read().splitlines()))
+        selected_files = []
+        for entry in selected_files_raw:
+            # Si el entry es exactamente una key, lo agregamos
+            if entry in all_files:
+                selected_files.append(entry)
+            else:
+                # Si es un prefijo, agregamos todas las keys que comiencen con ese prefijo
+                expanded = [k for k in all_files if k.startswith(entry)]
+                if expanded:
+                    selected_files.extend(expanded)
+                else:
+                    print(f"WARNING: `{entry}` no se encontró como key ni prefijo en `{str(ALL_FILES_PATH)}`.")
 
     chosen_files: List[HomeFile] = []
 
