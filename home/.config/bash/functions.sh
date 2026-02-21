@@ -50,15 +50,13 @@ mkcd() {
 # mksrc - create a Python virtual environment and source it
 # usage: mksrc [<python version> [<venv name>]]
 mksrc() {
-    local _pyver="${1:-3.7}"
+    local _pyver="${1:-3}"
     local _venv="${2:-.venv}"
     python${_pyver} -m venv ${_venv} && source ${_venv}/bin/activate
 }
 
-# code() {
-# 	nohup code ${1:-.} &> /dev/null &
-# }
-
+# cheatsh - query cheat.sh from the terminal
+# usage: cheatsh <query>
 cheatsh() {
     curl cheat.sh/"$1"
 }
