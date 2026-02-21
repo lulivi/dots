@@ -9,14 +9,28 @@
 # 888   "   888 Y88b. .d88P 888   Y8888   888       888    Y88b. .d88P 888  T88b  Y88b  d88P
 # 888       888  "Y88888P"  888    Y888 8888888     888     "Y88888P"  888   T88b  "Y8888P"
 
+get_monitor_geometry () {
+    local no_priority="${monitor%(*}"
+    printf '%s' "${no_priority#*:}"
+}
+
 polybar --list-monitors | while read monitor; do
     monitor_name="${monitor%%:*}"
+    monitor_geometry="$(get_monitor_geometry "$monitor")"
     case $monitor in
-        *primary*)
-            bspc monitor $monitor_name --reset-desktops Shell WWW Code Chat ♫ y z t
+        (*primary*)
+            notify-send "Configuring PRIMARY monitor $monitor with geometry $monitor_geometry"
+            bspc monitor $monitor_name \
+                --rectangle "$monitor_geometry" \
+                --reset-desktops Shell WWW Code Chat ♫ y z t
             ;;
-        *)
-            bspc monitor $monitor_name --reset-desktops Aux
+        (*)
+            notify-send "Configuring SECONDARY monitor $monitor with geometry $monitor_geometry"
+            bspc monitor $monitor_name \
+                --rectangle "$monitor_geometry" \
+                --reset-desktops Aux
             ;;
     esac
 done
+
+bspc wm --adopt-orphans

@@ -14,14 +14,14 @@ for rule in $(bspc rule --list | cut -d'=' -f1); do
     bspc rule --remove $rule
 done
 
-bspc rule --add Chromium desktop='^2'
+bspc rule --add Chromium desktop='^1'
 bspc rule --add librewolf-default desktop='^2'
 
-bspc rule --add Code desktop='^3'
+# bspc rule --add Code desktop='^3'
 
-bspc rule --add TelegramDesktop desktop='^4' follow=on
-bspc rule --add Slack desktop='^4' state=tiled follow=on
+bspc rule --add TelegramDesktop desktop='^4'
+bspc rule --add Slack state=tiled desktop='^4'
 
-bspc rule --add Spotify desktop='^4' state=tiled follow=on
+bspc rule --add Spotify state=tiled desktop='^5'
 
-bspc rule --add Gimp desktop='^6' state=tiled follow=on
+bspc rule --add brave-browser state=tiled desktop='^6'

@@ -1,4 +1,4 @@
-default: build
+default: build install
 
 .PHONY: build
 build:
@@ -8,6 +8,6 @@ build:
 run:
 	cargo run
 
-.PHONY: dist
-dist: build
+.PHONY: install
+install:
 	cp target/release/wlist ~/bin/

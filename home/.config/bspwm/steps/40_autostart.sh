@@ -18,8 +18,9 @@
 # Y88b  d88P    888   d8888888888 888  T88b     888
 #  "Y8888P"     888  d88P     888 888   T88b    888
 
-STEPS_DIR="$(cd "$(dirname "$0")" && pwd)"
+STEPS_DIR="$(dirname "$(realpath $0)")"
 RESOURCES_DIR="$STEPS_DIR/resources/"
+source "$RESOURCES_DIR/common.sh"
 
 "$RESOURCES_DIR/teardown.sh"
 
@@ -32,11 +33,11 @@ compton -b --xrender-sync --xrender-sync-fence &
 # Key-bindings
 sxhkd &
 
-# Notifications
+# Notificationspo
 dunst &
 
 # Bar
-make --directory "$RESOURCES_DIR/wmutils" dist
+make --directory "$RESOURCES_DIR/wmutils"
 
 polybar --list-monitors | while read monitor ;do
     bar=secondary

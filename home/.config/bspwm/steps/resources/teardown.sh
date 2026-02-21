@@ -1,13 +1,13 @@
 #!/usr/bin/env sh
 
 # Compositor
-pkill -x compton
+killall compton
 
 # Keys
-pkill -x dunst
+killall dunst
 
 # Notifications
-pkill -x sxhkd
+killall sxhkd
 
 # Bar
-pkill -x polybar
+killall polybar

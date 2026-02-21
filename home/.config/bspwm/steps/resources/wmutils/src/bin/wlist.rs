@@ -27,8 +27,8 @@ fn main() {
         }),
     };
 
-    let underline_colour: String= env::var("UNDERLINE_COLOUR").unwrap_or_else(|_| {
-        eprintln!("Error: COLOR_FG variable not provided");
+    let underline_colour: String = env::var("UNDERLINE_COLOUR").unwrap_or_else(|_| {
+        eprintln!("Error: UNDERLINE_COLOUR variable not provided");
         std::process::exit(1)
     });
     let update_cmd: Child = Command::new("bspc")
@@ -88,10 +88,7 @@ fn print_desktop_clients(monitor_string: &str, underline_colour: &String) {
         string_prefix = String::from("");
         string_suffix = String::from("");
         if &client_id == selected_desktop["focusedNodeId"].as_number().unwrap() {
-            string_prefix = format!(
-                "%{{u{}}}",
-                underline_colour
-            );
+            string_prefix = format!("%{{u{}}}", underline_colour);
             string_suffix = String::from(r"%{-u}");
         }
         client_formats.push(format!(
@@ -121,7 +118,8 @@ fn find_desktop_clients(node: &Value, found_clients: &mut Vec<(Number, String)>)
 
 fn format_client_name(node: &Value) -> (Number, String) {
     let mut raw_client_name: String = format!(
-        "{} :: {}",
+        "{}{} :: {}",
+        get_client_state_flag(node),
         node["client"].as_object().unwrap()["className"]
             .as_str()
             .unwrap()
@@ -142,6 +140,30 @@ fn format_client_name(node: &Value) -> (Number, String) {
         node["id"].as_number().unwrap().clone(),
         format!("[ {: ^32} ]", raw_client_name),
     );
+}
+
+fn get_client_state_flag(node: &Value) -> String {
+    let mut flag_string: String = String::from("");
+
+    if node["hidden"].as_bool().unwrap() {
+        flag_string.push('H');
+    } else if node["sticky"].as_bool().unwrap() {
+        flag_string.push('S');
+    } else if node["private"].as_bool().unwrap() {
+        flag_string.push('P');
+    } else if node["locked"].as_bool().unwrap() {
+        flag_string.push('L');
+    } else if node["marked"].as_bool().unwrap() {
+        flag_string.push('M');
+    } else if node["client"].as_object().unwrap()["urgent"].as_bool().unwrap() {
+        flag_string.push('U');
+    }
+
+    if ! flag_string.is_empty() {
+        flag_string = format!("<{}> ", flag_string)
+    }
+
+    flag_string
 }
 
 fn get_client_name(client_id: &Value) -> String {

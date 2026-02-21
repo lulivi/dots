@@ -12,12 +12,15 @@
 bspc config normal_border_color   #2b303b
 bspc config active_border_color   #2b303b
 bspc config focused_border_color  #65737e
-bspc config presel_feedback_color #ebcb8b
+bspc config presel_feedback_color #aa0000
 
 bspc config border_width          3
 bspc config window_gap            5
 
 bspc config split_ratio           0.52
 bspc config borderless_monocle    false
-bspc config gapless_monocle       true
+bspc config gapless_monocle       false
 bspc config focus_follows_pointer true
+
+bspc config remove_unplugged_monitors true
+bspc config merge_overlapping_monitors true

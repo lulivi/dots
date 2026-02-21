@@ -89,7 +89,7 @@ super + {_,shift +} {h,j,k,l}
 
 ## focus the next/previous node in the current desktop
 super + {n,p}
-    bspc node --focus {next,prev}.local
+    bspc node --focus {next,prev}.local.window
 
 # ## focus the older or newer node in the focus history
 # super + {o,i}
@@ -113,9 +113,9 @@ super + control + {h,j,k,l}
 #  88"""  88"Yb  88""   o.`Y8b 88""   88  .o 88""   Yb        88
 #  88     88  Yb 888888 8bodP' 888888 88ood8 888888  YboodP   88
 
-# ## preselect the direction
-# super + control + {h,j,k,l}
-#         bspc node -p {west,south,north,east}
+## preselect the direction
+super + control + shift + {h,j,k,l}
+    bspc node --presel-dir {west,south,north,east}
 
 # ## preselect the ratio
 # super + control + {1-9}
@@ -125,9 +125,9 @@ super + control + {h,j,k,l}
 # super + control + space
 #     bspc node -p cancel
 
-# ## cancel the preselection for the focused desktop
-# super + control + shift + space
-#     bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
+## cancel the preselection for the focused desktop
+super + control + shift + c
+    bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
 
 #  8b    d8  dP"Yb  Yb    dP 888888        dP
 #  88b  d88 dP   Yb  Yb  dP  88__         dP
