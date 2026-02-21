@@ -1,0 +1,16 @@
+# Profile 1: Undocked (Laptop only)
+profile undocked {
+    output eDP-1 enable
+}
+
+# Profile 2: Docked (Laptop screen disabled, home external monitor enabled)
+profile docked {
+    output eDP-1 disable
+    output 'ViewSonic Corporation VA2719-2K UZJ194220782' mode 2560x1440@59.951Hz
+}
+
+# Profile 3: Docked (Laptop screen disabled, work external monitor enabled)
+# profile docked_work {
+#     output eDP-1 disable
+#     output 'Work Monitor' mode 1920x1080@60Hz
+# }
