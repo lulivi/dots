@@ -41,6 +41,7 @@ prepend_paths_to_variable "PATH" \
     "$HOME/.local/bin" \
     "$HOME/.cargo/bin" \
     "$HOME/.screenlayout" \
+    "$HOME/.opencode/bin" \
     "$HOME/bin"
 
 export PATH=$PATH:/opt/tools/python/3.6/bin
@@ -98,14 +99,10 @@ eval "$(ssh-agent)"
 
 bonsai() {
     local download_dir="$HOME/.cache/bonsai_repo"
+    mkdir -p $download_dir
     git clone https://gitlab.com/jallbrit/cbonsai "$download_dir" 2>/dev/null
     make -C "$download_dir" &>/dev/null
     "$download_dir/cbonsai" -p
 }; bonsai
 
 
-
-
-# opencode
-export PATH=/home/luis/.opencode/bin:$PATH
-. "$HOME/.cargo/env"

@@ -190,10 +190,6 @@ description = "Top configuration file."
 description = "Qtile tiling manager configuration."
 packages = ["libpangocairo-1.0-0", "libiw-dev", "python3-tk"]
 
-[".config/tmux/tmux.conf.local"]
-description = "Tmux personalization using oh my tmux config."
-packages = ["tmux"]
-
 [".config/bspwm"]
 description = "bspwm configuration files."
 packages = ["bspwm"]
@@ -247,3 +243,7 @@ description = "Xresources brother."
 [".config/ncspot/config.toml"]
 description = "NCurses Spotify client."
 packages = ["ncspot"]
+
+[".tmux.conf.local"]
+description = "Tmux personalization using oh my tmux config."
+packages = ["tmux"]
