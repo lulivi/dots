@@ -34,11 +34,12 @@ Some usage examples:
       python backstore.py -d
 
 """
+
 import argparse
 import functools
-import tomllib
 import subprocess
 import sys
+import tomllib
 
 from argparse import Namespace
 from pathlib import Path
@@ -239,7 +240,8 @@ def link_selected_files(
         not_installed_package_deps = not_installed_dependencies(file.packages, installed_packages)
         if not_installed_package_deps:
             print_style(
-                f"{key}: Missing some dependencies for the selected file: {not_installed_package_deps}",
+                f"{key}: Missing some dependencies for the selected file:"
+                f" {not_installed_package_deps}",
                 colour.fg_yellow,
             )
 
@@ -348,58 +350,63 @@ def delete_selected_links(selected_files: List[HomeFile], force: bool = False) -
 
 
 def load_files_list(args: Namespace) -> List[HomeFile]:
-    """Load selected files.
+    """Load selected files based on arguments and files metadata."""
 
-    :param load_all: whether to select all files located in
-        :data:`ALL_FILES_PATH`.
+    def load_all_files_metadata() -> dict:
+        """Load all files metadata from TOML file."""
+        with ALL_FILES_PATH.open("rb") as f:
+            try:
+                return tomllib.load(f)
+            except tomllib.TOMLDecodeError as error:
+                sys.exit(
+                    f"ERROR: Problem decoding `{str(ALL_FILES_PATH)}` file.\nTOMLDecodeError: {error}"
+                )
 
-    """
-    # Load all files metadata
-    with ALL_FILES_PATH.open("rb") as f:
-        try:
-            all_files = tomllib.load(f)
-        except tomllib.TOMLDecodeError as error:
-            sys.exit(
-                f"ERROR: Problem decoding `{str(ALL_FILES_PATH)}` file.\n"
-                f"TOMLDecodeError: {error}"
+    def expand_selected_files(all_files: dict) -> list:
+        """Return the list of selected file keys based on CLI args and file prefixes."""
+        def read_selected_entries() -> list:
+            with SEL_FILES_PATH.open() as f:
+                return [line.strip() for line in f if line.strip()]
+
+        def expand_entry(entry: str, all_keys: list) -> list:
+            """Expand a single entry to matching keys (exact or prefix)."""
+            if entry in all_keys:
+                return [entry]
+            expanded = [k for k in all_keys if k.startswith(entry)]
+            if expanded:
+                return expanded
+            print(
+                f"WARNING: `{entry}` does not match any file key in"
+                f" `{str(ALL_FILES_PATH)}`."
             )
+            return []
 
+        if args.all:
+            return list(all_files)
+        elif args.only:
+            return [args.only]
+        else:
+            all_keys = list(all_files)
+            selected_entries = read_selected_entries()
+            selected_files = []
+            for entry in selected_entries:
+                selected_files.extend(expand_entry(entry, all_keys))
+            return selected_files
 
-    # Expand folder prefixes in selected_files.txt
-    if args.all:
-        selected_files = list(all_files)
-    elif args.only:
-        selected_files = [args.only]
-    else:
-        with SEL_FILES_PATH.open() as f:
-            selected_files_raw = list(map(str.strip, f.read().splitlines()))
-        selected_files = []
-        for entry in selected_files_raw:
-            # Si el entry es exactamente una key, lo agregamos
-            if entry in all_files:
-                selected_files.append(entry)
-            else:
-                # Si es un prefijo, agregamos todas las keys que comiencen con ese prefijo
-                expanded = [k for k in all_files if k.startswith(entry)]
-                if expanded:
-                    selected_files.extend(expanded)
-                else:
-                    print(f"WARNING: `{entry}` no se encontró como key ni prefijo en `{str(ALL_FILES_PATH)}`.")
+    def build_homefile_list(selected_files: list, all_files: dict) -> list:
+        """Create HomeFile objects from selected file keys."""
+        chosen_files: List[HomeFile] = []
+        for file_path in selected_files:
+            try:
+                chosen_files.append(HomeFile(file_path, **all_files[file_path]))
+            except KeyError:
+                sys.exit(f"ERROR: `{file_path}` was not found in `{str(ALL_FILES_PATH)}` file")
+            except TypeError as error:
+                sys.exit(f"ERROR parsing `{file_path}`: {str(error)}.")
+        return chosen_files
 
-    chosen_files: List[HomeFile] = []
-
-    # Create a list of selected files
-    for file_path in selected_files:
-        try:
-            chosen_files.append(HomeFile(file_path, **all_files[file_path]))
-        except KeyError:
-            sys.exit(f"ERROR: `{file_path}` was not found in `{str(ALL_FILES_PATH)}` file")
-        except TypeError as error:
-            sys.exit(f"ERROR parsing `{file_path}`: {str(error)}.")
-
-    # Check if every selected file exists in the repository if we are not
-    # deleting
-    if not args.delete:
+    def check_files_exist(chosen_files: list) -> None:
+        """Check if every selected file exists in the repository."""
         try:
             list(
                 map(
@@ -409,6 +416,14 @@ def load_files_list(args: Namespace) -> List[HomeFile]:
             )
         except FileNotFoundError as error:
             sys.exit(f"ERROR: File `{error.filename}` from selected files does not exist.")
+
+    # Main logic
+    all_files = load_all_files_metadata()
+    selected_files = expand_selected_files(all_files)
+    chosen_files = build_homefile_list(selected_files, all_files)
+
+    if not args.delete:
+        check_files_exist(chosen_files)
 
     return sorted(chosen_files, key=lambda file: file.relpath)
 
