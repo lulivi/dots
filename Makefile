@@ -12,25 +12,29 @@ lf: link-force
 df: delete-force
 
 print:
-	./automation/backstore.py --print
+	./automation/backstore.py print
 
 link:
-	./automation/backstore.py --link
+	./automation/backstore.py link
 
 delete:
-	./automation/backstore.py --delete
+	./automation/backstore.py delete
 
 print-all:
-	./automation/backstore.py --print --all
+	./automation/backstore.py print --all
 
 link-all:
-	./automation/backstore.py --link --all
+	./automation/backstore.py link --all
 
 delete-all:
-	./automation/backstore.py --delete --all
+	./automation/backstore.py delete --all
 
 link-force:
-	./automation/backstore.py --link --force
+	./automation/backstore.py link --force
 
 delete-force:
-	./automation/backstore.py --delete --force
+	./automation/backstore.py delete --force
+
+fmt:
+	isort --profile black ./automation/backstore.py
+	black ./automation/backstore.py
