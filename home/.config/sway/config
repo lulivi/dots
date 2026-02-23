@@ -115,7 +115,7 @@ bindsym $mod+Space exec env XLOCALEDIR=/usr/share/X11/locale /usr/local/bin/rofi
 bindsym $mod+Shift+q kill
 
 # Start your launcher
-bindsym $mod+d exec $menu
+bindsym $mod+d exec dmenu_run
 
 # Drag floating windows by holding down $mod and left mouse button.
 # Resize them with right mouse button + $mod.
@@ -205,6 +205,8 @@ bindsym $mod+Shift+0 move container to workspace number 10
 
 # Assignations
 assign [app_id="librewolf"] "2"
+assign [app_id="Slack"] "4"
+assign [app_id="google-chrome"] "1"
 
 ##          ###    ##    ##  #######  ##     ## ########
 ##         ## ##    ##  ##  ##     ## ##     ##    ##
