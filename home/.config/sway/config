@@ -34,7 +34,8 @@ include /etc/sway/config-vars.d/*
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
 
-output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
+# output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
+output * bg /home/luis/Pictures/pixel-space-wallpapers.png fill
 
 #
 # Example configuration:
@@ -44,6 +45,8 @@ output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
 # You can get the names of your outputs by running: swaymsg -t get_outputs
 
 # Managed by kanshi profiles, see ~/.config/kanshi/config
+# output * disable
+# output eDP-1 enable
 
 ### Idle configuration
 #
@@ -106,16 +109,11 @@ input "type:keyboard" {
 # Basics:
 #
 
-# Start a terminal
-bindsym $mod+Return exec $term
-
-bindsym $mod+Space exec env XLOCALEDIR=/usr/share/X11/locale /usr/local/bin/rofi -show combi -modi combi -combi-modi "window,drun,run"
-
 # Kill focused window
-bindsym $mod+Shift+q kill
+bindsym $mod+Shift+w kill
 
 # Start your launcher
-bindsym $mod+d exec dmenu_run
+# bindsym $mod+d exec dmenu_run
 
 # Drag floating windows by holding down $mod and left mouse button.
 # Resize them with right mouse button + $mod.
@@ -125,10 +123,25 @@ bindsym $mod+d exec dmenu_run
 floating_modifier $mod normal
 
 # Reload the configuration file
-bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r reload
 
 # Exit sway (logs you out of your Wayland session)
-bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+bindsym $mod+Shift+e exec swaynag -t warning \
+    -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' \
+    -B 'Yes, exit sway' 'swaymsg exit'
+
+# Programs
+
+bindsym $mod+Return exec $term
+
+bindsym $mod+Space exec ~/bin/rofillo
+bindsym $mod+Shift+Space exec ~/bin/bookmarks
+bindsym $mod+Control+Space exec ~/bin/shortcuts
+
+bindsym Print exec ~/bin/screenshot
+
+bindsym $mod+e exec nautilus
+
 
 ##     ##  #######  ##     ## #### ##    ##  ######
 ###   ### ##     ## ##     ##  ##  ###   ## ##    ##
@@ -229,19 +242,19 @@ bindsym $mod+v splitv
 # Switch the current container between different layout styles
 bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
-bindsym $mod+e layout toggle split
+bindsym $mod+z layout toggle split
 
 # Make the current focus fullscreen
 bindsym $mod+f fullscreen
 
 # Toggle the current focus between tiling and floating mode
-bindsym $mod+Shift+space floating toggle
+bindsym $mod+Shift+f floating toggle
 
 # Swap focus between the tiling area and the floating area
 # bindsym $mod+space focus mode_toggle
 
 # Move focus to the parent container
-bindsym $mod+a focus parent
+# bindsym $mod+a focus parent
 
 #
 # Scratchpad:
@@ -303,7 +316,7 @@ bar {
     colors {
         statusline #ffffff
         background #323232
-        inactive_workspace #32323200 #32323200 #5c5c5c
+        inactive_workspace #323232 #323232 #5c5c5c
     }
 }
 
@@ -321,7 +334,16 @@ include /etc/sway/config.d/*
 # Executions:
 #
 
-exec_always "pkill kanshi; kanshi &"
-exec_always "pkill dunst; dunst &"
+# include ~/.config/sway/config.d/display-$(displaycfg).conf
+# exec_always echo Applied display configuration for $display | tee /tmp/displaycfg.log
+
+exec_always "pkill dunst; dunst >/tmp/dunst.log 2>&1 &"
+exec_always "pkill kanshi; sleep 3 && kanshi >/tmp/kanshi.log 2>&1"
 
 exec_always "sleep 1; notify-send --app-name 'sway' 'Sway config reloaded'"
+
+
+# Manual home screen:
+#   swaymsg output "'ViewSonic Corporation VA2719-2K UZJ194220782'" enable position 1920 0
+#   swaymsg output eDP-1 disable
+#   swaymsg output eDP-1 enable

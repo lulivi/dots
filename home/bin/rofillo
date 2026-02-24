@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+export XLOCALEDIR="/usr/share/X11/locale"
+/usr/local/bin/rofi -show combi -modi combi -combi-modi "window,drun,run"

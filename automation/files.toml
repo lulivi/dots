@@ -46,6 +46,9 @@ description = "Create a window running qtile for testing"
 ["bin/reconfigure_screens"]
 description = ""
 
+["bin/rofillo"]
+description = "Run rofi"
+
 ["bin/screenshot"]
 description = "Select a square in your screen and save the capture in your clipboard."
 packages = ["maim", "xclip"]
