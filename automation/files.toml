@@ -8,6 +8,12 @@ description = "Append a new entry in GNU changelog style."
 description = "Open bookmarks with the default web browser."
 packages = ["yq"]
 
+["bin/change-sway-bg.sh"]
+description = "Change Sway background."
+
+["bin/change-sway-theme.sh"]
+description = "Change Sway theme."
+
 ["bin/cht"]
 description = "Change terminal title."
 

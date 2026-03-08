@@ -106,3 +106,6 @@ bonsai() {
 }; bonsai
 
 
+
+# opencode
+export PATH=/home/luis/.opencode/bin:$PATH

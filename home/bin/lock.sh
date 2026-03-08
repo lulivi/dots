@@ -23,8 +23,8 @@
 # 
 # Dependencies: maim, imagemagick, i3lock
 
-old_status="$(playerctl status)"
-playerctl pause &>/dev/null
+# old_status="$(playerctl status)"
+# playerctl pause &>/dev/null
 
 lock_screen_image="$1"
 
@@ -34,10 +34,10 @@ _f() {
     # Take a screenshot if no file is provided
     lock_screen_image="/tmp/screenshotblur.png"
     local screenshot_image="/tmp/screenshot"
-    maim "$screenshot_image"
+    grim "$screenshot_image"
 
     # Obtain the screen resolution with xdpyinfo and compute the sample value
-    res=""$(xdpyinfo | awk '/dimensions:/ {print $2}')"!"
+    res=""$(swaymsg -t get_outputs | jq -r '.[0].current_mode | "\(.width)x\(.height)"')"!"
     sample="$((${res%%x*} / 8))"
 
     # Pixelize the screenshot with imagemagik script
@@ -49,8 +49,8 @@ _f() {
 }; _f
 
 # Lock screen
-/usr/bin/i3lock --ignore-empty-password --image="$lock_screen_image" --nofork
+/usr/bin/swaylock --ignore-empty-password --image="$lock_screen_image"
 
-if [ "Playing" = "$old_status" ]; then
-    playerctl play &>/dev/null
-fi
+# if [ "Playing" = "$old_status" ]; then
+#     playerctl play &>/dev/null
+# fi

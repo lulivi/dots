@@ -19,11 +19,13 @@ command=~/bin/light
 interval=10
 
 [memory]
+command=~/.config/i3blocks/config.d/$BLOCK_NAME
 label=MEM
 separator=false
 interval=30
 
 [memory]
+command=~/.config/i3blocks/config.d/$BLOCK_NAME
 label=SWAP
 instance=swap
 separator=false
@@ -40,6 +42,7 @@ interval=10
 separator=false
 
 [disk]
+command=~/.config/i3blocks/config.d/$BLOCK_NAME
 label=DISK
 interval=30
 

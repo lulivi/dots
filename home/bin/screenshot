@@ -23,15 +23,27 @@
 # 
 # Dependencies: maim, xclip
 
-! [ "$(type maim 2>/dev/null)" ] && { printf 'Could not find maim\n'; exit 1; }
-! [ "$(type xclip 2>/dev/null)" ] && { printf 'Could not find xclip\n'; exit 1; }
-
-cmd="maim"
 image_path="/tmp/screenshot_$(date +%y%m%d_%H%M%S).png"
 
-[ "$1" = "screen" ] || cmd="maim -s"
+# X.org
+# ! [ "$(type maim 2>/dev/null)" ] && { printf 'Could not find maim\n'; exit 1; }
+# ! [ "$(type xclip 2>/dev/null)" ] && { printf 'Could not find xclip\n'; exit 1; }
 
-$cmd $image_path
-xclip -sel c -t image/png -i $image_path > /dev/null
+# cmd="maim"
+# image_path="/tmp/screenshot_$(date +%y%m%d_%H%M%S).png"
 
-printf '%s' "$image_path"
+# [ "$1" = "screen" ] || cmd="maim -s"
+
+# $cmd $image_path
+# xclip -sel c -t image/png -i $image_path > /dev/null
+
+# printf '%s' "$image_path"
+
+# Wayland
+
+! [ "$(type grim 2>/dev/null)" ] && { printf 'Could not find grim\n'; exit 1; }
+! [ "$(type slurp 2>/dev/null)" ] && { printf 'Could not find slurp\n'; exit 1; }
+! [ "$(type wl-copy 2>/dev/null)" ] && { printf 'Could not find wl-copy\n'; exit 1; }
+
+grim -g "$(slurp)" - > "$image_path"
+wl-copy < "$image_path"
