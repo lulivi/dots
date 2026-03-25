@@ -41,10 +41,10 @@ label=TEMP
 interval=10
 separator=false
 
-[disk]
-command=~/.config/i3blocks/config.d/$BLOCK_NAME
-label=DISK
-interval=30
+# [disk]
+# command=~/.config/i3blocks/config.d/$BLOCK_NAME
+# label=DISK
+# interval=30
 
 [wifi]
 command=~/bin/network
@@ -52,8 +52,8 @@ label=NET
 interval=10
 separator=false
 
-[bandwidth]
-interval=5
+# [bandwidth]
+# interval=5
 
 [battery]
 command=~/bin/battery

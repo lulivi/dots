@@ -30,7 +30,7 @@
     ch  = checkout
     chb = checkout -b
     lt  = tag -l --sort=-creatordate --format='%(creatordate:short): %(refname:short)'
-    st  = log --oneline
+    ll  = log --oneline
     superclean = clean -dfx
 
 [delta]
