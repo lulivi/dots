@@ -2,44 +2,44 @@ command=/usr/share/i3blocks/$BLOCK_NAME
 separator_block_width=15
 markup=none
 
+[audio-device]
+label=AUDIO
+command=~/bin/player i3
+interval=10
+
 [volume]
 label=VOL
 instance=Master
 interval=once
 signal=10
 
-[audio-device]
-label=AUDIO
-command=~/bin/player i3
-interval=10
+# [light]
+# label=LIGHT
+# command=~/bin/light
+# interval=10
 
-[light]
-label=LIGHT
-command=~/bin/light
-interval=10
+# [memory]
+# command=~/.config/i3blocks/config.d/$BLOCK_NAME
+# label=MEM
+# separator=false
+# interval=30
 
-[memory]
-command=~/.config/i3blocks/config.d/$BLOCK_NAME
-label=MEM
-separator=false
-interval=30
+# [memory]
+# command=~/.config/i3blocks/config.d/$BLOCK_NAME
+# label=SWAP
+# instance=swap
+# separator=false
+# interval=30
 
-[memory]
-command=~/.config/i3blocks/config.d/$BLOCK_NAME
-label=SWAP
-instance=swap
-separator=false
-interval=30
+# [load_average]
+# label=LOAD
+# interval=10
+# separator=false
 
-[load_average]
-label=LOAD
-interval=10
-separator=false
-
-[temperature]
-label=TEMP
-interval=10
-separator=false
+# [temperature]
+# label=TEMP
+# interval=10
+# separator=false
 
 # [disk]
 # command=~/.config/i3blocks/config.d/$BLOCK_NAME

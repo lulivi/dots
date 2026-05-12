@@ -192,18 +192,18 @@ zenburn
 
 # Theme name: if provided as first arg, use it; otherwise prompt with rofi
 if [ $# -ge 1 ]; then
-	THEME_NAME="$1"
+    THEME_NAME="$1"
 else
-	if command -v rofi >/dev/null 2>&1; then
-		selection=$(printf "%s\n" "$THEME_LIST" | sed '/^\s*$/d' | rofi -dmenu -i -p "Theme")
-		if [ -z "$selection" ]; then
-			echo "No theme selected; exiting."
-			exit 1
-		fi
-		THEME_NAME="$selection"
-	else
-		THEME_NAME="default-dark"
-	fi
+    if command -v rofi >/dev/null 2>&1; then
+        selection=$(printf "%s\n" "$THEME_LIST" | sed '/^\s*$/d' | rofi -dmenu -i -p "Theme")
+        if [ -z "$selection" ]; then
+            echo "No theme selected; exiting."
+            exit 1
+        fi
+        THEME_NAME="$selection"
+    else
+        THEME_NAME="default-dark"
+    fi
 fi
 
 

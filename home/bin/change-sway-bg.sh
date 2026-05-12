@@ -12,5 +12,5 @@ fi
 
 while true; do
     change_bg
-    sleep 600
+    sleep 7200
 done

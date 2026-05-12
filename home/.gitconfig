@@ -1,6 +1,6 @@
 [core]
     editor = vim
-    excludesfile = ~/.gitignore
+    excludesfile = ~/config/git/gitignore
     # pager = delta
     autocrlf = input
 
@@ -8,11 +8,14 @@
 #     diffFilter = delta
 
 [commit]
-    template = ~/.gitcommit
+    template = ~/config/git/gitcommit
 
 [pull]
     rebase = false
     ff = only
+
+; [push]
+;     autoSetupRemote = true
 
 [init]
     defaultBranch = main
@@ -29,6 +32,7 @@
     dc  = diff --cached
     ch  = checkout
     chb = checkout -b
+    l   = log --oneline -n 20
     lt  = tag -l --sort=-creatordate --format='%(creatordate:short): %(refname:short)'
     ll  = log --oneline
     superclean = clean -dfx

@@ -60,3 +60,12 @@ mksrc() {
 cheatsh() {
     curl cheat.sh/"$1"
 }
+
+# ch - change directory using fzf
+# usage: ch
+ch() {
+    selected_dir="$(ls | fzf)"
+    if [ -n "$selected_dir" ]; then
+        cd "$selected_dir"
+    fi
+}
