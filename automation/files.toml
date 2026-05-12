@@ -151,8 +151,12 @@ description = "Leftwm configuration"
 description = "Git global configuration."
 packages = ["git", "dandavison/delta"]
 
-[".gitcommit"]
+[".config/git/gitcommit"]
 description = "Git commit message template."
+packages = ["git"]
+
+[".config/git/gitignore"]
+description = "Git ignore file."
 packages = ["git"]
 
 [".bashrc"]

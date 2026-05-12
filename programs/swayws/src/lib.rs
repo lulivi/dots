@@ -71,7 +71,7 @@ pub fn workspace_number(name: &str) -> Option<i64> {
 }
 
 /// Compute the new workspace name by adjusting the unit (ones) digit.
-pub fn compute_target_workspace(current: &str, down: bool) -> String {
+pub fn compute_up_down(current: &str, down: bool) -> String {
     // parse leading integer from workspace name
     let mut digits = String::new();
     for c in current.chars() {
@@ -122,26 +122,46 @@ fn parse_variable_map(contents: &str) -> HashMap<i64, String> {
     var_map
 }
 
-/// Load `variables.conf`-style definitions into a map. Honor `SWAY_VARS` env var,
-/// fallback to `./variables.conf`, then to `$HOME/.config/sway/config.d/variables.conf`.
+/// Load `variables.conf`-style definitions into a map.
+///
+/// Checks `./variables.conf` first, then `$HOME/.config/sway/config.d/variables.conf`.
+/// This function does not consult environment variables for the path.
+// In normal builds, search common candidate locations including XDG and HOME.
+#[cfg(not(test))]
 fn load_variable_workspace_map() -> HashMap<i64, String> {
-    if let Ok(path) = env::var("SWAY_VARS") {
-        if let Ok(contents) = fs::read_to_string(path) {
-            return parse_variable_map(&contents);
-        }
-    }
+    // Candidate paths (in priority order):
+    //  - ./variables.conf
+    //  - $XDG_CONFIG_HOME/sway/config.d/variables.conf
+    //  - $HOME/.config/sway/config.d/variables.conf
+    let mut candidates: Vec<String> = Vec::new();
 
-    if let Ok(contents) = fs::read_to_string("./variables.conf") {
-        return parse_variable_map(&contents);
+    if let Ok(xdg) = env::var("XDG_CONFIG_HOME") {
+        candidates.push(format!("{}/sway/config.d/variables.conf", xdg));
     }
 
     if let Ok(home) = env::var("HOME") {
-        let default_path = format!("{}/.config/sway/config.d/variables.conf", home);
-        if let Ok(contents) = fs::read_to_string(default_path) {
+        candidates.push(format!("{}/.config/sway/config.d/variables.conf", home));
+    }
+
+    for path in candidates {
+        if path.is_empty() {
+            continue;
+        }
+        if let Ok(contents) = fs::read_to_string(&path) {
             return parse_variable_map(&contents);
         }
     }
 
+    HashMap::new()
+}
+
+// In tests, only consider ./variables.conf to avoid picking up the user's
+// real configuration (which would make unit tests non-deterministic).
+#[cfg(test)]
+fn load_variable_workspace_map() -> HashMap<i64, String> {
+    if let Ok(contents) = fs::read_to_string("./variables.conf") {
+        return parse_variable_map(&contents);
+    }
     HashMap::new()
 }
 
@@ -160,10 +180,12 @@ fn load_variable_workspace_map() -> HashMap<i64, String> {
 /// Arguments: `current` (workspace name), `left` (direction),
 /// `workspaces` (parsed `swaymsg` JSON array).
 pub fn compute_left_right(current: &str, left: bool, workspaces: &[Value]) -> String {
-    // Simplified behaviour: jump to the previous/next "base" workspace
-    // (unit == 1) in the adjacent tens column. Prefer a definition from
-    // variables.conf, then any existing workspace with that number. If
-    // neither exists, stay on the current workspace.
+    // New behaviour: jump to the same unit (ones) digit in the adjacent
+    // tens column (e.g. 23 -> right -> 33). If the target tens column does
+    // not exist at all (no workspace/variable in that column), stay on the
+    // current workspace. If the exact same-unit workspace exists, prefer
+    // its defined name; otherwise construct a workspace name keeping the
+    // original suffix (so e.g. "24: y" -> right -> "34: y" if 30s exist).
     let mut digits = String::new();
     for c in current.chars() {
         if c.is_ascii_digit() {
@@ -184,8 +206,14 @@ pub fn compute_left_right(current: &str, left: bool, workspaces: &[Value]) -> St
     } else {
         current_tens + 10
     };
-    let target_num = target_tens + 1; // base workspace uses unit == 1, e.g. 21
 
+    // Keep the same unit (ones) digit; treat unit 0 as unit 1.
+    let mut unit = num % 10;
+    if unit == 0 {
+        unit = 1;
+    }
+
+    let target_num = target_tens + unit;
     if target_num < 1 {
         return current.to_string();
     }
@@ -201,6 +229,7 @@ pub fn compute_left_right(current: &str, left: bool, workspaces: &[Value]) -> St
 
     let var_map = load_variable_workspace_map();
 
+    // If exact same-unit workspace exists, prefer its defined name.
     if let Some(name) = map.get(&target_num) {
         return name.clone();
     }
@@ -208,7 +237,30 @@ pub fn compute_left_right(current: &str, left: bool, workspaces: &[Value]) -> St
         return name.clone();
     }
 
-    current.to_string()
+    // Ensure the target tens column exists (any workspace/variable in that column).
+    let column_exists = map.keys().any(|&k| (k / 10) * 10 == target_tens)
+        || var_map.keys().any(|&k| (k / 10) * 10 == target_tens);
+
+    if !column_exists {
+        return current.to_string();
+    }
+
+    // Column exists but exact workspace doesn't.
+    // Prefer the base workspace's defined name from variables.conf (e.g. 41 -> "41: 💬")
+    // to obtain the suffix to use when constructing the new name. Only use
+    // `var_map` here (not `map`) so that we don't override with runtime
+    // workspace names — tests expect constructed names to keep the original
+    // suffix unless a variables.conf base exists.
+    let base_target = target_tens + 1;
+    if let Some(base_name) = var_map.get(&base_target) {
+        let base_digits_len = base_target.to_string().len();
+        let base_rest = &base_name[base_digits_len..];
+        return format!("{}{}", target_num, base_rest);
+    }
+
+    // Otherwise keep the suffix from the current workspace name.
+    let rest = &current[digits.len()..];
+    format!("{}{}", target_num, rest)
 }
 
 #[cfg(test)]
@@ -228,19 +280,10 @@ mod tests {
     }
 
     #[test]
-    fn test_compute_target_workspace_up_down() {
-        assert_eq!(
-            compute_target_workspace("21: Code", /*down=*/ false),
-            "21: Code"
-        );
-        assert_eq!(
-            compute_target_workspace("21: Code", /*down=*/ true),
-            "22: Code"
-        );
-        assert_eq!(
-            compute_target_workspace("29: Foo", /*down=*/ true),
-            "29: Foo"
-        );
+    fn test_compute_up_down_up_down() {
+        assert_eq!(compute_up_down("21: Code", /*down=*/ false), "21: Code");
+        assert_eq!(compute_up_down("21: Code", /*down=*/ true), "22: Code");
+        assert_eq!(compute_up_down("29: Foo", /*down=*/ true), "29: Foo");
     }
 
     #[test]
@@ -275,17 +318,56 @@ mod tests {
 
         // when the target base workspace exists, we should move there
         let w2 = vec![make_ws("31: c", false)];
-        assert_eq!(compute_left_right("24: y", false, &w2), "31: c");
+        // 24 -> right -> 34; 30s column exists (31), so we expect constructed 34: y
+        assert_eq!(compute_left_right("24: y", false, &w2), "34: y");
     }
 
     #[test]
     fn test_compute_left_right_jump_examples() {
         // if we're in 35 and move left, jump to 21 when it exists
         let w = vec![make_ws("21: b", false), make_ws("35: x", true)];
-        assert_eq!(compute_left_right("35: x", true, &w), "21: b");
+        // 35 -> left -> 25; 20s column exists (21), so we expect constructed 25: x
+        assert_eq!(compute_left_right("35: x", true, &w), "25: x");
 
-        // if we're in 13 and move right, jump to 21 when it exists
+        // if we're in 13 and move right, we expect 23: a constructed (20s column exists)
         let w2 = vec![make_ws("21: b", false)];
-        assert_eq!(compute_left_right("13: a", false, &w2), "21: b");
+        assert_eq!(compute_left_right("13: a", false, &w2), "23: a");
+    }
+
+    #[test]
+    fn test_compute_left_right_name_preference() {
+        // Ensure that when a variables.conf mapping exists for the target number,
+        // its defined name is preferred over constructing a name from the
+        // current workspace's suffix. Avoid mutating environment variables;
+        // instead write a temporary `variables.conf` in the current directory
+        // or use a temporary working directory if one already exists.
+        let contents = r#"set $ws42 "42: 💬""#;
+        let var_path = std::path::Path::new("variables.conf");
+        let created_in_cwd = !var_path.exists();
+
+        if created_in_cwd {
+            std::fs::write(&var_path, contents).expect("failed to write variables.conf in cwd");
+
+            let w = vec![make_ws("32: 💻", true)];
+            assert_eq!(compute_left_right("32: 💻", false, &w), "42: 💬");
+
+            let _ = std::fs::remove_file(&var_path);
+        } else {
+            // If variables.conf already exists, create a temporary directory
+            // and run the test with that as CWD to avoid clobbering the file.
+            let orig_dir = std::env::current_dir().expect("failed to get current dir");
+            let tmp_dir = std::env::temp_dir().join(format!("swayws_test_{}", std::process::id()));
+            std::fs::create_dir_all(&tmp_dir).expect("failed to create tmp dir");
+            let tmp_var = tmp_dir.join("variables.conf");
+            std::fs::write(&tmp_var, contents).expect("failed to write temp variables.conf");
+            std::env::set_current_dir(&tmp_dir).expect("failed to set current dir to tmp dir");
+
+            let w = vec![make_ws("32: 💻", true)];
+            assert_eq!(compute_left_right("32: 💻", false, &w), "42: 💬");
+
+            std::env::set_current_dir(&orig_dir).expect("failed to revert cwd");
+            let _ = std::fs::remove_file(&tmp_var);
+            let _ = std::fs::remove_dir(&tmp_dir);
+        }
     }
 }

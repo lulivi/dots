@@ -4,9 +4,7 @@
 //! so that it can be tested and reused.
 use clap::{Parser, Subcommand};
 use std::io;
-use swayws::{
-    compute_left_right, compute_target_workspace, fetch_workspaces, find_current_workspace_name,
-};
+use swayws::{compute_left_right, compute_up_down, fetch_workspaces, find_current_workspace_name};
 
 #[derive(Parser)]
 #[command(author, version, about)]
@@ -40,10 +38,10 @@ fn run() -> Result<(), String> {
 
     match cli.command.unwrap_or(Commands::Current) {
         Commands::Current => println!("{}", name),
-        Commands::Up => print!("{}", compute_target_workspace(&name, false)),
-        Commands::Down => print!("{}", compute_target_workspace(&name, true)),
-        Commands::Left => print!("{}", compute_left_right(&name, true, &workspaces)),
-        Commands::Right => print!("{}", compute_left_right(&name, false, &workspaces)),
+        Commands::Up => println!("{}", compute_up_down(&name, false)),
+        Commands::Down => println!("{}", compute_up_down(&name, true)),
+        Commands::Left => println!("{}", compute_left_right(&name, true, &workspaces)),
+        Commands::Right => println!("{}", compute_left_right(&name, false, &workspaces)),
     }
 
     Ok(())
