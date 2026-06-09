@@ -11,5 +11,5 @@ export XDG_CONFIG_HOME="$HOME/.config"
 if [ "$(command -v bat)" ]; then
     export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 fi
-export UID="$UID"
+# export UID="$UID"
 
