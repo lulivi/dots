@@ -66,21 +66,22 @@ fn read_config_lines(cfg_path: &PathBuf) -> Result<Vec<(PathBuf, usize, String)>
         }
         let s = fs::read_to_string(&key_file)
             .map_err(|e| format!("Error reading {}: {}", key_file.display(), e))?;
-        Ok(s
-            .lines()
+        Ok(s.lines()
             .enumerate()
             .map(|(i, l)| (key_file.clone(), i + 1, l.to_string()))
             .collect())
     } else if cfg_path.is_file() {
         let s = fs::read_to_string(cfg_path)
             .map_err(|e| format!("Error reading {}: {}", cfg_path.display(), e))?;
-        Ok(s
-            .lines()
+        Ok(s.lines()
             .enumerate()
             .map(|(i, l)| (cfg_path.clone(), i + 1, l.to_string()))
             .collect())
     } else {
-        Err(format!("Config path {} is not a file or directory", cfg_path.display()))
+        Err(format!(
+            "Config path {} is not a file or directory",
+            cfg_path.display()
+        ))
     }
 }
 
@@ -136,10 +137,22 @@ fn annotate_modes(
                 mode_stack.push((name.clone(), opens - closes));
                 // when opening a mode, annotate this line with the mode
                 let current_block = block_stack.last().map(|(n, _)| n.clone());
-                annotated.push((path.clone(), *lineno, line.clone(), Some(name), current_block));
+                annotated.push((
+                    path.clone(),
+                    *lineno,
+                    line.clone(),
+                    Some(name),
+                    current_block,
+                ));
             } else {
                 let current_block = block_stack.last().map(|(n, _)| n.clone());
-                annotated.push((path.clone(), *lineno, line.clone(), Some(name), current_block));
+                annotated.push((
+                    path.clone(),
+                    *lineno,
+                    line.clone(),
+                    Some(name),
+                    current_block,
+                ));
                 let mut rem_closes = closes.saturating_sub(opens);
                 while rem_closes > 0 && !mode_stack.is_empty() {
                     if let Some(top) = mode_stack.last_mut() {
@@ -156,10 +169,22 @@ fn annotate_modes(
             if opens > closes {
                 block_stack.push((name.clone(), opens - closes));
                 let current_mode = mode_stack.last().map(|(n, _)| n.clone());
-                annotated.push((path.clone(), *lineno, line.clone(), current_mode, Some(name)));
+                annotated.push((
+                    path.clone(),
+                    *lineno,
+                    line.clone(),
+                    current_mode,
+                    Some(name),
+                ));
             } else {
                 let current_mode = mode_stack.last().map(|(n, _)| n.clone());
-                annotated.push((path.clone(), *lineno, line.clone(), current_mode, Some(name)));
+                annotated.push((
+                    path.clone(),
+                    *lineno,
+                    line.clone(),
+                    current_mode,
+                    Some(name),
+                ));
                 let mut rem_closes = closes.saturating_sub(opens);
                 while rem_closes > 0 && !block_stack.is_empty() {
                     if let Some(top) = block_stack.last_mut() {
@@ -174,7 +199,13 @@ fn annotate_modes(
         } else {
             let current_mode = mode_stack.last().map(|(n, _)| n.clone());
             let current_block = block_stack.last().map(|(n, _)| n.clone());
-            annotated.push((path.clone(), *lineno, line.clone(), current_mode, current_block));
+            annotated.push((
+                path.clone(),
+                *lineno,
+                line.clone(),
+                current_mode,
+                current_block,
+            ));
 
             if opens > 0 {
                 if let Some(top) = mode_stack.last_mut() {

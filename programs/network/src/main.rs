@@ -45,11 +45,7 @@ fn run_nmcli(args: &[&str]) -> Result<String, io::Error> {
 }
 
 fn level_hex(p: i32) -> &'static str {
-    if p < 34 {
-        "#FF0000"
-    } else {
-        ""
-    }
+    if p < 34 { "#FF0000" } else { "" }
 }
 
 fn print_i3(full: &str, short: &str, color: &str) {

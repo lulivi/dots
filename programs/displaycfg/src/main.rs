@@ -5,8 +5,8 @@
 //! (`ViewSonic Corporation VA2719-2K ...`) is present the program prints
 //! `home`. If only the internal LG panel (`eDP-1 'LG Display ...`) is
 //! present the program prints `laptop`.
-use std::process::Command;
 use serde_json::Value;
+use std::process::Command;
 
 /// Entry point.
 ///
@@ -16,7 +16,7 @@ use serde_json::Value;
 /// non-zero exit code.
 fn main() {
     let out = Command::new("swaymsg")
-        .args(["-t", "get_outputs"]) 
+        .args(["-t", "get_outputs"])
         .output()
         .expect("failed to spawn swaymsg");
 

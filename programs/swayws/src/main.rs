@@ -1,7 +1,4 @@
 //! Sway workspace helpers (binary).
-//!
-//! This binary delegates workspace computation logic to the library crate
-//! so that it can be tested and reused.
 use clap::{Parser, Subcommand};
 use std::io;
 use swayws::{compute_left_right, compute_up_down, fetch_workspaces, find_current_workspace_name};
@@ -30,6 +27,7 @@ fn main() -> io::Result<()> {
     Ok(())
 }
 
+/// Runs the CLI application by parsing arguments and executing the corresponding workspace command.
 fn run() -> Result<(), String> {
     let cli = Cli::parse();
 
@@ -38,8 +36,8 @@ fn run() -> Result<(), String> {
 
     match cli.command.unwrap_or(Commands::Current) {
         Commands::Current => println!("{}", name),
-        Commands::Up => println!("{}", compute_up_down(&name, false)),
-        Commands::Down => println!("{}", compute_up_down(&name, true)),
+        Commands::Up => println!("{}", compute_up_down(&name, false, &workspaces)),
+        Commands::Down => println!("{}", compute_up_down(&name, true, &workspaces)),
         Commands::Left => println!("{}", compute_left_right(&name, true, &workspaces)),
         Commands::Right => println!("{}", compute_left_right(&name, false, &workspaces)),
     }

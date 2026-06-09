@@ -106,14 +106,16 @@ fn add_executable_scripts(
             }
 
             if let Some(stem) = path.file_stem().and_then(|s| s.to_str()) {
-                map.insert(format!("{}: {}", prefix, stem), path.to_string_lossy().to_string());
+                map.insert(
+                    format!("{}: {}", prefix, stem),
+                    path.to_string_lossy().to_string(),
+                );
             }
         }
     }
 
     Ok(())
 }
-
 
 /// Show a `rofi` menu for `keys` and return the selected index (non-blocking
 /// behavior is handled elsewhere).
