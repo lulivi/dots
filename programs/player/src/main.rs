@@ -44,7 +44,7 @@ fn main() {
 
     match cli.command {
         Some(Commands::Switch) => {
-            if let Err(e) = open_device_picker() {
+            if let Err(e) = open_paired_picker() {
                 eprintln!("Error: {}", e);
             }
         }
@@ -54,12 +54,10 @@ fn main() {
             }
         }
         Some(Commands::I3) => {
-            if env::var("BLOCK_BUTTON")
-                .ok()
-                .filter(|s| !s.is_empty())
-                .is_some()
-            {
-                let _ = open_device_picker();
+            match env::var("BLOCK_BUTTON").ok().as_deref() {
+                Some("1") => { let _ = open_paired_picker(); }
+                Some("2") => { let _ = open_manual_picker(); }
+                _ => {}
             }
 
             let status = run_cmd("wpctl", &["status"]).unwrap_or_default();
@@ -123,7 +121,7 @@ fn open_manual_picker() -> Result<(), String> {
 
 /// Open a rofi picker listing available sinks; on selection set the chosen sink and its
 /// paired source as the system defaults.
-fn open_device_picker() -> Result<(), String> {
+fn open_paired_picker() -> Result<(), String> {
     let status = run_cmd("wpctl", &["status"])?;
     let sinks = parse_sinks(&status);
     let sources = parse_sources(&status);
