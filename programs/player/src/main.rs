@@ -27,6 +27,8 @@ struct Cli {
 enum Commands {
     /// Open a rofi picker to select an audio device (sets both sink and matched source)
     Switch,
+    /// Open two rofi pickers: choose input (source) first, then output (sink) independently
+    Manual,
     /// Print i3blocks-compatible output (full, short, color)
     I3,
 }
@@ -43,6 +45,11 @@ fn main() {
     match cli.command {
         Some(Commands::Switch) => {
             if let Err(e) = open_device_picker() {
+                eprintln!("Error: {}", e);
+            }
+        }
+        Some(Commands::Manual) => {
+            if let Err(e) = open_manual_picker() {
                 eprintln!("Error: {}", e);
             }
         }
@@ -81,6 +88,37 @@ fn main() {
             }
         }
     }
+}
+
+/// Open two sequential rofi pickers: first choose source (input), then sink (output).
+/// Each picker is independent — cancelling either aborts the whole operation.
+fn open_manual_picker() -> Result<(), String> {
+    let status = run_cmd("wpctl", &["status"])?;
+    let sinks = parse_sinks(&status);
+    let sources = parse_sources(&status);
+
+    if sources.is_empty() {
+        return Err("No audio sources found".to_string());
+    }
+    if sinks.is_empty() {
+        return Err("No audio sinks found".to_string());
+    }
+
+    let source_names: Vec<String> = sources.iter().map(|d| display_name(&d.name)).collect();
+    let src_idx = match rofi_select(&source_names, "Input") {
+        None => return Ok(()),
+        Some(i) => i,
+    };
+
+    let sink_names: Vec<String> = sinks.iter().map(|d| display_name(&d.name)).collect();
+    let sink_idx = match rofi_select(&sink_names, "Output") {
+        None => return Ok(()),
+        Some(i) => i,
+    };
+
+    run_cmd("wpctl", &["set-default", &sources[src_idx].id])?;
+    run_cmd("wpctl", &["set-default", &sinks[sink_idx].id])?;
+    Ok(())
 }
 
 /// Open a rofi picker listing available sinks; on selection set the chosen sink and its
