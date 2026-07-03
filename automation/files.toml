@@ -39,6 +39,9 @@ packages = ["xorg-xdpyinfo", "maim", "imagemagick", "i3lock"]
 description = "Create a html preview of the markdown file."
 packages = ["pandoc"]
 
+["bin/multidate"]
+description = "Show a calendar with multiple dates highlighted."
+
 ["bin/np"]
 description = "Show current artist and song playing."
 packages = ["playerctl"]

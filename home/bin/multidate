@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+printf '%s %s %s\n' \
+    "$(date "+%d/%m(%b)")" \
+    "$(date "+ES-%H:%M")" \
+    "$(TZ=America/Los_Angeles date "+US-%H:%M")"
+
