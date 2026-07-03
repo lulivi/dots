@@ -1,6 +1,20 @@
 use clap::{Parser, Subcommand};
 use std::env;
-use std::process::Command;
+use std::io::Write;
+use std::process::{Command, Stdio};
+
+/// Sink/source names containing any of these substrings (case-insensitive) are excluded.
+const IGNORED_SINKS: &[&str] = &[
+    "Dell Universal Dock",
+    // HDMI / DisplayPort passthrough outputs
+    "HDMI",
+    // secondary chat-mix sink; mic lives in SOURCES
+    "SteelSeries Arctis 7 Chat",
+];
+const IGNORED_SOURCES: &[&str] = &["Dell Universal Dock"];
+
+/// Tokens filtered out when scoring sink-source name similarity (vendor/hardware prefixes).
+const SCORE_NOISE_TOKENS: &[&str] = &["sof-soundwire"];
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -11,79 +25,26 @@ struct Cli {
 
 #[derive(Subcommand, Debug)]
 enum Commands {
-    /// Switch to the next available audio device
+    /// Open a rofi picker to select an audio device (sets both sink and matched source)
     Switch,
     /// Print i3blocks-compatible output (full, short, color)
     I3,
 }
 
-struct Device {
-    label: &'static str,
-    name: &'static str,
+struct AudioDevice {
+    id: String,
+    name: String,
+    is_active: bool,
 }
 
-const DEVICES: [Device; 3] = [
-    Device {
-        label: "speaker",
-        name: "sof-soundwire Speaker",
-    },
-    Device {
-        label: "headphones",
-        name: "sof-soundwire Headphones",
-    },
-    Device {
-        label: "steelseries",
-        name: "SteelSeries Arctis 7 Game",
-    },
-];
-
-/// CLI entry point.
-///
-/// Behavior:
-/// - Parses command-line arguments using `clap` and supports the `switch` and `i3` subcommands.
-/// - Queries the current audio sink status via `wpctl` and detects which configured devices
-///   are available (also probes `pactl` when present).
-/// - Prints the list of configured/available devices on standard output by default.
-///
-/// Subcommands:
-/// - `switch`: cycles to the next configured audio device and prints the result (or an
-///   error message on stderr).
-/// - `i3`: prints i3blocks-compatible three-line output (full, short, color). When invoked
-///   from i3blocks a click sets the `BLOCK_BUTTON` environment variable; in that case the
-///   program will attempt to switch to the next device, re-query status, and emit the
-///   updated i3 output (switching is performed silently so the block output remains clean).
-///
-/// Notes:
-/// - External commands used: `wpctl` (required) and `pactl` (optional for availability checks).
-/// - Errors from commands are reported to stderr; the CLI prints compact user-facing output
-///   so it can be used both interactively and from status bars.
 fn main() {
     let cli = Cli::parse();
-    let status = run_cmd("wpctl", &["status"]).unwrap_or_default();
-    let available = available_devices(&status, &DEVICES);
-
-    let mut current_node_id: Option<String> = None;
-    let mut current_node_name: Option<String> = None;
-    if let Ok(status2) = run_cmd("wpctl", &["status"]) {
-        if let Some(active_line) = find_active_line(&status2) {
-            let id = extract_first_number(active_line).unwrap_or_default();
-            if let Some(name) = extract_name_from_line(active_line) {
-                current_node_id = Some(id);
-                current_node_name = Some(name);
-            } else {
-                current_node_id = Some(id);
-            }
-        }
-    }
 
     match cli.command {
         Some(Commands::Switch) => {
-            match switch_to_next(&status, &available, &DEVICES) {
-                Ok(Some(name)) => println!("Switched default audio to {}", name),
-                Ok(None) => println!("No available sinks found or no switch performed"),
-                Err(e) => eprintln!("Error switching device: {}", e),
+            if let Err(e) = open_device_picker() {
+                eprintln!("Error: {}", e);
             }
-            return;
         }
         Some(Commands::I3) => {
             if env::var("BLOCK_BUTTON")
@@ -91,184 +52,238 @@ fn main() {
                 .filter(|s| !s.is_empty())
                 .is_some()
             {
-                let _ = switch_to_next(&status, &available, &DEVICES);
+                let _ = open_device_picker();
             }
 
-            let status_after = run_cmd("wpctl", &["status"]).unwrap_or_default();
-
-            if let Some(active_line) = find_active_line(&status_after) {
-                if let Some(name) = extract_name_from_line(active_line) {
-                    print_i3(&name, "", "");
-                    return;
-                }
-            }
-
-            if let Some(lbl) = find_current_label(&status_after, &DEVICES) {
-                print_i3(lbl, "", "");
-                return;
-            }
-
-            print_i3("-", "", "");
-            return;
-        }
-        None => {}
-    }
-
-    if cli.command.is_none() {
-        if let Some(id) = current_node_id {
-            if let Some(name) = current_node_name {
-                println!("Current default node: {} (id {})", name, id);
-                return;
+            let status = run_cmd("wpctl", &["status"]).unwrap_or_default();
+            let sinks = parse_sinks(&status);
+            if let Some(active) = sinks.iter().find(|d| d.is_active) {
+                print_i3(&active.name, "", "");
             } else {
-                println!("Current default node id: {}", id);
-                return;
+                print_i3("-", "", "");
             }
         }
+        None => {
+            let status = run_cmd("wpctl", &["status"]).unwrap_or_default();
+            let sinks = parse_sinks(&status);
+            let sources = parse_sources(&status);
 
-        println!("Could not determine active audio output (ensure wpctl is available)");
-    }
-}
-
-/// Choose the devices to use: prefer detected available devices, else fall back to all.
-fn select_use_devices<'a>(available: &[&'a Device], all: &'a [Device]) -> Vec<&'a Device> {
-    if !available.is_empty() {
-        available.to_vec()
-    } else {
-        all.iter().collect()
-    }
-}
-
-/// Determine the index of the current device within the provided list.
-fn current_index<'a>(status: &str, use_devices: &[&'a Device]) -> Option<usize> {
-    find_current_label(status, use_devices.iter().copied())
-        .and_then(|lbl| use_devices.iter().position(|d| d.label == lbl))
-}
-
-/// Attempt to switch to the given candidate device. Returns the new active name on success.
-fn attempt_switch(status: &str, candidate: &Device) -> Result<Option<String>, String> {
-    let id = match find_node_id_for_name(status, candidate.name) {
-        Some(i) => i,
-        None => return Ok(None),
-    };
-
-    match run_cmd("wpctl", &["set-default", &id]) {
-        Ok(_) => match run_cmd("wpctl", &["status"]) {
-            Ok(new_status) => verify_after_set(&new_status, candidate, &id),
-            Err(e) => Err(format!(
-                "Set-default returned OK for {} (node {}), but could not verify with `wpctl status`: {}",
-                candidate.label, id, e
-            )),
-        },
-        Err(e) => Err(format!(
-            "Failed to set default for '{}' (node {}): {}",
-            candidate.name, id, e
-        )),
-    }
-}
-
-/// Verify the status after attempting a switch; return the active name if it matches.
-fn verify_after_set(
-    new_status: &str,
-    candidate: &Device,
-    id: &str,
-) -> Result<Option<String>, String> {
-    if let Some(active_line) = find_active_line(new_status) {
-        let curr_id = extract_first_number(active_line).unwrap_or_default();
-        if curr_id == id {
-            if let Some(name) = extract_name_from_line(active_line) {
-                return Ok(Some(name));
-            }
-            return Ok(Some(candidate.label.to_string()));
-        }
-
-        if let Some(active_name) = extract_name_from_line(active_line) {
-            if active_name.eq_ignore_ascii_case(candidate.name) {
-                return Ok(Some(active_name));
+            if let Some(sink) = sinks.iter().find(|d| d.is_active) {
+                println!("Current default sink: {} (id {})", sink.name, sink.id);
             } else {
-                return Ok(None);
+                println!("No active sink found");
             }
-        } else {
-            return Ok(None);
+
+            if let Some(source) = sources.iter().find(|d| d.is_active) {
+                println!("Current default source: {} (id {})", source.name, source.id);
+            } else {
+                println!("No active source found");
+            }
         }
     }
-
-    Ok(None)
 }
 
-/// Cycle to the next configured device, returning the new active name on success.
-fn switch_to_next(
-    status: &str,
-    available: &[&Device],
-    all: &[Device],
-) -> Result<Option<String>, String> {
-    let use_devices = select_use_devices(available, all);
+/// Open a rofi picker listing available sinks; on selection set the chosen sink and its
+/// paired source as the system defaults.
+fn open_device_picker() -> Result<(), String> {
+    let status = run_cmd("wpctl", &["status"])?;
+    let sinks = parse_sinks(&status);
+    let sources = parse_sources(&status);
+    let pairings = pair_sources(&sinks, &sources);
 
-    if use_devices.is_empty() {
-        return Ok(None);
+    if sinks.is_empty() {
+        return Err("No audio sinks found".to_string());
     }
 
-    let start_idx = match current_index(status, &use_devices) {
-        Some(idx) => (idx + 1) % use_devices.len(),
-        None => 0,
-    };
+    let display_names: Vec<String> = sinks.iter().map(|d| display_name(&d.name)).collect();
 
-    for i in 0..use_devices.len() {
-        let candidate = use_devices[(start_idx + i) % use_devices.len()];
-        if let Some(name) = attempt_switch(status, candidate)? {
-            return Ok(Some(name));
+    match rofi_select(&display_names, "Audio") {
+        None => Ok(()),
+        Some(idx) => {
+            run_cmd("wpctl", &["set-default", &sinks[idx].id])?;
+            if let Some(src_idx) = pairings[idx] {
+                run_cmd("wpctl", &["set-default", &sources[src_idx].id])?;
+            }
+            Ok(())
         }
     }
-
-    Ok(None)
 }
 
-/// Detect which of the configured devices are currently available.
-fn available_devices<'a>(status: &str, devices: &'a [Device]) -> Vec<&'a Device> {
-    fn get_pactl_sinks() -> Result<String, String> {
-        run_cmd("pactl", &["list", "sinks"])
+/// Pipe `options` to `rofi -dmenu` and return the selected 0-based index, or None if
+/// the user cancelled or rofi could not be launched.
+fn rofi_select(options: &[String], prompt: &str) -> Option<usize> {
+    let input = options.join("\n");
+
+    let mut child = Command::new("rofi")
+        .args(["-dmenu", "-i", "-p", prompt, "-format", "i"])
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null())
+        .spawn()
+        .ok()?;
+
+    {
+        let mut stdin = child.stdin.take()?;
+        let _ = stdin.write_all(input.as_bytes());
+        // stdin dropped here → EOF sent to rofi
     }
 
-    fn is_headphones_available(pactl_output: &str) -> Option<bool> {
-        for line_lower in pactl_output.lines() {
-            if line_lower.contains("[out] headphones:") {
-                if line_lower.contains("not available") {
-                    return Some(false);
-                }
-                if line_lower.contains("available") {
-                    return Some(true);
-                }
-            }
-        }
-        None
+    let output = child.wait_with_output().ok()?;
+    if !output.status.success() {
+        return None;
     }
 
-    let pactl_output = get_pactl_sinks().ok();
+    String::from_utf8_lossy(&output.stdout)
+        .trim()
+        .parse::<usize>()
+        .ok()
+}
 
-    devices
-        .iter()
-        .filter(|d| {
-            if d.label == "speaker" {
-                return true;
-            }
-
-            if let Some(ref pactl_text) = pactl_output {
-                let pactl_lower = pactl_text.to_lowercase();
-
-                if d.label == "headphones" {
-                    return is_headphones_available(&pactl_lower).unwrap_or(false);
-                }
-
-                if d.label == "steelseries" {
-                    return pactl_lower.contains("arctis 7 game");
-                }
-            }
-
-            find_node_id_for_name(status, d.name).is_some()
-        })
+/// Parse sinks from `wpctl status`, excluding ignored devices.
+fn parse_sinks(status: &str) -> Vec<AudioDevice> {
+    parse_devices_in_section(status, "Sinks", false)
+        .into_iter()
+        .filter(|d| !is_ignored(&d.name, IGNORED_SINKS))
         .collect()
 }
 
-/// Run an external command and return its stdout or an error string.
+/// Parse sources from `wpctl status`, excluding monitor loopbacks and ignored devices.
+fn parse_sources(status: &str) -> Vec<AudioDevice> {
+    parse_devices_in_section(status, "Sources", true)
+        .into_iter()
+        .filter(|d| !is_ignored(&d.name, IGNORED_SOURCES))
+        .collect()
+}
+
+fn is_ignored(name: &str, patterns: &[&str]) -> bool {
+    let lower = name.to_lowercase();
+    patterns.iter().any(|p| lower.contains(&p.to_lowercase()))
+}
+
+/// Parse device entries from a named section of `wpctl status` output.
+/// If `exclude_monitors` is true, entries whose name contains "Monitor of" are dropped.
+fn parse_devices_in_section(
+    status: &str,
+    section: &str,
+    exclude_monitors: bool,
+) -> Vec<AudioDevice> {
+    let mut devices = Vec::new();
+    let mut in_section = false;
+    let section_header = format!("{}:", section);
+
+    for line in status.lines() {
+        // Detect section start (e.g. " ├─ Sinks:")
+        if line.contains(&section_header) {
+            in_section = true;
+            continue;
+        }
+
+        // Detect section end: any new box-drawing section header (e.g. " ├─ Sink endpoints:")
+        if in_section && (line.contains("├─") || line.contains("└─")) {
+            break;
+        }
+
+        if !in_section || !line.contains('.') {
+            continue;
+        }
+
+        if let Some(name) = extract_name_from_line(line) {
+            if exclude_monitors && name.contains("Monitor of") {
+                continue;
+            }
+            if let Some(id) = extract_first_number(line) {
+                devices.push(AudioDevice {
+                    id,
+                    name,
+                    is_active: line.contains('*'),
+                });
+            }
+        }
+    }
+
+    devices
+}
+
+/// For each sink, return the index of the best-matching source (greedy token similarity).
+/// Sinks with no score-positive match are assigned leftover sources in list order (fallback).
+fn pair_sources(sinks: &[AudioDevice], sources: &[AudioDevice]) -> Vec<Option<usize>> {
+    let mut scores: Vec<(usize, usize, usize)> = sinks
+        .iter()
+        .enumerate()
+        .flat_map(|(si, sink)| {
+            sources.iter().enumerate().filter_map(move |(ri, source)| {
+                let s = token_similarity(&sink.name, &source.name);
+                if s > 0 { Some((si, ri, s)) } else { None }
+            })
+        })
+        .collect();
+    scores.sort_by(|a, b| b.2.cmp(&a.2));
+
+    let mut result: Vec<Option<usize>> = vec![None; sinks.len()];
+    let mut sink_used = vec![false; sinks.len()];
+    let mut source_used = vec![false; sources.len()];
+
+    // Phase 1: greedy high-score assignment
+    for (si, ri, _) in &scores {
+        if !sink_used[*si] && !source_used[*ri] {
+            result[*si] = Some(*ri);
+            sink_used[*si] = true;
+            source_used[*ri] = true;
+        }
+    }
+
+    // Phase 2: assign leftover sources to unmatched sinks in list order
+    let leftover_sources: Vec<usize> = (0..sources.len()).filter(|&i| !source_used[i]).collect();
+    let mut leftover_idx = 0;
+    for (si, used) in sink_used.iter().enumerate() {
+        if !used && leftover_idx < leftover_sources.len() {
+            result[si] = Some(leftover_sources[leftover_idx]);
+            leftover_idx += 1;
+        }
+    }
+
+    result
+}
+
+/// Score two device names by longest common token prefix (≥4 chars), ignoring noise tokens.
+fn token_similarity(a: &str, b: &str) -> usize {
+    fn significant_tokens(s: &str) -> Vec<String> {
+        s.split_whitespace()
+            .filter(|t| {
+                let tl = t.to_lowercase();
+                tl.len() >= 4 && !SCORE_NOISE_TOKENS.iter().any(|&n| tl == n.to_lowercase())
+            })
+            .map(|t| t.to_lowercase())
+            .collect()
+    }
+
+    let tokens_a = significant_tokens(a);
+    let tokens_b = significant_tokens(b);
+
+    tokens_a
+        .iter()
+        .flat_map(|ta| {
+            tokens_b.iter().map(move |tb| {
+                ta.chars()
+                    .zip(tb.chars())
+                    .take_while(|(ca, cb)| ca == cb)
+                    .count()
+            })
+        })
+        .filter(|&c| c >= 4)
+        .max()
+        .unwrap_or(0)
+}
+
+/// Strip hardware vendor prefixes for a clean display name.
+fn display_name(name: &str) -> String {
+    name.replace("sof-soundwire", "")
+        .split_whitespace()
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+/// Run an external command and return its stdout, or an error string.
 fn run_cmd(cmd: &str, args: &[&str]) -> Result<String, String> {
     let out = Command::new(cmd)
         .args(args)
@@ -281,71 +296,20 @@ fn run_cmd(cmd: &str, args: &[&str]) -> Result<String, String> {
     }
 }
 
-/// Extract a sink name from a line of `wpctl status` output.
+/// Extract a device name from a `wpctl status` line (text between '.' and '[').
 fn extract_name_from_line(line: &str) -> Option<String> {
-    if let Some(dot_pos) = line.find('.') {
-        let after = &line[dot_pos + 1..];
-        let end = after.find('[').unwrap_or(after.len());
-        let name = after[..end].trim();
-        if !name.is_empty() {
-            return Some(name.to_string());
-        }
+    let dot_pos = line.find('.')?;
+    let after = &line[dot_pos + 1..];
+    let end = after.find('[').unwrap_or(after.len());
+    let name = after[..end].trim();
+    if name.is_empty() {
+        None
+    } else {
+        Some(name.to_string())
     }
-    None
 }
 
-/// Map a sink name (from status) to a configured device label, if possible.
-fn find_current_label<'a, D>(status: &str, devices: D) -> Option<&'a str>
-where
-    D: IntoIterator<Item = &'a Device>,
-{
-    let devs: Vec<&Device> = devices.into_iter().collect();
-
-    if let Some(active) = find_active_line(status) {
-        if let Some(name) = extract_name_from_line(active) {
-            let lname = name.to_lowercase();
-            for dev in &devs {
-                if lname == dev.name.to_lowercase() {
-                    return Some(dev.label);
-                }
-            }
-        }
-    }
-
-    for line in status.lines() {
-        if let Some(name) = extract_name_from_line(line) {
-            let lname = name.to_lowercase();
-            for dev in &devs {
-                if lname == dev.name.to_lowercase() {
-                    return Some(dev.label);
-                }
-            }
-        }
-    }
-
-    None
-}
-
-/// Find the line marked active in `wpctl status` output.
-fn find_active_line<'a>(status: &'a str) -> Option<&'a str> {
-    status.lines().find(|l| l.contains('*'))
-}
-
-/// Return the node id (as string) for a sink matching `target_name`.
-fn find_node_id_for_name(status: &str, target_name: &str) -> Option<String> {
-    for line in status.lines() {
-        if let Some(name) = extract_name_from_line(line) {
-            if name.eq_ignore_ascii_case(target_name) {
-                if let Some(n) = extract_first_number(line) {
-                    return Some(n);
-                }
-            }
-        }
-    }
-    None
-}
-
-/// Extract the first contiguous number found in a string.
+/// Extract the first contiguous digit sequence from a string.
 fn extract_first_number(s: &str) -> Option<String> {
     let mut num = String::new();
     for c in s.chars() {
@@ -358,15 +322,9 @@ fn extract_first_number(s: &str) -> Option<String> {
     if num.is_empty() { None } else { Some(num) }
 }
 
-/// Print i3blocks-compatible output, with some cleaning of known device name patterns.
+/// Print i3blocks-compatible three-line output (full, short, color).
 fn print_i3(full: &str, short: &str, color: &str) {
-    let cleaned = full
-        .replace("sof-soundwire", "")
-        .replace("Arctis 7 Game", "")
-        .split_whitespace()
-        .collect::<Vec<_>>()
-        .join(" ");
-    println!("{}", cleaned);
+    println!("{}", display_name(full));
     println!("{}", short);
     println!("{}", color);
 }
