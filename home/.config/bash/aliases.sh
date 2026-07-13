@@ -45,3 +45,4 @@ alias t="tmux"
 alias today="date +%d/%m/%y"
 alias tree='tree --dirsfirst -C'
 alias weather="curl wttr.in/~Granada"
+alias docker_multiarch="docker run --privileged --rm tonistiigi/binfmt --install all"
