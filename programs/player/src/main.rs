@@ -56,7 +56,7 @@ fn main() {
         Some(Commands::I3) => {
             match env::var("BLOCK_BUTTON").ok().as_deref() {
                 Some("1") => { let _ = open_paired_picker(); }
-                Some("2") => { let _ = open_manual_picker(); }
+                Some("3") => { let _ = open_manual_picker(); }
                 _ => {}
             }
 
