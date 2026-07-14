@@ -2,7 +2,7 @@
 
 change_bg() {
     pkill swaybg
-    swaybg -i "$(find ~/Pictures/pixelart/ -type f | shuf -n1)" -m fill &>/dev/null &
+    swaybg -i "$(find ~/img/ -type f | shuf -n1)" -m fill &>/dev/null &
 }
 
 if [ "$1" != '--auto' ]; then

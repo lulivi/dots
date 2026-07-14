@@ -187,6 +187,9 @@ description = "Fish shell main configuration file."
 description = "Fish shell file where the pluggins are defined."
 packages = ["Fisher"]
 
+[".config/foot/foot.ini"]
+description = "Foot terminal configuration file."
+
 [".config/i3blocks"]
 description = "i3blocks configuration files."
 packages = ["i3blocks"]
