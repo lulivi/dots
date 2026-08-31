@@ -2,5 +2,10 @@
 
 pkill kanshi
 sleep 3
-echo -e "\n>>>>>>>>>>>>>>>>>>>>>>>\n$(date)" >> /tmp/kanshi.log
+cat << EOF >> /tmp/kanshi.log
+
+>>>>>>>>>>>>>>>>>>>>>>>
+$(date)
+>>>>>>>>>>>>>>>>>>>>>>>
+EOF
 kanshi >> /tmp/kanshi.log 2>&1
