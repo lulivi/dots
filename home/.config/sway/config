@@ -5,6 +5,7 @@
 #          snippets from `/etc/sway/config.d/`.
 # ---------------------------------------------------------------------------
 
+include config.d/theme.conf
 include config.d/variables.conf
 include config.d/colorscheme.conf
 include config.d/input.conf
@@ -12,4 +13,3 @@ include config.d/apps.conf
 include config.d/keys.conf
 include config.d/bar.conf
 include config.d/exec.conf
-include config.d/theme.conf
